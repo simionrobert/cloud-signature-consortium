@@ -3,7 +3,11 @@
 
 ### Custom ###
 /bin/netSSM
-docs/
+/docs/*
+/utils/*
+oauth/*
+pkcs11-driver/*
+signature-app/*
 
 ### C++ ###
 # Prerequisites
