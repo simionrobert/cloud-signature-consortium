@@ -1,17 +1,18 @@
-var configValues = require('./info');
+var info = require('./info');
+var config = require('./config');
 
 module.exports = {
     getInfoConfig: function (lang) {
         switch (lang) {
             case "RO":
-                return configValues.infos[0];
+                return info.infos[0];
             case "EN":
-                return configValues.infos[1];
+                return info.infos[1];
             default:
-                return configValues.infos[1];
+                return info.infos[1];
         }
     },
-    getDBConnectionString:function(){
-        return `mongodb://localhost/users`;
+    getDBConnectionString: function () {
+        return config.db;
     }
 }

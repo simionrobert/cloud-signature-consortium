@@ -8,7 +8,8 @@ var app = require('../app');
 var debug = require('debug')('rssp:server');
 var https = require('https');
 var fs = require('fs');
-
+var config = require('../config');
+var mongoose = require('mongoose');
 
 
 /**
@@ -35,6 +36,9 @@ var server = https.createServer({
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+mongoose.connect(config.getDBConnectionString(), { useNewUrlParser: true });
+
 
 /**
  * Normalize a port into a number, string, or false.

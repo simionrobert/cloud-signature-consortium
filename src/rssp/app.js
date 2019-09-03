@@ -4,10 +4,11 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var helmet = require('helmet');
-var passport = require('passport-http');
+var passport = require('passport');
+var BasicStrategy = require('passport-http').BasicStrategy;
 var mongoose = require('mongoose');
-var config = require('config');
-var users = require('./models/userModel');
+var db = require('./db');
+
 
 var infoRouter = require('./routes/info');
 var authRouter = require('./routes/auth');
@@ -27,17 +28,12 @@ app.use('/csc/v1/auth', authRouter);
 app.use('/csc/v1/credentials', credentialsRouter);
 app.use('/csc/v1/signatures', signaturesRouter);
 
-
-mongoose.connect(config.getDBConnectionString()), { useNewUrlParser: true };
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function () {
-
-});
+var database = mongoose.connection;
+database.on('error', console.error.bind(console, 'connection error:'));
 
 passport.use(new BasicStrategy(
-  function (userid, password, done) {
-    User.findOne({ username: userid }, function (err, user) {
+  function (username, password, done) {
+    db.users.findOne({ user: username }, function (err, user) {
       if (err) { return done(err); }
       if (!user) { return done(null, false); }
       if (!user.verifyPassword(password)) { return done(null, false); }
