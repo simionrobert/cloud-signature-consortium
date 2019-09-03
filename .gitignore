@@ -2,11 +2,8 @@
 # Edit at https://www.gitignore.io/?templates=c++,node,visualstudiocode
 
 ### Custom ###
-/bin/netSSM
-/bin/openssl.1.1.1.x86/lib
-/bin/openssl.1.1.1.x86/include
-/bin/openssl.1.1.1.x86/ssl
-/docs/*
+/bin
+/docs
 
 ### C++ ###
 # Prerequisites
