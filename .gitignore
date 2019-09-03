@@ -2,8 +2,8 @@
 # Edit at https://www.gitignore.io/?templates=c++,node,visualstudiocode
 
 ### Custom ###
-/bin
-/docs
+/bin/
+/docs/
 
 ### C++ ###
 # Prerequisites

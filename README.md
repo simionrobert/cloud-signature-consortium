@@ -19,5 +19,7 @@ Work in progress
 6. To enable HTTPS, call this command: openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
 and copy the output into resources folder
 7. In Postman, set certificate SSL validation to false, under Settings.
+8. In VS Settings, change to auto-debug.
+
 ## Debug
 Go see https://github.com/microsoft/vscode-recipes/tree/master/nodemon
