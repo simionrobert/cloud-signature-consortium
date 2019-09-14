@@ -3,31 +3,32 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
+var errors = require('../errors');
 
 router.post('/list',
-   passport.authenticate('basic', { session: false }),
+   passport.authenticate('bearer', { session: false }),
    function (req, res, next) {
-      res.json({ message: "Not Implemented Yet" });
+      return next(errors.notImplementedMethod);
    });
 router.post('/info',
-   passport.authenticate('basic', { session: false }),
+   passport.authenticate('bearer', { session: false }),
    function (req, res, next) {
-      res.json({ message: "Not Implemented Yet" });
+      return next(errors.notImplementedMethod);
    });
 router.post('/authorise',
-   passport.authenticate('basic', { session: false }),
+   passport.authenticate('bearer', { session: false }),
    function (req, res, next) {
-      res.json({ message: "Not Implemented Yet" });
+      return next(errors.notImplementedMethod);
    });
 router.post('/extendTransaction',
-   passport.authenticate('basic', { session: false }),
+   passport.authenticate('bearer', { session: false }),
    function (req, res, next) {
-      res.json({ message: "Not Implemented Yet" });
+      return next(errors.notImplementedMethod);
    });
 router.post('/sendOTP',
-   passport.authenticate('basic', { session: false }),
+   passport.authenticate('bearer', { session: false }),
    function (req, res, next) {
-      res.json({ message: "Not Implemented Yet" });
+      return next(errors.notImplementedMethod);
    });
 
 module.exports = router;
