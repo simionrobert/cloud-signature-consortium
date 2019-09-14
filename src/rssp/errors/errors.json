@@ -5,9 +5,9 @@
         "error_description": "The method is not implemented"
     },
     "internalServerError": {
-        "status": 401,
+        "status": 500,
         "error": "server_error",
-        "error_description": "The authorization server encountered an unexpected condition that prevented it from fulfilling the request."
+        "error_description": "The remote service encountered an unexpected condition that prevented it from fulfilling the request."
     },
     "unauthorisedClient": {
         "status": 401,

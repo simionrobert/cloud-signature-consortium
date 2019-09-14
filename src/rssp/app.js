@@ -6,10 +6,9 @@ var logger = require('morgan');
 var helmet = require('helmet');
 var passport = require('passport');
 var BasicStrategy = require('passport-http').BasicStrategy;
-var mongoose = require('mongoose');
+var BearerStrategy = require('passport-http-bearer').Strategy;
 var User = require('./db').User;
 var errors = require('./errors');
-
 
 var infoRouter = require('./routes/info');
 var authRouter = require('./routes/auth');
@@ -29,16 +28,24 @@ app.use('/csc/v1/auth', authRouter);
 app.use('/csc/v1/credentials', credentialsRouter);
 app.use('/csc/v1/signatures', signaturesRouter);
 
-var database = mongoose.connection;
-database.on('error', console.error.bind(console, 'connection error:'));
+
 passport.use(new BasicStrategy(
   function (username, password, done) {
-    User.findOne({ user: username }, function (err, user) {
+    User.findOne({ user: username}, function (err, user) {
       if (err) { return done(errors.internalServerError); }
       if (!user) { return done(errors.authError, false); }
       if (!user.verifyPassword(password)) { return done(errors.authError, false); }
       return done(null, user);
-    })
+    });
+  }
+));
+passport.use(new BearerStrategy(
+  function (token, done) {
+    User.findOne({ token: token }, function (err, user) {
+      if (err) { return done(errors.internalServerError); }
+      if (!user) { return done(null, false); }
+      return done(null, user, { scope: 'all' });
+    });
   }
 ));
 
@@ -53,12 +60,22 @@ app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
+  req.app.get('env') === 'development' ? console.log(err) : {};
 
   // render the error page
-  res.status(err.status || 500);
+  if (err.status !== undefined) {
+    res.status(err.status || 500);
+    return res.json({
+      error: err.message,
+      error_description: err.description
+    });
+  }
+
+  // fallback for unknown application errors
+  res.status(errors.internalServerError.status);
   res.json({
-    error: err.message,
-    error_description: err.description
+    error: errors.internalServerError.message,
+    error_description: errors.internalServerError.description
   });
 });
 

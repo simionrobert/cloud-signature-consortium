@@ -6,7 +6,7 @@ var passport = require('passport');
 var errors = require('../errors');
 
 router.post('/signHash',
-   passport.authenticate('basic', {
+   passport.authenticate('bearer', {
       session: false
    }),
    function (req, res, next) {
@@ -14,7 +14,7 @@ router.post('/signHash',
    });
 
 router.post('/timestamp',
-   passport.authenticate('basic', {
+   passport.authenticate('bearer', {
       session: false
    }),
    function (req, res, next) {
