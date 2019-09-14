@@ -4,6 +4,8 @@
  * Module dependencies.
  */
 
+'use strict';
+
 var app = require('../app');
 var debug = require('debug')('rssp:server');
 var https = require('https');

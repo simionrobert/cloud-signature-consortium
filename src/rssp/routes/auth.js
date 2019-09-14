@@ -1,6 +1,9 @@
+'use strict';
+
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
+var errors = require('../errors');
 
 router.post('/login',
   passport.authenticate('basic', { session: false }),
@@ -11,6 +14,7 @@ router.post('/login',
 
     if (rememberMe) {
       // refresh token is present
+      return next(errors.invalidRefreshToken);
       res.json({ message: "Not Implemented Yet" });
     } else {
       res.json({ message: "Not Implemented Yet" });

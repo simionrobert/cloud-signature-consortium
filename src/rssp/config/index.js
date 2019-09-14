@@ -1,3 +1,5 @@
+'use strict';
+
 var info = require('./info');
 var config = require('./config');
 

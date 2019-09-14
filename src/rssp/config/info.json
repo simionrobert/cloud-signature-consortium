@@ -11,7 +11,7 @@
                                 "basic",
                                 "oauth2code"
                         ],
-                        "oauth": "https://www.domain.org/",
+                        "oauth2": "https://www.domain.org/",
                         "methods": [
                                 "auth/login",
                                 "auth/revoke",
@@ -33,7 +33,7 @@
                                 "basic",
                                 "oauth2code"
                         ],
-                        "oauth": "https://www.domain.org/",
+                        "oauth2": "https://www.domain.org/",
                         "methods": [
                                 "auth/login",
                                 "auth/revoke",
