@@ -12,6 +12,6 @@ userSchema.methods.verifyPassword = function (password) {
     return this.password === crypto.createHash('sha256').update(password).digest('hex');
 };
 
-var Users = mongoose.model('users', userSchema);
+var User = mongoose.model('users', userSchema);
 
-module.exports = Users
+module.exports = User

@@ -1,6 +1,5 @@
 'use strict';
 
-var createError = require('http-errors');
 var express = require('express');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -8,7 +7,7 @@ var helmet = require('helmet');
 var passport = require('passport');
 var BasicStrategy = require('passport-http').BasicStrategy;
 var mongoose = require('mongoose');
-var db = require('./db');
+var User = require('./db').User;
 var errors = require('./errors');
 
 
@@ -34,18 +33,19 @@ var database = mongoose.connection;
 database.on('error', console.error.bind(console, 'connection error:'));
 passport.use(new BasicStrategy(
   function (username, password, done) {
-    db.users.findOne({ user: username }, function (err, user) {
-      if (err) { return done(err); }
-      if (!user) { return done(null, false); }
-      if (!user.verifyPassword(password)) { return done(null, false); }
+    User.findOne({ user: username }, function (err, user) {
+      if (err) { return done(errors.internalServerError); }
+      if (!user) { return done(errors.authError, false); }
+      if (!user.verifyPassword(password)) { return done(errors.authError, false); }
       return done(null, user);
     })
   }
 ));
 
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  next(createError(404, "Not found", { description: "Resource not found" }));
+  next(errors.accessDenied);
 });
 
 // error handler

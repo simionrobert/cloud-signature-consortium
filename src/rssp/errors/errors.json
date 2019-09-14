@@ -4,10 +4,20 @@
         "error": "not_implemented_method",
         "error_description": "The method is not implemented"
     },
-    "notImplementedMethod": {
-        "status": 501,
-        "error": "not_implemented_method",
-        "error_description": "The method is not implemented"
+    "internalServerError": {
+        "status": 401,
+        "error": "server_error",
+        "error_description": "The authorization server encountered an unexpected condition that prevented it from fulfilling the request."
+    },
+    "unauthorisedClient": {
+        "status": 401,
+        "error": "unauthorized_client",
+        "error_description": "The client is not authorized to use this method."
+    },
+    "accessDenied": {
+        "status": 401,
+        "error": "access_denied",
+        "error_description": "The user, authorization server or remote service denied the request."
     },
     "missingRequired": {
         "status": 400,

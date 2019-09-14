@@ -6,25 +6,28 @@ var passport = require('passport');
 var errors = require('../errors');
 
 router.post('/login',
-  passport.authenticate('basic', { session: false }),
+  passport.authenticate(['basic'], {
+    session: false
+  }),
   function (req, res, next) {
-    var refresh_token = req.body.refresh_token;
+    var refresh_token = req.body.refresh_token || null;
     var rememberMe = req.body.rememberMe || false;
     var clientData = req.body.clientData;
 
     if (rememberMe) {
       // refresh token is present
-      return next(errors.invalidRefreshToken);
-      res.json({ message: "Not Implemented Yet" });
+      return next(errors.notImplementedMethod);
     } else {
-      res.json({ message: "Not Implemented Yet" });
+      return next(errors.notImplementedMethod);
     }
   });
 
 router.post('/revoke',
-  passport.authenticate('basic', { session: false }),
+  passport.authenticate('basic', {
+    session: false
+  }),
   function (req, res, next) {
-    res.json({ message: "Not Implemented Yet" });
+    return next(errors.notImplementedMethod);
   });
 
 module.exports = router;
