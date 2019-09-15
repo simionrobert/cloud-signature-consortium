@@ -16,5 +16,7 @@ module.exports = {
     },
     getDBConnectionString: function () {
         return config.db;
-    }
+    },
+    access_token_expiring_time: config.access_token_expiring_time,
+    refresh_token_expiring_time: config.refresh_token_expiring_time
 }

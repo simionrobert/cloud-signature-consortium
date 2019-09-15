@@ -7,8 +7,11 @@ var helmet = require('helmet');
 var passport = require('passport');
 var BasicStrategy = require('passport-http').BasicStrategy;
 var BearerStrategy = require('passport-http-bearer').Strategy;
+var validator = require('validator');
 var User = require('./db').User;
 var errors = require('./errors');
+var config = require('./config');
+
 
 var infoRouter = require('./routes/info');
 var authRouter = require('./routes/auth');
@@ -31,7 +34,7 @@ app.use('/csc/v1/signatures', signaturesRouter);
 
 passport.use(new BasicStrategy(
   function (username, password, done) {
-    User.findOne({ user: username}, function (err, user) {
+    User.findOne({ user: username }, function (err, user) {
       if (err) { return done(errors.internalServerError); }
       if (!user) { return done(errors.authError, false); }
       if (!user.verifyPassword(password)) { return done(errors.authError, false); }
@@ -40,10 +43,17 @@ passport.use(new BasicStrategy(
   }
 ));
 passport.use(new BearerStrategy(
-  function (token, done) {
-    User.findOne({ token: token }, function (err, user) {
+  function (refresh_token, done) {
+    // validate input format
+    if (!validator.isHexadecimal(validator.blacklist(refresh_token, '"'))) return next(errors.invalidRefreshTokenFormat);
+
+    User.findOne({ 'refresh_token.value': refresh_token }, function (err, user) {
       if (err) { return done(errors.internalServerError); }
-      if (!user) { return done(null, false); }
+      if (!user) { return done(errors.invalidRefreshToken, false); }
+
+      // calculate refresh token time availability
+      if (user.refresh_token.timestamp.getTime() + 1000 * config.refresh_token_expiring_time < Date.now()) { return done(errors.invalidRefreshToken, false); }
+
       return done(null, user, { scope: 'all' });
     });
   }

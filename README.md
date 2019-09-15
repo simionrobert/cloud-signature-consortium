@@ -23,3 +23,7 @@ and copy the output into resources folder
 
 ## Debug
 Go see https://github.com/microsoft/vscode-recipes/tree/master/nodemon
+
+## Postman commands
+You can get the commands for Postman for testing the API from the following links:
+- https://www.getpostman.com/collections/db7edf68afea5e5dec67
