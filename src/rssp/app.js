@@ -1,15 +1,17 @@
 'use strict';
 
-var createError = require('http-errors');
 var express = require('express');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var helmet = require('helmet');
-var passport = require('passport');
-var BasicStrategy = require('passport-http').BasicStrategy;
-var mongoose = require('mongoose');
-var db = require('./db');
+var passport = require('passport'),
+  BasicStrategy = require('passport-http').BasicStrategy,
+  BearerStrategy = require('passport-http-bearer').Strategy,
+  CustomStrategy = require('passport-custom').Strategy;
+var validator = require('validator');
+var User = require('./db').User;
 var errors = require('./errors');
+var config = require('./config');
 
 
 var infoRouter = require('./routes/info');
@@ -30,22 +32,56 @@ app.use('/csc/v1/auth', authRouter);
 app.use('/csc/v1/credentials', credentialsRouter);
 app.use('/csc/v1/signatures', signaturesRouter);
 
-var database = mongoose.connection;
-database.on('error', console.error.bind(console, 'connection error:'));
+
 passport.use(new BasicStrategy(
   function (username, password, done) {
-    db.users.findOne({ user: username }, function (err, user) {
-      if (err) { return done(err); }
-      if (!user) { return done(null, false); }
-      if (!user.verifyPassword(password)) { return done(null, false); }
+    User.findOne({ user: username }, function (err, user) {
+      if (err) { return done(errors.databaseError); }
+      if (!user) { return done(errors.unauthorisedClient, false); }
+      if (!user.verifyPassword(password)) { return done(errors.accessDenied, false); }
       return done(null, user);
-    })
+    });
+  }
+));
+passport.use(new BearerStrategy(
+  function (access_token, done) {
+    // validate input format
+    if (!validator.isHexadecimal(access_token)) return done(errors.invalidAccessToken);
+
+    User.findOne({ 'access_token.value': access_token, 'access_token.valid': true }, function (err, user) {
+      if (err) { return done(errors.databaseError); }
+      if (!user) { return done(errors.invalidToken, false); }
+
+      // check token availability
+      if (user.access_token.timestamp.getTime() + 1000 * config.access_token_expiring_time < Date.now()) { return done(errors.invalidToken, false); }
+
+      return done(null, user, { scope: 'all' });
+    });
+  }
+));
+passport.use(new CustomStrategy(
+  // used only for auth/login authorisation through json refresh_token
+
+  function (req, done) {
+    // validate input format
+    if (!validator.isHexadecimal(req.body.refresh_token)) return done(errors.invalidRefreshTokenFormatParameter);
+
+    User.findOne({ 'refresh_token.value': req.body.refresh_token, 'refresh_token.valid': true }, function (err, user) {
+      if (err) { return done(errors.databaseError); }
+      if (!user) { return done(errors.invalidRefreshTokenParameter, false); }
+
+      // check token availability
+      if (user.refresh_token.timestamp.getTime() + 1000 * config.refresh_token_expiring_time < Date.now()) { return done(errors.invalidRefreshTokenParameter, false); }
+
+      return done(null, user, { scope: 'all' });
+    });
   }
 ));
 
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  next(createError(404, "Not found", { description: "Resource not found" }));
+  next(errors.accessDenied);
 });
 
 // error handler
@@ -53,12 +89,22 @@ app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
+  req.app.get('env') === 'development' ? console.log(err) : {};
 
   // render the error page
-  res.status(err.status || 500);
+  if (err.status !== undefined) {
+    res.status(err.status);
+    return res.json({
+      error: err.message,
+      error_description: err.description
+    });
+  }
+
+  // fallback for unknown application errors
+  res.status(errors.internalServerError.status);
   res.json({
-    error: err.message,
-    error_description: err.description
+    error: errors.internalServerError.message,
+    error_description: errors.internalServerError.description
   });
 });
 
