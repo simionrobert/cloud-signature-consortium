@@ -1,13 +1,28 @@
 {
+    "internalServerError": {
+        "status": 500,
+        "error": "server_error",
+        "error_description": "The remote service encountered an unexpected condition that prevented it from fulfilling the request."
+    },
     "notImplementedMethod": {
         "status": 501,
         "error": "not_implemented_method",
         "error_description": "The method is not implemented"
     },
-    "internalServerError": {
+    "databaseError": {
         "status": 500,
         "error": "server_error",
-        "error_description": "The remote service encountered an unexpected condition that prevented it from fulfilling the request."
+        "error_description": "The database service encountered an unexpected error."
+    },
+    "invalidToken": {
+        "status": 401,
+        "error": "invalid_token",
+        "error_description": "The token provided is not a valid OAuth access or refresh token."
+    },
+    "expiredToken": {
+        "status": 401,
+        "error": "expired_token",
+        "error_description": "The access or refresh token is expired or has been revoked."
     },
     "unauthorisedClient": {
         "status": 401,
@@ -19,7 +34,12 @@
         "error": "access_denied",
         "error_description": "The user, authorization server or remote service denied the request."
     },
-    "invalidAccessToken": {
+    "authError": {
+        "status": 400,
+        "error": "authentication_error",
+        "error_description": "An error occurred during authentication process"
+    },
+    "invalidRequestParameters": {
         "status": 400,
         "error": "invalid_request",
         "error_description": "The request is missing a REQUIRED parameter, includes an invalid parameter value, includes a parameter more than once, or is otherwise malformed."
@@ -44,22 +64,17 @@
         "error": "invalid_request",
         "error_description": "Malformed username-password."
     },
-    "invalidRefreshTokenFormat": {
+    "invalidRefreshTokenFormatParameter": {
         "status": 400,
         "error": "invalid_request",
         "error_description": "Invalid string parameter: refresh_token"
     },
-    "invalidRefreshToken": {
+    "invalidRefreshTokenParameter": {
         "status": 400,
         "error": "invalid_request",
         "error_description": "Invalid refresh_token"
     },
-    "authError": {
-        "status": 400,
-        "error": "authentication_error",
-        "error_description": "An error occurred during authentication process"
-    },
-    "missingToken": {
+    "missingTokenParameter": {
         "status": 400,
         "error": "invalid_request",
         "error_description": "Missing (or invalid type) string parameter token"
@@ -69,7 +84,7 @@
         "error": "invalid_request",
         "error_description": "Invalid string parameter token_type_hint"
     },
-    "invalidToken": {
+    "invalidTokenParameter": {
         "status": 400,
         "error": "invalid_request",
         "error_description": "Invalid string parameter token"

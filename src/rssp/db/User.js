@@ -8,11 +8,13 @@ var userSchema = new mongoose.Schema({
     password: String,
     access_token: {
         value: String,
-        timestamp: Date
+        timestamp: Date,
+        valid:Boolean
     },
     refresh_token: {
         value: String,
-        timestamp: Date
+        timestamp: Date,
+        valid:Boolean
     }
 });
 
