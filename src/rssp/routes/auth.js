@@ -6,20 +6,20 @@ var passport = require('passport');
 var errors = require('../errors');
 var User = require('../db').User;
 var config = require('../config');
+var crypto = require('crypto');
 
 
 router.post('/login',
-  passport.authenticate(['basic', 'bearer'], { session: false }),
+  passport.authenticate(['basic', 'custom'], { session: false }),
   function (req, res, next) {
     var rememberMe = req.body.rememberMe || false;
-    var refresh_token = req.body.refresh_token || null;
     var user = req.user;
 
     // business logic
     if (rememberMe === true) {
-      // generate a new unique refreshToken
+      // generate a new refreshToken
 
-      require('crypto').randomBytes(48, function (err, buffer) {
+      crypto.randomBytes(48, function (err, buffer) {
         if (err) return next(errors.internalServerError);
         var refreshToken = buffer.toString('hex');
 
@@ -39,12 +39,11 @@ router.post('/login',
         });
       });
     } else {
-      // generate a new unique accessToken
-
+      var refresh_token = req.body.refresh_token || null;
       if (refresh_token != null) {
-        // generate unique accessToken using refreshToken
+        // generate accessToken using refreshToken
 
-        require('crypto').randomBytes(48, function (err, buffer) {
+        crypto.randomBytes(48, function (err, buffer) {
           if (err) return next(errors.internalServerError);
           var accessToken = buffer.toString('hex');
 
@@ -64,9 +63,9 @@ router.post('/login',
           });
         });
       } else {
-        // generate unique accessToken using username
+        // generate accessToken using username
 
-        require('crypto').randomBytes(48, function (err, buffer) {
+        crypto.randomBytes(48, function (err, buffer) {
           if (err) return next(errors.internalServerError);
           var accessToken = buffer.toString('hex');
 

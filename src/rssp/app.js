@@ -4,9 +4,10 @@ var express = require('express');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var helmet = require('helmet');
-var passport = require('passport');
-var BasicStrategy = require('passport-http').BasicStrategy;
-var BearerStrategy = require('passport-http-bearer').Strategy;
+var passport = require('passport'),
+  BasicStrategy = require('passport-http').BasicStrategy,
+  BearerStrategy = require('passport-http-bearer').Strategy,
+  CustomStrategy = require('passport-custom').Strategy;
 var validator = require('validator');
 var User = require('./db').User;
 var errors = require('./errors');
@@ -43,11 +44,27 @@ passport.use(new BasicStrategy(
   }
 ));
 passport.use(new BearerStrategy(
-  function (refresh_token, done) {
+  function (access_token, done) {
     // validate input format
-    if (!validator.isHexadecimal(validator.blacklist(refresh_token, '"'))) return next(errors.invalidRefreshTokenFormat);
+    if (!validator.isHexadecimal(access_token)) return next(errors.invalidAccessToken);
 
-    User.findOne({ 'refresh_token.value': refresh_token }, function (err, user) {
+    User.findOne({ 'access_token.value': access_token }, function (err, user) {
+      if (err) { return done(errors.internalServerError); }
+      if (!user) { return done(errors.invalidAccessToken, false); }
+
+      // calculate refresh token time availability
+      if (user.access_token.timestamp.getTime() + 1000 * config.access_token_expiring_time < Date.now()) { return done(errors.invalidAccessToken, false); }
+
+      return done(null, user, { scope: 'all' });
+    });
+  }
+));
+passport.use(new CustomStrategy(
+  function (req, done) {
+    // validate input format
+    if (!validator.isHexadecimal(req.body.refresh_token)) return next(errors.invalidRefreshTokenFormat);
+
+    User.findOne({ 'refresh_token.value': req.body.refresh_token }, function (err, user) {
       if (err) { return done(errors.internalServerError); }
       if (!user) { return done(errors.invalidRefreshToken, false); }
 
@@ -74,7 +91,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   if (err.status !== undefined) {
-    res.status(err.status || 500);
+    res.status(err.status);
     return res.json({
       error: err.message,
       error_description: err.description

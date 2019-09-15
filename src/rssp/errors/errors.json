@@ -19,7 +19,7 @@
         "error": "access_denied",
         "error_description": "The user, authorization server or remote service denied the request."
     },
-    "missingRequired": {
+    "invalidAccessToken": {
         "status": 400,
         "error": "invalid_request",
         "error_description": "The request is missing a REQUIRED parameter, includes an invalid parameter value, includes a parameter more than once, or is otherwise malformed."
