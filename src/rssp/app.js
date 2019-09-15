@@ -66,7 +66,7 @@ passport.use(new CustomStrategy(
     // validate input format
     if (!validator.isHexadecimal(req.body.refresh_token)) return done(errors.invalidRefreshTokenFormatParameter);
 
-    User.findOne({ 'refresh_token.value': req.body.refresh_token,'refresh_token.valid': true }, function (err, user) {
+    User.findOne({ 'refresh_token.value': req.body.refresh_token, 'refresh_token.valid': true }, function (err, user) {
       if (err) { return done(errors.databaseError); }
       if (!user) { return done(errors.invalidRefreshTokenParameter, false); }
 

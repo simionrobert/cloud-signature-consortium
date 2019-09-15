@@ -10,8 +10,7 @@ var crypto = require('crypto');
 
 
 router.post('/login',
-  passport.authenticate(['basic', 'custom'], { session: false }),
-  function (req, res, next) {
+  passport.authenticate(['basic', 'custom'], { session: false }), function (req, res, next) {
     try {
       var user = req.user;
       var rememberMe = req.body.rememberMe || false;
@@ -96,10 +95,7 @@ router.post('/login',
   });
 
 router.post('/revoke',
-  passport.authenticate('bearer', {
-    session: false
-  }),
-  function (req, res, next) {
+  passport.authenticate('bearer', { session: false }), function (req, res, next) {
     var user = req.user;
     var token = req.body.token;
     var hint = req.body.token_type_hint;
