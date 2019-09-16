@@ -1,6 +1,6 @@
 # CSC Framework
 
-[![Dependency Status](https://david-dm.org/simionrobert/CSC-Framework.svg)](https://david-dm.org/simionrobert/CSC-Framework?path=src/rssp)
+[![Dependency Status](https://david-dm.org/simionrobert/CSC-Framework/status.svg?path=src/rssp)](https://david-dm.org/simionrobert/CSC-Framework?path=src/rssp)
 
 A CSC RSSP, cloud signature consortium remote service signature provider, made in NodeJS, using SoftHSMv2 as HSM. 
 
