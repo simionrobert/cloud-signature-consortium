@@ -1,6 +1,6 @@
 # CSC - Cloud Signature Consortium
 
-[![Dependency Status](https://david-dm.org/simionrobert/CSC-Framework/status.svg?path=src/rssp)](https://david-dm.org/simionrobert/CSC-Framework?path=src/rssp)
+[![Build Status](https://travis-ci.org/simionrobert/cloud-signature-consortium.svg?branch=master)](https://travis-ci.org/simionrobert/cloud-signature-consortium.svg?branch=master) [![Dependency Status](https://david-dm.org/simionrobert/CSC-Framework/status.svg)](https://david-dm.org/simionrobert/CSC-Framework)
 
 A CSC RSSP, cloud signature consortium remote signature service provider, made in Node.js, using SoftHSMv2 as HSM. 
 
