@@ -12,13 +12,12 @@ This is a work in progress. Do not use it yet!
 
 What things you need to install the software and how to install them:
 ```
-- Mongodb from [mongodb.com](https://www.mongodb.com/download-center/community)
-- SoftHSMv2 [softHSMv2](https://github.com/opendnssec/SoftHSMv2) Instalation part or you could just download the binaries
-1. Start MongoDB service. Create a database and a collection, then add an user as the schema says in src/rssp/db/User.js
-2. Install/Download SoftHSMv2 and OpenSSL and copy them in the directories named as such.
-3. Set environment variabile SOFTHSM2_CONF=D:\Scoala\Dizertatie\CSC Framework\bin\SoftHSMv2\lib\softhsm2.conf
+1. Install Mongodb from [mongodb.com](https://www.mongodb.com/download-center/community)
+2. Download SoftHSMv2 binaries or install it [softHSMv2](https://github.com/opendnssec/SoftHSMv2)
+3. Download OpenSSL binaries or install it[openssl](https://github.com/openssl/openssl)
 4. To generate a new certificate and private key for your service, call this command: 
 openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 
+5. Set environment variabile SOFTHSM2_CONF=D:\Scoala\Dizertatie\CSC Framework\bin\SoftHSMv2\lib\softhsm2.conf
 
 ```
 
@@ -45,6 +44,7 @@ You can load an entire config.json/info.json file or you could individually set 
 csc-server --config "config.json"
 csc-server --info "info.json"
 csc-server --db "mongodb://localhost:27017/cs"
+csc-server --user "user" --pass "pass"
 ```
 
 #### API Module Usage
@@ -53,6 +53,7 @@ var csc = require('csc-server');
 csc.loadConfig('./config/config.json');
 csc.loadInfo('./config/info.json');
 csc.setDbUrl('mongodb://localhost:27017/cs');
+csc.registerUser("user","password"); //only when you want to add an user
 ```
 
 
