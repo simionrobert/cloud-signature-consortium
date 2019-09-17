@@ -1,5 +1,0 @@
-{
-    "db": "mongodb://localhost:27017/csc",
-    "access_token_expiring_time": 60,
-    "refresh_token_expiring_time": 3600
-}
