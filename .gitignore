@@ -1,9 +1,6 @@
 # Created by https://www.gitignore.io/api/c++,node,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=c++,node,visualstudiocode
 
-### Custom ###
-/bin/
-/docs/
 
 ### C++ ###
 # Prerequisites

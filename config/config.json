@@ -1,0 +1,9 @@
+{
+    "database_url": "mongodb://localhost:27017/csc",
+    "hsm_library_path":"",
+    "hsm_library_type":"",
+    "certificate_path":"",
+    "private_key_path":"",
+    "access_token_expiring_time": 60,
+    "refresh_token_expiring_time": 3600
+}
