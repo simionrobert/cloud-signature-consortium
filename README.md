@@ -2,9 +2,9 @@
 
 [![Dependency Status](https://david-dm.org/simionrobert/CSC-Framework/status.svg?path=src/rssp)](https://david-dm.org/simionrobert/CSC-Framework?path=src/rssp)
 
-A CSC RSSP, cloud signature consortium remote service signature provider, made in NodeJS, using SoftHSMv2 as HSM. 
+A CSC RSSP, cloud signature consortium remote service signature provider, made in Node.js, using SoftHSMv2 as HSM. 
 
-This is a work in progress.
+This is a work in progress. Do not use it yet!
 
 ## Getting started
 
@@ -12,25 +12,16 @@ This is a work in progress.
 
 What things you need to install the software and how to install them
 ```
-- Mongodb
-- SoftHSMv2
-- Openssl
-- Postman for tests
+- Mongodb from [mongodb.com](https://www.mongodb.com/download-center/community)
+- SoftHSMv2 [softHSMv2](https://github.com/opendnssec/SoftHSMv2) Instalation part or you could just download the binaries
+- OpenSSL see [openssl](https://github.com/openssl/openssl) INSTALLATION part or you could just download the binaries
 ```
 
 ### Installing
 
-
-
-
-
 ## Running the tests
 You can get the commands for Postman for testing the API from the following links:
 - https://www.getpostman.com/collections/db7edf68afea5e5dec67
-
-
-
-
 
 
 ## Deployment
@@ -44,16 +35,10 @@ You can get the commands for Postman for testing the API from the following link
 - PKCS11_LOGGER_LOG_FILE_PATH = D:\Scoala\Dizertatie\CSC Framework\bin\SoftHSMv2\lib\log.txt
 
 
-
-
-
 ## Debug
 In Postman, set certificate SSL validation to false, under Settings.
 In VS Settings, change to auto-debug.
 Go see https://github.com/microsoft/vscode-recipes/tree/master/nodemon
-
-
-
 
 
 ## Resources
@@ -64,17 +49,11 @@ openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
 and copy the output into resources folder
 
 
-
-
-
 ## Authors
 
-* **Simion Robert George** - *Initial work* - [simionrobert](https://github.com/simionrobert)
+* **Simion Robert George** - [simionrobert](https://github.com/simionrobert)
 
 See also the list of [contributors](https://github.com/simionrobert/CSC-Framework/contributors) who participated in this project.
-
-
-
 
 
 ## License

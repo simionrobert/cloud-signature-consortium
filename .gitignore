@@ -141,3 +141,5 @@ typings/
 .history
 
 # End of https://www.gitignore.io/api/c++,node,visualstudiocode
+.vscode/launch.json
+src/rssp/.vscode/launch.json
