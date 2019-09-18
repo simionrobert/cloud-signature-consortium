@@ -1,10 +1,11 @@
-#!/usr/bin/env node
+/* eslint-disable no-console */
+
+'use strict';
 
 /**
  * Module dependencies.
  */
 
-'use strict';
 
 var app = require('../index.js');
 var debug = require('debug')('rssp:server');
@@ -40,7 +41,7 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
-mongoose.connect(config.getDBConnectionString(), { useNewUrlParser: true, useFindAndModify: false });
+mongoose.connect(config.settings.database_url, { useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true});
 
 /**
  * Normalize a port into a number, string, or false.
