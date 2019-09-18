@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": false,
   "scripts": {
-    "start": "node ./test/www",
-    "debug": "nodemon --inspect ./test/www",
-    "lint": "eslint '**/*.js'",
+    "start": "node ./test/www.js",
+    "debug": "nodemon --inspect ./test/www.js",
+    "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Simion Robert",
