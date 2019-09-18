@@ -14,11 +14,10 @@ What things you need to install the software and how to install them:
 ```
 1. Install Mongodb from [mongodb.com](https://www.mongodb.com/download-center/community)
 2. Download SoftHSMv2 binaries or install it [softHSMv2](https://github.com/opendnssec/SoftHSMv2)
-3. Set environment variabile SOFTHSM2_CONF=D:\Scoala\Dizertatie\CSC Framework\bin\SoftHSMv2\lib\softhsm2.conf
-4. Download OpenSSL binaries or install it[openssl](https://github.com/openssl/openssl)
-5. To generate a new certificate and private key for your service, call this command: 
+3. Download OpenSSL binaries or install it[openssl](https://github.com/openssl/openssl)
+4. To generate a new certificate and private key for your service, call this command: 
 openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 
-
+5. Set environment variabile SOFTHSM2_CONF=D:\Scoala\Dizertatie\CSC Framework\bin\SoftHSMv2\lib\softhsm2.conf
 
 ```
 
@@ -61,15 +60,16 @@ csc.registerUser("user","password"); //only when you want to add an user
 ## Running the tests
 You can get the commands for Postman for testing the API from the following links:
 - https://www.getpostman.com/collections/db7edf68afea5e5dec67
-In Postman, set certificate SSL validation to false, under Settings, or import the server certificate as a trusted one.
 
 
 ## Debug
+In Postman, set certificate SSL validation to false, under Settings.
 In VS Settings, change to auto-debug.
 Go see https://github.com/microsoft/vscode-recipes/tree/master/nodemon
 
 
 ## Future development
+- Add database init script to add an user
 - Add script pre-compiler to download SoftHSMv2 binaries
 - Besides mongodb, add an in-memory database
 
