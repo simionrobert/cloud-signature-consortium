@@ -53,7 +53,7 @@ var csc = require('csc-server');
 csc.loadConfig('./config/config.json');
 csc.loadInfo('./config/info.json');
 csc.setDbUrl('mongodb://localhost:27017/cs');
-csc.registerUser("user","password"); //only when you want to add an user
+csc.registerUser("user","password");
 ```
 
 
