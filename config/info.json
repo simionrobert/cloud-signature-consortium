@@ -1,52 +1,48 @@
 {
-        "lang": [
-                {
-                        "EN": {
-                                "specs": "1.0.3.0",
-                                "name": "CSC Provider",
-                                "logo": "https://service.domain.org/images/logo.png",
-                                "region": "RO",
-                                "lang": "en-US",
-                                "description": "An efficient remote signature service",
-                                "authType": [
-                                        "basic",
-                                        "oauth2code"
-                                ],
-                                "oauth2": "https://www.domain.org/",
-                                "methods": [
-                                        "auth/login",
-                                        "auth/revoke",
-                                        "credentials/list",
-                                        "credentials/info",
-                                        "credentials/authorize",
-                                        "credentials/sendOTP",
-                                        "signatures/signHash"
-                                ]
-                        }
+        "lang": {
+                "EN": {
+                        "specs": "1.0.3.0",
+                        "name": "CSC Provider",
+                        "logo": "https://service.domain.org/images/logo.png",
+                        "region": "RO",
+                        "lang": "en-US",
+                        "description": "An efficient remote signature service",
+                        "authType": [
+                                "basic",
+                                "oauth2code"
+                        ],
+                        "oauth2": "https://www.domain.org/",
+                        "methods": [
+                                "auth/login",
+                                "auth/revoke",
+                                "credentials/list",
+                                "credentials/info",
+                                "credentials/authorize",
+                                "credentials/sendOTP",
+                                "signatures/signHash"
+                        ]
                 },
-                {
-                        "RO": {
-                                "specs": "1.0.3.0",
-                                "name": "Provider CSC",
-                                "logo": "https://service.domain.org/images/logo.png",
-                                "region": "RO",
-                                "lang": "ro-RO",
-                                "description": "Serviciu de semnatura digitala CSC",
-                                "authType": [
-                                        "basic",
-                                        "oauth2code"
-                                ],
-                                "oauth2": "https://www.domain.org/",
-                                "methods": [
-                                        "auth/login",
-                                        "auth/revoke",
-                                        "credentials/list",
-                                        "credentials/info",
-                                        "credentials/authorize",
-                                        "credentials/sendOTP",
-                                        "signatures/signHash"
-                                ]
-                        }
+                "RO": {
+                        "specs": "1.0.3.0",
+                        "name": "Provider CSC",
+                        "logo": "https://service.domain.org/images/logo.png",
+                        "region": "RO",
+                        "lang": "ro-RO",
+                        "description": "Serviciu de semnatura digitala CSC",
+                        "authType": [
+                                "basic",
+                                "oauth2code"
+                        ],
+                        "oauth2": "https://www.domain.org/",
+                        "methods": [
+                                "auth/login",
+                                "auth/revoke",
+                                "credentials/list",
+                                "credentials/info",
+                                "credentials/authorize",
+                                "credentials/sendOTP",
+                                "signatures/signHash"
+                        ]
                 }
-        ]
+        }
 }

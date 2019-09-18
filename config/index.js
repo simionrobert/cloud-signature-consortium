@@ -1,4 +1,4 @@
 module.exports = {
-    config: require('./config.json'),
+    settings: require('./config.json'),
     info: require('./info.json')
 }

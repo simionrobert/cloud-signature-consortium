@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": false,
   "scripts": {
-    "start": "node ./bin/www",
-    "debug": "nodemon --inspect ./bin/www",
+    "start": "node ./test/www",
+    "debug": "nodemon --inspect ./test/www",
     "lint": "eslint '**/*.js'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
