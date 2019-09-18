@@ -6,7 +6,7 @@
     "start": "node ./test/www.js",
     "debug": "nodemon --inspect ./test/www.js",
     "lint": "eslint .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Valid: no test specified\" && exit 0"
   },
   "author": "Simion Robert",
   "url": "https://github.com/simionrobert/",
