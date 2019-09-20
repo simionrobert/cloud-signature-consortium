@@ -12,14 +12,14 @@ var https = require('https');
 var fs = require('fs');
 var mongoose = require('mongoose');
 
-var app = require('../index.js');
-var config = require('../config');
+var app = require('../app.js');
+var config = require('../config').settings;
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || config.port);
 app.set('port', port);
 
 /**
@@ -27,9 +27,9 @@ app.set('port', port);
  */
 
 var server = https.createServer({
-  key: fs.readFileSync('./resources/key.pem'),
-  cert: fs.readFileSync('./resources/cert.pem'),
-  passphrase: '0000'
+  key: fs.readFileSync(config.private_key_path),
+  cert: fs.readFileSync(config.certificate_path),
+  passphrase: config.passphrase
 }, app);
 
 /**
@@ -41,7 +41,7 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
-mongoose.connect(config.settings.database_url, { useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true });
+mongoose.connect(config.database_url, { useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true });
 
 /**
  * Normalize a port into a number, string, or false.

@@ -21,8 +21,6 @@ if (argv.h || argv.help) {
         '  --db          Database URL [mongodb://localhost:27017/csc]',
         '',
         '  -s --silent  Suppress log messages from output',
-        '  -U --utc     Use UTC time format in log messages.',
-        '  --log-ip     Enable logging of the client\'s IP address',
         '',
         '  -C --cert    Path to ssl cert file (default: cert.pem).',
         '  -K --key     Path to ssl key file (default: key.pem).',
@@ -35,38 +33,16 @@ if (argv.h || argv.help) {
 
 var port = argv.p || argv.port || parseInt(process.env.PORT, 10) || config.port,
     host = argv.a || config.host,
-    utc = argv.U || argv.utc,
     logger;
 
 if (!argv.s && !argv.silent) {
     logger = {
-        info: console.log,
-        request: function (req, res, error) {
-            var date = utc ? new Date().toUTCString() : new Date();
-            var ip = argv['log-ip']
-                ? req.headers['x-forwarded-for'] || '' + req.connection.remoteAddress
-                : '';
-            if (error) {
-                logger.info(
-                    '[%s] %s "%s %s" Error (%s): "%s"',
-                    date, ip, chalk.red(req.method), chalk.red(req.url),
-                    chalk.red(error.status.toString()), chalk.red(error.message)
-                );
-            }
-            else {
-                logger.info(
-                    '[%s] %s "%s %s" "%s"',
-                    date, ip, chalk.cyan(req.method), chalk.cyan(req.url),
-                    req.headers['user-agent']
-                );
-            }
-        }
+        info: console.log
     };
 }
 else if (chalk) {
     logger = {
-        info: function () { },
-        request: function () { }
+        info: function () { }
     };
 }
 
@@ -83,7 +59,6 @@ else {
 
 function listen(port) {
     var options = {
-        logFn: logger.request,
         database: argv.db || config.database_url,
         https: {
             cert: argv.C || argv.cert || config.certificate_path,
