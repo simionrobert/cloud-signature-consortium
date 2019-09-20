@@ -1,9 +1,12 @@
 {
     "database_url": "mongodb://localhost:27017/csc",
-    "hsm_library_path":"",
-    "hsm_library_type":"",
-    "certificate_path":"",
-    "private_key_path":"",
+    "host": "0.0.0.0",
+    "port": "8080",
+    "hsm_library_path": "",
+    "hsm_library_type": "",
+    "certificate_path": "./resources/cert.pem",
+    "private_key_path": "./resources/key.pem",
+    "passphrase": "0000",
     "access_token_expiring_time": 60,
     "refresh_token_expiring_time": 3600
 }

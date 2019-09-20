@@ -1,0 +1,141 @@
+#!/usr/bin/env node
+
+'use strict';
+
+var httpServer = require('../lib'),
+    config = require('../config').settings,
+    chalk = require('chalk'),
+    os = require('os'),
+    portfinder = require('portfinder'),
+    argv = require('minimist')(process.argv.slice(2));
+
+var ifaces = os.networkInterfaces();
+
+if (argv.h || argv.help) {
+    console.log([
+        'usage: csc-server  [options]',
+        '',
+        'options:',
+        '  -p --port    Port to use [8080]',
+        '  -a           Address to use [0.0.0.0]',
+        '  --db          Database URL [mongodb://localhost:27017/csc]',
+        '',
+        '  -s --silent  Suppress log messages from output',
+        '  -U --utc     Use UTC time format in log messages.',
+        '  --log-ip     Enable logging of the client\'s IP address',
+        '',
+        '  -C --cert    Path to ssl cert file (default: cert.pem).',
+        '  -K --key     Path to ssl key file (default: key.pem).',
+        '  --pass     Path to ssl key file (default: 0000).',
+        '',
+        '  -h --help    Print this list and exit.'
+    ].join('\n'));
+    process.exit();
+}
+
+var port = argv.p || argv.port || parseInt(process.env.PORT, 10) || config.port,
+    host = argv.a || config.host,
+    utc = argv.U || argv.utc,
+    logger;
+
+if (!argv.s && !argv.silent) {
+    logger = {
+        info: console.log,
+        request: function (req, res, error) {
+            var date = utc ? new Date().toUTCString() : new Date();
+            var ip = argv['log-ip']
+                ? req.headers['x-forwarded-for'] || '' + req.connection.remoteAddress
+                : '';
+            if (error) {
+                logger.info(
+                    '[%s] %s "%s %s" Error (%s): "%s"',
+                    date, ip, chalk.red(req.method), chalk.red(req.url),
+                    chalk.red(error.status.toString()), chalk.red(error.message)
+                );
+            }
+            else {
+                logger.info(
+                    '[%s] %s "%s %s" "%s"',
+                    date, ip, chalk.cyan(req.method), chalk.cyan(req.url),
+                    req.headers['user-agent']
+                );
+            }
+        }
+    };
+}
+else if (chalk) {
+    logger = {
+        info: function () { },
+        request: function () { }
+    };
+}
+
+if (!port) {
+    portfinder.basePort = 8080;
+    portfinder.getPort(function (err, port) {
+        if (err) { throw err; }
+        listen(port);
+    });
+}
+else {
+    listen(port);
+}
+
+function listen(port) {
+    var options = {
+        logFn: logger.request,
+        database: argv.db || config.database_url,
+        https: {
+            cert: argv.C || argv.cert || config.certificate_path,
+            key: argv.K || argv.key || config.private_key_path,
+            passphrase: argv.pass || config.passphrase
+        },
+        port: port
+    };
+
+    var server = httpServer.createServer(options);
+    server.listen(port, host, function () {
+        var canonicalHost = host === '0.0.0.0' ? '127.0.0.1' : host,
+            protocol = 'https://';
+
+        logger.info([
+            chalk.yellow('Starting up csc-server, serving through'),
+            chalk.cyan(' https'),
+            chalk.yellow('\nAvailable on:')
+        ].join(''));
+
+        if (argv.a && host !== '0.0.0.0') {
+            logger.info(('  ' + protocol + canonicalHost + ':' + chalk.green(port.toString())));
+        }
+        else {
+            Object.keys(ifaces).forEach(function (dev) {
+                ifaces[dev].forEach(function (details) {
+                    if (details.family === 'IPv4') {
+                        logger.info(('  ' + protocol + details.address + ':' + chalk.green(port.toString())));
+                    }
+                });
+            });
+        }
+
+        logger.info('Hit CTRL-C to stop the server');
+    });
+}
+
+if (process.platform === 'win32') {
+    require('readline').createInterface({
+        input: process.stdin,
+        output: process.stdout
+    }).on('SIGINT', function () {
+        process.emit('SIGINT');
+    });
+}
+
+process.on('SIGINT', function () {
+    logger.info(chalk.red('csc-server stopped.'));
+    process.exit();
+});
+
+process.on('SIGTERM', function () {
+    logger.info(chalk.red('csc-server stopped.'));
+    process.exit();
+});

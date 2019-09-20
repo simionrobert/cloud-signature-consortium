@@ -1,16 +1,14 @@
 {
   "name": "csc-server",
   "version": "1.0.0",
-  "private": false,
-  "scripts": {
-    "start": "node ./test/www.js",
-    "debug": "nodemon --inspect ./test/www.js",
-    "lint": "eslint .",
-    "test": "echo \"Valid: no test specified\" && exit 0"
-  },
+  "description": "CSC Framework RSSP in Node.js",
+  "license": "MIT",
   "author": "Simion Robert",
   "url": "https://github.com/simionrobert/",
-  "description": "CSC Framework RSSP in Node.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/simionrobert/CSC-Framework.git"
+  },
   "keywords": [
     "digital signature",
     "cloud signature consortium",
@@ -18,27 +16,36 @@
     "nodejs",
     "signature"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/simionrobert/CSC-Framework.git",
-    "directory": "src/rssp"
+  "scripts": {
+    "link": "npm link",
+    "start": "node ./test/www.js",
+    "debug": "nodemon --inspect ./test/www.js",
+    "lint": "eslint .",
+    "test": "echo \"Valid: no test specified\" && exit 0"
   },
-  "license": "MIT",
   "dependencies": {
+    "chalk": "^2.4.2",
     "cookie-parser": "^1.4.4",
     "debug": "^2.6.9",
     "express": "^4.17.1",
-    "helmet": "^3.21.0",
+    "helmet": "^3.21.1",
     "http-errors": "^1.7.3",
     "lodash": "^4.17.15",
+    "minimist": "^1.2.0",
     "mongoose": "^5.7.1",
     "passport": "^0.4.0",
     "passport-custom": "^1.1.0",
     "passport-http": "^0.3.0",
     "passport-http-bearer": "^1.0.1",
+    "portfinder": "^1.0.24",
     "validator": "^11.1.0"
   },
   "devDependencies": {
     "eslint": "^6.4.0"
+  },
+  "private": false,
+  "preferGlobal": true,
+  "bin": {
+    "csc-server": "bin/csc-server"
   }
 }
