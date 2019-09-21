@@ -6,14 +6,14 @@ A CSC RSSP, cloud signature consortium remote signature service provider, made i
 
 This is a work in progress. Do not use it yet!
 
-## Getting started
+## Prerequistes
 What things are needed to install the software and how to install them.
-The options 2,3 and 4 are temporary optional.
+The options 2, 3 and 4 are temporary optional.
 
 1. Install Mongodb from [mongodb.com](https://www.mongodb.com/download-center/community)
-2. Download SoftHSMv2 binaries or install it [SoftHSMv2](https://github.com/opendnssec/SoftHSMv2)
+2. Download SoftHSMv2 binaries or install it from [SoftHSMv2](https://github.com/opendnssec/SoftHSMv2)
 3. Set environment variabile SOFTHSM2_CONF=path\softhsm2.conf
-4. Download OpenSSL binaries or install it [OpenSSL](https://github.com/openssl/openssl). 
+4. Download OpenSSL binaries or install it from [OpenSSL](https://github.com/openssl/openssl). 
 To generate a new certificate and private key for your https service, call this command: 
 ```
 openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 
@@ -25,12 +25,12 @@ Installing globally via `npm`:
 npm install -g csc-server
 ```
 
-Create your own user
+Create your own user:
 ```
 csc-server --user "user" --pass "pass"
 ```
 
-Start CSC Server
+Start CSC Server:
 ```
 csc-server
 ```
@@ -61,7 +61,7 @@ Examples
 
 
 ## Configuration 
-You can also set default options in the `%userprofile%\AppData\Roaming\npm\node_modules\csc-server\config\config.json` configuration file.
+You can also set default options in the `%userprofile%/AppData/Roaming/npm/node_modules/csc-server/config/config.json` configuration file.
 ```
 {
     "database_url": "mongodb://localhost:27017/csc",
@@ -77,7 +77,7 @@ You can also set default options in the `%userprofile%\AppData\Roaming\npm\node_
 }
 ```
 
-You can also set the `/csc/v1/info` results in the `%userprofile%\AppData\Roaming\npm\node_modules\csc-server\config\info.json` configuration file.
+You can also set the `/csc/v1/info` results in the `%userprofile%/AppData/Roaming/npm/node_modules/csc-server/config/info.json` configuration file.
 ```
 {
     "specs": "1.0.3.0",
@@ -127,6 +127,11 @@ refresh_token = ""
 * **Simion Robert George** - [simionrobert](https://github.com/simionrobert)
 
 See also the list of [contributors](https://github.com/simionrobert/CSC-Framework/contributors) who participated in this project.
+
+I really appreciate all kinds of feedback and contributions.
+
+**Aditional notes:**
+If you have some issues referring parts of code in the master branch add them in the issues section.
 
 
 ## License
