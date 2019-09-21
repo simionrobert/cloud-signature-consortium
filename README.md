@@ -61,7 +61,8 @@ Examples
     csc-server
 ```
 
-You can also set default options in `%userprofile%\AppData\Roaming\npm\node_modules\csc-server\config\config.json` configuration file.
+## Configuration 
+You can also set default options in the `%userprofile%\AppData\Roaming\npm\node_modules\csc-server\config\config.json` configuration file.
 ```
 {
     "database_url": "mongodb://localhost:27017/csc",
@@ -76,26 +77,52 @@ You can also set default options in `%userprofile%\AppData\Roaming\npm\node_modu
     "refresh_token_expiring_time": 3600
 }
 ```
+
+You can also set the `/csc/v1/info` results in the `%userprofile%\AppData\Roaming\npm\node_modules\csc-server\config\info.json` configuration file.
+```
+{
+    "specs": "1.0.3.0",
+    "name": "CSC Provider",
+    "logo": "https://service.domain.org/images/logo.png",
+    "region": "RO",
+    "lang": "en-US",
+    "description": "An efficient remote signature service",
+    "authType": [
+            "basic",
+            "oauth2code"
+    ],
+    "oauth2": "https://www.domain.org/",
+    "methods": [
+            "auth/login",
+            "auth/revoke",
+            "credentials/list",
+            "credentials/info",
+            "credentials/authorize",
+            "credentials/sendOTP",
+            "signatures/signHash"
+    ]
+}
+```
 Now you have a fully functional CSC server and you should be able to run the tests provided in [Running the tests](#running-the-tests)
 
 
 ## Running the tests
-You can get the commands for Postman for testing yourself the API from the following [link](https://www.getpostman.com/collections/db7edf68afea5e5dec67):
-
-You will need the following environment variabiles defined in postman. The last two will be automatically updated after you post `auth/login`
-```
-url https://localhost:3000/csc/v1
-access_token
-refresh_token
-```
+You can get the commands for Postman for testing yourself the API from this [link](https://www.getpostman.com/collections/db7edf68afea5e5dec67).
 
 In Postman, set `certificate SSL validation` to false, under Settings.
 
+You will need to define the following environment variabiles. The last two will be automatically updated after you post `auth/login`
+```
+url = https://localhost:3000/csc/v1
+access_token = ""
+refresh_token = ""
+```
+
 
 ## Future development
-- Add script pre-compiler to download SoftHSMv2 binaries
-- Besides mongodb, add an in-memory database
 - Ability to set config files
+- Provide SoftHSMv2/OpenSSL binaries
+- Besides mongodb, add an in-memory database
 
 
 ## Authors
