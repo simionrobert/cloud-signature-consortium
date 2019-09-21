@@ -116,13 +116,6 @@ access_token = ""
 refresh_token = ""
 ```
 
-
-## Future development
-- Ability to set config files
-- Provide SoftHSMv2/OpenSSL binaries
-- Besides mongodb, add an in-memory database
-
-
 ## Authors
 * **Simion Robert George** - [simionrobert](https://github.com/simionrobert)
 
