@@ -7,22 +7,6 @@ A CSC RSSP, cloud signature consortium remote signature service provider, made i
 This is a work in progress. Do not use it yet!
 
 ## Getting started
-
-### Prerequisites
-
-What things are needed to install the software and how to install them.
-The options 2,3 and 4 are temporary optional.
-
-1. Install Mongodb from [mongodb.com](https://www.mongodb.com/download-center/community)
-2. Download SoftHSMv2 binaries or install it [softHSMv2](https://github.com/opendnssec/SoftHSMv2)
-3. Set environment variabile SOFTHSM2_CONF=path\softhsm2.conf
-4. Download OpenSSL binaries or install it[openssl](https://github.com/openssl/openssl). 
-To generate a new certificate and private key for your https service, call this command: 
-```
-openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 
-```
-
-### Install
 Install CSC Server
 
 ```
@@ -39,8 +23,20 @@ Start CSC Server
 csc-server
 ```
 
+### Prerequisites
+What things are needed to install the software and how to install them.
+The options 2,3 and 4 are temporary optional.
 
-## Usage
+1. Install Mongodb from [mongodb.com](https://www.mongodb.com/download-center/community)
+2. Download SoftHSMv2 binaries or install it [softHSMv2](https://github.com/opendnssec/SoftHSMv2)
+3. Set environment variabile SOFTHSM2_CONF=path\softhsm2.conf
+4. Download OpenSSL binaries or install it[openssl](https://github.com/openssl/openssl). 
+To generate a new certificate and private key for your https service, call this command: 
+```
+openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 
+```
+
+## Example Usage
 ```
 csc-server [options]
 
@@ -60,6 +56,8 @@ Examples
     csc-server --user "username" --pass "password"
     csc-server
 ```
+Now you have a fully functional CSC server and you should be able to run the tests provided in [Running the tests](#running-the-tests)
+
 
 ## Configuration 
 You can also set default options in the `%userprofile%\AppData\Roaming\npm\node_modules\csc-server\config\config.json` configuration file.
@@ -103,7 +101,6 @@ You can also set the `/csc/v1/info` results in the `%userprofile%\AppData\Roamin
     ]
 }
 ```
-Now you have a fully functional CSC server and you should be able to run the tests provided in [Running the tests](#running-the-tests)
 
 
 ## Running the tests
