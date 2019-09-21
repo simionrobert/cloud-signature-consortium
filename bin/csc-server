@@ -11,23 +11,21 @@ var ifaces = os.networkInterfaces();
 
 if (argv.h || argv.help) {
     console.log([
-        'usage: csc-server  [options]',
+        'Options:',
+        '  --port, -p       Port to use [8080]',
+        '  --address, -a    Address to use [0.0.0.0]',
+        '  --db, -d         Database URL [mongodb://localhost:27017/csc]',
+        '  --user           User to add once to the db. Used it with --pass',
+        '  --pass           Password of the user. Used it with --user',
+        '  --cert, -c       Path to ssl cert file (default: cert.pem).',
+        '  --key, -k        Path to ssl key file (default: key.pem).',
+        '  --passphrase     Path to ssl key file (default: 0000).',
+        '  --silent, -s     Suppress log messages from output',
+        '  --help, -h       Print this list and exit.',
         '',
-        'options:',
-        '  -p --port    Port to use [8080]',
-        '  -a           Address to use [0.0.0.0]',
-        '  --db         Database URL [mongodb://localhost:27017/csc]',
-        '',
-        '  --user       User to add once to the db. Used it with --pass',
-        '  --pass       Password of the user. Used it with --user',
-        '',
-        '  -s --silent  Suppress log messages from output',
-        '',
-        '  -C --cert    Path to ssl cert file (default: cert.pem).',
-        '  -K --key     Path to ssl key file (default: key.pem).',
-        '  --passphrase       Path to ssl key file (default: 0000).',
-        '',
-        '  -h --help    Print this list and exit.'
+        'Examples',
+        '   csc-server --user "username" --pass "password"',
+        '   csc-server'
     ].join('\n'));
     process.exit();
 }
