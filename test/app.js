@@ -12,7 +12,7 @@ var https = require('https');
 var fs = require('fs');
 var mongoose = require('mongoose');
 
-var app = require('../app.js');
+var app = require('../lib/app.js');
 var config = require('../config').settings;
 
 /**

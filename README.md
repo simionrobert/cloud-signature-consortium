@@ -36,23 +36,19 @@ npm install --save csc-server
 ```
 
 ### Configuration
-By default, on startup, the server loads the config.json and info.json from this repository.
-You can load an entire config.json/info.json file or you could individually set option configutations when using the cli or the api.
+On startup, the server loads the config.json and info.json from this repository. 
+You can change them in %userprofile%\AppData\Roaming\npm\node_modules\csc-server\resources if you installed it with -g, or in your project\node_modules\csc-server\resources if you use it as an api module.
+
 
 #### CLI Usage
 ```
-csc-server --config "config.json"
-csc-server --info "info.json"
-csc-server --db "mongodb://localhost:27017/cs"
 csc-server --user "user" --pass "pass"
+csc-server
 ```
 
 #### API Module Usage
 ```
 var csc = require('csc-server');
-csc.loadConfig('./config/config.json');
-csc.loadInfo('./config/info.json');
-csc.setDbUrl('mongodb://localhost:27017/cs');
 csc.registerUser("user","password");
 ```
 
@@ -70,7 +66,7 @@ Go see https://github.com/microsoft/vscode-recipes/tree/master/nodemon
 ## Future development
 - Add script pre-compiler to download SoftHSMv2 binaries
 - Besides mongodb, add an in-memory database
-
+- Ability to set config files
 
 ## Authors
 

@@ -18,8 +18,8 @@
   ],
   "scripts": {
     "link": "npm link",
-    "start": "node ./test/www.js",
-    "debug": "nodemon --inspect ./test/www.js",
+    "start": "node ./test/app.js",
+    "debug": "nodemon --inspect ./test/app.js",
     "lint": "eslint .",
     "test": "echo \"Valid: no test specified\" && exit 0"
   },

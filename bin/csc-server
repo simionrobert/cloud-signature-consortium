@@ -2,11 +2,9 @@
 
 'use strict';
 
-var httpServer = require('../lib'),
-    config = require('../config').settings,
+var cscServer = require('../lib'),
     chalk = require('chalk'),
     os = require('os'),
-    portfinder = require('portfinder'),
     argv = require('minimist')(process.argv.slice(2));
 
 var ifaces = os.networkInterfaces();
@@ -18,23 +16,24 @@ if (argv.h || argv.help) {
         'options:',
         '  -p --port    Port to use [8080]',
         '  -a           Address to use [0.0.0.0]',
-        '  --db          Database URL [mongodb://localhost:27017/csc]',
+        '  --db         Database URL [mongodb://localhost:27017/csc]',
+        '',
+        '  --user       User to add once to the db. Used it with --pass',
+        '  --pass       Password of the user. Used it with --user',
         '',
         '  -s --silent  Suppress log messages from output',
         '',
         '  -C --cert    Path to ssl cert file (default: cert.pem).',
         '  -K --key     Path to ssl key file (default: key.pem).',
-        '  --pass     Path to ssl key file (default: 0000).',
+        '  --passphrase       Path to ssl key file (default: 0000).',
         '',
         '  -h --help    Print this list and exit.'
     ].join('\n'));
     process.exit();
 }
 
-var port = argv.p || argv.port || parseInt(process.env.PORT, 10) || config.port,
-    host = argv.a || config.host,
-    logger;
-
+// Logger part
+var logger;
 if (!argv.s && !argv.silent) {
     logger = {
         info: console.log
@@ -46,30 +45,39 @@ else if (chalk) {
     };
 }
 
-if (!port) {
-    portfinder.basePort = 8080;
-    portfinder.getPort(function (err, port) {
-        if (err) { throw err; }
-        listen(port);
-    });
-}
-else {
-    listen(port);
+if (argv.user || argv.pass) {
+    if (argv.user && argv.pass) {
+        // Only register user
+        var server = cscServer.createServer();
+        server.registerUser(argv.user, argv.pass, function (err) {
+            if (err) logger.info(chalk.yellow(`An error occured when saving the user ${argv.user}: ${err}`));
+            else logger.info(chalk.yellow(`User ${argv.user} was saved in the database`));
+            process.exit();
+        });
+    } else {
+        // Either --user or --pass is ommited
+        logger.info(chalk.red(`Options --user and --pass need to be used together!`));
+        process.exit();
+    }
+
+} else {
+    // Start server
+    listen();
 }
 
-function listen(port) {
+
+function listen() {
     var options = {
-        database: argv.db || config.database_url,
-        https: {
-            cert: argv.C || argv.cert || config.certificate_path,
-            key: argv.K || argv.key || config.private_key_path,
-            passphrase: argv.pass || config.passphrase
-        },
-        port: port
+        host: argv.a,
+        port: argv.p || argv.port || parseInt(process.env.PORT, 10),
+        database: argv.db,
+        cert: argv.C || argv.cert,
+        key: argv.K || argv.key,
+        passphrase: argv.passphrase
     };
 
-    var server = httpServer.createServer(options);
-    server.listen(port, host, function () {
+    var server = cscServer.createServer(options);
+    server.listen(options.port, options.host, function (port, host) {
         var canonicalHost = host === '0.0.0.0' ? '127.0.0.1' : host,
             protocol = 'https://';
 
@@ -86,6 +94,7 @@ function listen(port) {
             Object.keys(ifaces).forEach(function (dev) {
                 ifaces[dev].forEach(function (details) {
                     if (details.family === 'IPv4') {
+                        logger.info(('  ' + protocol + details.address + ':' + chalk.green(port)));
                         logger.info(('  ' + protocol + details.address + ':' + chalk.green(port.toString())));
                     }
                 });
