@@ -10,7 +10,8 @@ This is a work in progress. Do not use it yet!
 
 ### Prerequisites
 
-What things you need to install the software and how to install them:
+What things are needed to install the software and how to install them.
+The options 2,3 and 4 are temporary optional.
 
 1. Install Mongodb from [mongodb.com](https://www.mongodb.com/download-center/community)
 2. Download SoftHSMv2 binaries or install it [softHSMv2](https://github.com/opendnssec/SoftHSMv2)
@@ -21,8 +22,7 @@ To generate a new certificate and private key for your https service, call this 
 openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 
 ```
 
-## CLI
-
+### Install
 Install CSC Server
 
 ```
@@ -39,7 +39,8 @@ Start CSC Server
 csc-server
 ```
 
-### CLI Usage
+
+## Usage
 ```
 csc-server [options]
 
@@ -60,7 +61,7 @@ Examples
     csc-server
 ```
 
-You can also set options in %userprofile%\AppData\Roaming\npm\node_modules\csc-server\config\config.json configuration file.
+You can also set default options in `%userprofile%\AppData\Roaming\npm\node_modules\csc-server\config\config.json` configuration file.
 ```
 {
     "database_url": "mongodb://localhost:27017/csc",
@@ -77,23 +78,31 @@ You can also set options in %userprofile%\AppData\Roaming\npm\node_modules\csc-s
 ```
 Now you have a fully functional CSC server and you should be able to run the tests provided in [Running the tests](#running-the-tests)
 
+
 ## Running the tests
-You can get the commands for Postman for testing yourself the API from the following link:
-- https://www.getpostman.com/collections/db7edf68afea5e5dec67
-In Postman, set certificate SSL validation to false, under Settings.
+You can get the commands for Postman for testing yourself the API from the following [link](https://www.getpostman.com/collections/db7edf68afea5e5dec67):
+
+You will need the following environment variabiles defined in postman. The last two will be automatically updated after you post `auth/login`
+```
+url https://localhost:3000/csc/v1
+access_token
+refresh_token
+```
+
+In Postman, set `certificate SSL validation` to false, under Settings.
+
 
 ## Future development
 - Add script pre-compiler to download SoftHSMv2 binaries
 - Besides mongodb, add an in-memory database
 - Ability to set config files
 
-## Authors
 
+## Authors
 * **Simion Robert George** - [simionrobert](https://github.com/simionrobert)
 
 See also the list of [contributors](https://github.com/simionrobert/CSC-Framework/contributors) who participated in this project.
 
 
 ## License
-
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
