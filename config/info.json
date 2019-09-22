@@ -6,7 +6,7 @@
                         "logo": "https://service.domain.org/images/logo.png",
                         "region": "RO",
                         "lang": "en-US",
-                        "description": "An efficient remote signature service",
+                        "description": "An efficient remote signature service provider",
                         "authType": [
                                 "basic",
                                 "oauth2code"

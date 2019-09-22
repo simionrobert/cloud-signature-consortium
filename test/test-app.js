@@ -1,11 +1,4 @@
-#!/usr/bin/env node
-
-/**
- * Module dependencies.
- */
-
 'use strict';
-
 
 var debug = require('debug')('rssp:server');
 var https = require('https');

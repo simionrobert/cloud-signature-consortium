@@ -17,9 +17,8 @@
     "signature"
   ],
   "scripts": {
-    "link": "npm link",
-    "start": "node ./test/app.js",
-    "debug": "nodemon --inspect ./test/app.js",
+    "start": "node ./test/test-app.js",
+    "debug": "nodemon --inspect ./test/test-app.js",
     "lint": "eslint .",
     "test": "echo \"Valid: no test specified\" && exit 0"
   },

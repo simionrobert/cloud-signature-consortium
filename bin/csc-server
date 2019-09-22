@@ -24,8 +24,8 @@ if (argv.h || argv.help) {
         '  --help, -h       Print this list and exit.',
         '',
         'Examples',
-        '   csc-server --user "username" --pass "password"',
-        '   csc-server'
+        '   csc-server',
+        '   csc-server --user "username" --pass "password"'
     ].join('\n'));
     process.exit();
 }
@@ -44,20 +44,22 @@ else if (chalk) {
 }
 
 if (argv.user || argv.pass) {
+    // Only register user
     if (argv.user && argv.pass) {
-        // Only register user
-        var server = cscServer.createServer();
+        var server = cscServer.createServer({ database: argv.db || argv.d });
         server.registerUser(argv.user, argv.pass, function (err) {
-            if (err) logger.info(chalk.yellow(`An error occured when saving the user ${argv.user}: ${err}`));
-            else logger.info(chalk.yellow(`User ${argv.user} was saved in the database`));
+            if (err) {
+                logger.info(chalk.yellow(`An error occured when saving the user ${argv.user}. ${err}`));
+                process.exit(1);
+            }
+
+            logger.info(chalk.yellow(`User ${argv.user} was saved in the database`));
             process.exit();
         });
     } else {
-        // Either --user or --pass is ommited
         logger.info(chalk.red(`Options --user and --pass need to be used together!`));
-        process.exit();
+        process.exit(1);
     }
-
 } else {
     // Start server
     listen();
@@ -66,16 +68,21 @@ if (argv.user || argv.pass) {
 
 function listen() {
     var options = {
-        host: argv.a,
+        host: argv.a || argv.address,
         port: argv.p || argv.port || parseInt(process.env.PORT, 10),
-        database: argv.db,
+        database: argv.db || argv.d,
         cert: argv.C || argv.cert,
         key: argv.K || argv.key,
         passphrase: argv.passphrase
     };
 
     var server = cscServer.createServer(options);
-    server.listen(options.port, options.host, function (port, host) {
+    server.listen(options.port, options.host, function (error, port, host) {
+        if (error) {
+            logger.info(chalk.red(`csc-server has stopped due to: ${error}`));
+            process.exit(1);
+        }
+
         var canonicalHost = host === '0.0.0.0' ? '127.0.0.1' : host,
             protocol = 'https://';
 
