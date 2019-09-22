@@ -7,6 +7,7 @@
     "certificate_path": "./resources/cert.pem",
     "private_key_path": "./resources/key.pem",
     "passphrase": "0000",
-    "access_token_expiring_time": 60,
-    "refresh_token_expiring_time": 3600
+    "access_token_expiring_time": 1800,
+    "refresh_token_expiring_time": 3600,
+    "maxResults":10
 }

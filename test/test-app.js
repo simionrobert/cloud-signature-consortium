@@ -34,7 +34,7 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
-mongoose.connect(config.database_url, { useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true });
+mongoose.connect(config.database_url, { useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true, useCreateIndex: true });
 
 /**
  * Normalize a port into a number, string, or false.
