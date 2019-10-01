@@ -40,7 +40,7 @@
     "validator": "^11.1.0"
   },
   "devDependencies": {
-    "eslint": "^6.5.0"
+    "eslint": "^6.5.1"
   },
   "private": false,
   "preferGlobal": true,
