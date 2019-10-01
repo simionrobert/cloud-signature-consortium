@@ -31,7 +31,7 @@
     "http-errors": "^1.7.3",
     "lodash": "^4.17.15",
     "minimist": "^1.2.0",
-    "mongoose": "^5.7.1",
+    "mongoose": "^5.7.3",
     "passport": "^0.4.0",
     "passport-custom": "^1.1.0",
     "passport-http": "^0.3.0",
