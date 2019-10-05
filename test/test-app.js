@@ -1,25 +1,25 @@
 'use strict';
 
-var debug = require('debug')('rssp:server');
-var https = require('https');
-var fs = require('fs');
-var mongoose = require('mongoose');
+const debug = require('debug')('rssp:server');
+const https = require('https');
+const fs = require('fs');
+const mongoose = require('mongoose');
 
-var app = require('../lib/app.js');
-var config = require('../config').settings;
+const app = require('../lib/app.js');
+const config = require('../config').settings;
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || config.port);
+const port = normalizePort(process.env.PORT || config.port);
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
 
-var server = https.createServer({
+const server = https.createServer({
   key: fs.readFileSync(config.private_key_path),
   cert: fs.readFileSync(config.certificate_path),
   passphrase: config.passphrase
@@ -41,7 +41,7 @@ mongoose.connect(config.database_url, { useNewUrlParser: true, useFindAndModify:
  */
 
 function normalizePort(val) {
-  var port = parseInt(val, 10);
+  const port = parseInt(val, 10);
 
   if (isNaN(port)) {
     // named pipe
@@ -65,7 +65,7 @@ function onError(error) {
     throw error;
   }
 
-  var bind = typeof port === 'string'
+  const bind = typeof port === 'string'
     ? 'Pipe ' + port
     : 'Port ' + port;
 
@@ -89,8 +89,8 @@ function onError(error) {
  */
 
 function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
+  const addr = server.address();
+  const bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);

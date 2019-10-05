@@ -2,12 +2,12 @@
 
 'use strict';
 
-var cscServer = require('../lib'),
+const cscServer = require('../lib'),
     chalk = require('chalk'),
     os = require('os'),
     argv = require('minimist')(process.argv.slice(2));
 
-var ifaces = os.networkInterfaces();
+const ifaces = os.networkInterfaces();
 
 if (argv.h || argv.help) {
     console.log([
@@ -31,7 +31,7 @@ if (argv.h || argv.help) {
 }
 
 // Logger part
-var logger;
+let logger;
 if (!argv.s && !argv.silent) {
     logger = {
         info: console.log
@@ -46,7 +46,7 @@ else if (chalk) {
 if (argv.user || argv.pass) {
     // Only register user
     if (argv.user && argv.pass) {
-        var server = cscServer.createServer({ database: argv.db || argv.d });
+        const server = cscServer.createServer({ database: argv.db || argv.d });
         server.registerUser(argv.user, argv.pass, function (err) {
             if (err) {
                 logger.info(chalk.yellow(`An error occured when saving the user ${argv.user}. ${err}`));
@@ -67,7 +67,7 @@ if (argv.user || argv.pass) {
 
 
 function listen() {
-    var options = {
+    const options = {
         host: argv.a || argv.address,
         port: argv.p || argv.port || parseInt(process.env.PORT, 10),
         database: argv.db || argv.d,
@@ -76,14 +76,14 @@ function listen() {
         passphrase: argv.passphrase
     };
 
-    var server = cscServer.createServer(options);
+    const server = cscServer.createServer(options);
     server.listen(options.port, options.host, function (error, port, host) {
         if (error) {
             logger.info(chalk.red(`csc-server has stopped due to: ${error}`));
             process.exit(1);
         }
 
-        var canonicalHost = host === '0.0.0.0' ? '127.0.0.1' : host,
+        const canonicalHost = host === '0.0.0.0' ? '127.0.0.1' : host,
             protocol = 'https://';
 
         logger.info([
