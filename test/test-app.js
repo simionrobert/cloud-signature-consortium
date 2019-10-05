@@ -6,7 +6,7 @@ const fs = require('fs');
 const mongoose = require('mongoose');
 
 const app = require('../lib/app.js');
-const config = require('../config').settings;
+const config = require('../lib/config').settings;
 
 /**
  * Get port from environment and store in Express.
