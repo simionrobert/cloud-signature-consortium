@@ -8,19 +8,26 @@ This is a work in progress. Do not use it yet!
 
 ## Prerequistes
 What things are needed to install the software and how to install them.
-The options 2, 3 and 4 are temporary optional.
 
 1. Install Mongodb from [mongodb.com](https://www.mongodb.com/download-center/community)
-2. Download SoftHSMv2 binaries or install it from [SoftHSMv2](https://github.com/opendnssec/SoftHSMv2)
-3. Set environment variabile SOFTHSM2_CONF=path\softhsm2.conf
-4. Download OpenSSL binaries or install it from [OpenSSL](https://github.com/openssl/openssl). 
-To generate a new certificate and private key for your https service, call this command: 
+2. Install SoftHSMv2 pkcs11 token module.
+- Use this projects's SoftHSMv2 binaries or install it from [SoftHSMv2](https://github.com/opendnssec/SoftHSMv2)
+- Set environment variabile `SOFTHSM2_CONF=path\to\softhsm2.conf`
+- In the file path\to\softhsm2.conf, set key `directories.tokendir=path\to\tokens` 
+- Optionally, if you want, you could use `softhsm2-util.exe` to initialize a new softhsm2 token. Otherwise use the provided one.
 ```
-openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 
+softhsm2-util --init-token --slot 0 --label "mytoken"
+```
+3. Install OpenSC for interacting with SoftHSMv2 module.
+- Download and install [OpenSC](https://github.com/OpenSC/OpenSC/releases), which is used for `pkcs11 tool` exe.
+4. Download OpenSSL binaries or install it from [OpenSSL](https://github.com/openssl/openssl). 
+To generate a new certificate and private key for your https/SSL/TLS service, call this command, and put them in the resources folder: 
+```
+openssl req -x509 -newkey rsa:4096 -keyout keySSL.pem -out certSSL.pem -days 365 
 ```
 
 ## Install
-Installing globally via `npm`:
+Installing globally via `npm`, with Admin rights (required for [node-gyp](https://github.com/nodejs/node-gyp) util):
 ```
 npm install -g csc-server
 ```
@@ -109,7 +116,7 @@ You can get the commands for Postman for testing yourself the API from this [lin
 
 In Postman, set `certificate SSL validation` to false, under Settings.
 
-You will need to define the following environment variabiles. The last two will be automatically updated after you post `auth/login`
+You will need to define the following Postman environment variabiles. The last two will be automatically updated after you post `auth/login`
 ```
 url = https://localhost:3000/csc/v1
 access_token = ""

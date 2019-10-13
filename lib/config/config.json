@@ -1,13 +1,28 @@
 {
+    "https": {
+        "host": "0.0.0.0",
+        "port": "8080",
+        "cert_SSL": "certSSL.pem",
+        "key_SSL": "keySSL.pem",
+        "SSL_key_passphrase": "0000"
+    },
+    "resources_path": "./resources",
+    "softhsm2_driver_path": "utils/SoftHSMv2/lib/softhsm2.dll",
+    "openSSL_path": "utils/openssl-1.1.1-x86/openssl.exe",
+    "openSC_path":"C:/Program Files (x86)/OpenSC Project/OpenSC/tools/pkcs11-tool.exe",
+    "token": {
+        "slot": "189467408",
+        "label": "Token",
+        "pin": "0000",
+        "cert": "cert.der",
+        "key": "key.der",
+        "key_pin": "0000"
+    },
     "database_url": "mongodb://localhost:27017/csc",
-    "host": "0.0.0.0",
-    "port": "8080",
-    "hsm_library_path": "",
-    "hsm_library_type": "",
-    "certificate_path": "./resources/cert.pem",
-    "private_key_path": "./resources/key.pem",
-    "passphrase": "0000",
-    "access_token_expiring_time": 1800,
-    "refresh_token_expiring_time": 3600,
-    "maxResults":10
+    "csc": {
+        "access_token_expiring_time": 1800,
+        "refresh_token_expiring_time": 3600,
+        "sad_expiring_time": 3600,
+        "max_results": 10
+    }
 }

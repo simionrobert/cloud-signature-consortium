@@ -1,6 +1,7 @@
 # Created by https://www.gitignore.io/api/c++,node,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=c++,node,visualstudiocode
 
+tokens
 
 ### C++ ###
 # Prerequisites
@@ -16,11 +17,6 @@
 *.gch
 *.pch
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
 # Fortran module files
 *.mod
 *.smod
@@ -30,11 +26,6 @@
 *.la
 *.a
 *.lib
-
-# Executables
-*.exe
-*.out
-*.app
 
 ### Node ###
 # Logs

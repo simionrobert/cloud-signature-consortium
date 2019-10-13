@@ -17,16 +17,18 @@
     "signature"
   ],
   "scripts": {
-    "start": "node ./test/test-app.js",
-    "debug": "nodemon --inspect ./test/test-app.js",
+    "debug": "nodemon --inspect ./test/test.js",
+    "build-cli": "npm link",
     "lint": "eslint .",
     "test": "echo \"Valid: no test specified\" && exit 0"
   },
   "dependencies": {
+    "@fidm/x509": "^1.2.1",
     "chalk": "^2.4.2",
     "cookie-parser": "^1.4.4",
     "debug": "^4.1.1",
     "express": "^4.17.1",
+    "graphene-pk11": "^2.1.3",
     "helmet": "^3.21.1",
     "http-errors": "^1.7.3",
     "lodash": "^4.17.15",
@@ -41,7 +43,8 @@
     "validator": "^11.1.0"
   },
   "devDependencies": {
-    "eslint": "^6.5.1"
+    "eslint": "^6.5.1",
+    "mocha": "^6.2.1"
   },
   "private": false,
   "preferGlobal": true,
