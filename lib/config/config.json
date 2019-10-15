@@ -20,9 +20,9 @@
     },
     "database_url": "mongodb://localhost:27017/csc",
     "csc": {
-        "access_token_expiring_time": 1800,
-        "refresh_token_expiring_time": 3600,
-        "sad_expiring_time": 3600,
+        "access_token_expiring_time": 3600,
+        "refresh_token_expiring_time": 7200,
+        "sad_expiring_time": 1800,
         "max_results": 10
     }
 }
