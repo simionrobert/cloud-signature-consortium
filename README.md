@@ -112,7 +112,7 @@ You can also set the `/csc/v1/info` results in the `%userprofile%/AppData/Roamin
 
 
 ## Running the tests
-You can get the commands for Postman for testing yourself the API from this [link](https://www.getpostman.com/collections/db7edf68afea5e5dec67).
+You can run the commands for testing using Postman.
 
 In Postman, set `certificate SSL validation` to false, under Settings.
 
