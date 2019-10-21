@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "eslint": "^6.5.1",
-    "mocha": "^6.2.1"
+    "mocha": "^6.2.2"
   },
   "private": false,
   "preferGlobal": true,
