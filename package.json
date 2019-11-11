@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@fidm/x509": "^1.2.1",
-    "chalk": "^2.4.2",
+    "chalk": "^3.0.0",
     "cookie-parser": "^1.4.4",
     "debug": "^4.1.1",
     "express": "^4.17.1",
