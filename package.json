@@ -34,7 +34,7 @@
     "lodash": "^4.17.15",
     "minimist": "^1.2.0",
     "moment": "^2.24.0",
-    "mongoose": "^5.7.8",
+    "mongoose": "^5.7.10",
     "passport": "^0.4.0",
     "passport-custom": "^1.1.0",
     "passport-http": "^0.3.0",
