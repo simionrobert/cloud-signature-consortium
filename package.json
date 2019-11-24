@@ -17,14 +17,13 @@
     "signature"
   ],
   "scripts": {
-    "debug": "nodemon --inspect ./test/test.js",
+    "debug": "nodemon --inspect ./bin/csc-server.js -l",
     "build-cli": "npm link",
     "lint": "eslint .",
     "test": "echo \"Valid: no test specified\" && exit 0"
   },
   "dependencies": {
     "@fidm/x509": "^1.2.1",
-    "chalk": "^2.4.2",
     "cookie-parser": "^1.4.4",
     "debug": "^4.1.1",
     "express": "^4.17.1",
@@ -40,7 +39,8 @@
     "passport-http": "^0.3.0",
     "passport-http-bearer": "^1.0.1",
     "portfinder": "^1.0.25",
-    "validator": "^12.0.0"
+    "validator": "^12.0.0",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "eslint": "^6.6.0",
@@ -49,6 +49,6 @@
   "private": false,
   "preferGlobal": true,
   "bin": {
-    "csc-server": "bin/csc-server"
+    "csc-server": "bin/csc-server.js"
   }
 }

@@ -1,14 +1,11 @@
 'use strict';
 
 const cscServer = require('../lib');
+const logger = require('winston');
 
 const server = cscServer.createServer({ database: undefined });
 
-// server.generateCredentials('robert.simion', (err) => {
-//     if(err) console.log(err);
-// });
-
 server.listen(null, null, (error) => {
-    if (error) console.log('Test Error!' + error);
-    console.log('Listening...')
+    if (error) logger.error('Test Error!' + error);
+    logger.log('Listening...')
 });

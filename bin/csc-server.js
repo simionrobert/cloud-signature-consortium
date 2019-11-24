@@ -3,14 +3,28 @@
 'use strict';
 
 const cscServer = require('../lib'),
-    chalk = require('chalk'),
     os = require('os'),
+    logger = require('winston'),
     argv = require('minimist')(process.argv.slice(2));
-
+const { format } = logger;
 const ifaces = os.networkInterfaces();
 
+logger.configure({
+    level: 'info',
+    format: format.combine(
+        format.colorize(),
+        format.simple()
+    ),
+    transports: [
+        new logger.transports.Console({
+            silent: (argv.silent | argv.s) == true ? true : false
+        })
+    ]
+});
+
+
 if (argv.h || argv.help) {
-    console.log([
+    logger.log([
         'Options:',
         '  --listen, -l     Start the server',
         '  --port, -p       Port to use [8080]',
@@ -27,49 +41,44 @@ if (argv.h || argv.help) {
         '',
         'Examples',
         '   csc-server -l',
-        '   csc-server --user "username" --pass "password"',
-        '   csc-server --init --user "username"'
+        '   csc-server --user=username --pass=password'
     ].join('\n'));
     process.exit();
 }
 
-// Logger part
-let logger;
-if (!argv.s && !argv.silent) {
-    logger = {
-        info: console.log
-    };
-}
-else if (chalk) {
-    logger = {
-        info: function () { }
-    };
-}
-
-if (argv.user && argv.pass) {
+if (argv.user || argv.pass) {
     // Only register user
     if (argv.user && argv.pass) {
         const server = cscServer.createServer({ database: argv.db || argv.d });
+
+        logger.info(`Creating the user ...`);
         server.registerUser(argv.user, argv.pass, function (err) {
             if (err) {
-                logger.info(chalk.yellow(`An error occured when saving the user ${argv.user}. ${err}`));
+                logger.error(`An error occured when saving the user ${argv.user}. ${err}`);
                 process.exit(1);
             }
 
-            logger.info(chalk.yellow(`User ${argv.user} was saved in the database`));
-            process.exit();
+            logger.info(`User ${argv.user} was saved in the database`);
+
+            logger.info(`Generating credentials...`);
+            const server = cscServer.createServer({ database: argv.db || argv.d });
+            server.generateCredentials(argv.user, (err) => {
+                if (err) logger.error(err);
+
+                logger.info(`Certificate successfully generated!`);
+                process.exit();
+            });
         });
     } else {
-        logger.info(chalk.red(`Options --user and --pass need to be used together!`));
+        logger.error(`Options --user and --pass need to be used together!`);
         process.exit(1);
     }
-} else if ((argv.init || argv.i) && argv.user) {
-    logger.info(chalk.red(`Generating credentials...`));
-    const server = cscServer.createServer({ database: argv.db || argv.d });
-    server.generateCredentials();
 } else if (argv.l || argv.listen) {
     // Start server
     listen();
+} else {
+    logger.error(`Nothing specified. Exiting!`);
+    process.exit(1);
 }
 
 
@@ -86,33 +95,33 @@ function listen() {
     const server = cscServer.createServer(options);
     server.listen(options.port, options.host, function (error, port, host) {
         if (error) {
-            logger.info(chalk.red(`csc-server has stopped due to: ${error}`));
+            logger.error(`csc-server has stopped due to: ${error}`);
             process.exit(1);
         }
 
         const canonicalHost = host === '0.0.0.0' ? '127.0.0.1' : host,
             protocol = 'https://';
 
-        logger.info([
-            chalk.yellow('Starting up csc-server, serving through'),
-            chalk.cyan(' https'),
-            chalk.yellow('\nAvailable on:')
-        ].join(''));
 
+        let addresses = [];
         if (argv.a && host !== '0.0.0.0') {
-            logger.info(('  ' + protocol + canonicalHost + ':' + chalk.green(port.toString())));
+            addresses.push(('  ' + protocol + canonicalHost + ':' + (port.toString())));
         }
         else {
             Object.keys(ifaces).forEach(function (dev) {
                 ifaces[dev].forEach(function (details) {
                     if (details.family === 'IPv4') {
-                        logger.info(('  ' + protocol + details.address + ':' + chalk.green(port)));
-                        logger.info(('  ' + protocol + details.address + ':' + chalk.green(port.toString())));
+                        addresses.push(('  ' + protocol + details.address + ':' + (port)));
+                        addresses.push(('  ' + protocol + details.address + ':' + (port.toString())));
                     }
                 });
             });
         }
 
+        logger.info([
+            'Starting up csc - server, serving through https\nAvailable on: ',
+            addresses.join('\n')
+        ].join('\n'));
         logger.info('Hit CTRL-C to stop the server');
     });
 }
@@ -127,11 +136,11 @@ if (process.platform === 'win32') {
 }
 
 process.on('SIGINT', function () {
-    logger.info(chalk.red('csc-server stopped.'));
+    logger.info('csc-server stopped.');
     process.exit();
 });
 
 process.on('SIGTERM', function () {
-    logger.info(chalk.red('csc-server stopped.'));
+    logger.info('csc-server stopped.');
     process.exit();
 });
