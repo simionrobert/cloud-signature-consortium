@@ -123,6 +123,11 @@ access_token = ""
 refresh_token = ""
 ```
 
+## TODO List
+0. Test creating user flow
+1. Complete sign funcitonality (1. Make a class that puts in memory all configurations )
+2. Secure with password the generated app keys in generateCredentials()
+
 ## Authors
 * **Simion Robert George** - [simionrobert](https://github.com/simionrobert)
 

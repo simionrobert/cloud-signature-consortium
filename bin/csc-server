@@ -31,8 +31,9 @@ if (argv.h || argv.help) {
         '  --address, -a    Address to use [0.0.0.0]',
         '  --db, -d         Database URL [mongodb://localhost:27017/csc]',
         '  --init, -i       Create credential for user (generate cert, key pair, assign to user). Used with --use',
-        '  --user           User to add once to the db. Used with --pass',
-        '  --pass           Password of the user. Used with --user',
+        '  --user           User to add once to the db.',
+        '  --pass           Password of the user.',
+        '  --keypass        Password of the generated private key.',
         '  --cert, -c       Path to ssl cert file (default: cert.pem).',
         '  --key, -k        Path to ssl key file (default: key.pem).',
         '  --passphrase     Path to ssl key file (default: 0000).',
@@ -41,14 +42,14 @@ if (argv.h || argv.help) {
         '',
         'Examples',
         '   csc-server -l',
-        '   csc-server --user=username --pass=password'
+        '   csc-server --user=username --pass=password --keypass=password'
     ].join('\n'));
     process.exit();
 }
 
-if (argv.user || argv.pass) {
+if (argv.user || argv.pass || argv.keypass) {
     // Only register user
-    if (argv.user && argv.pass) {
+    if (argv.user && argv.pass && argv.keypass) {
         const server = cscServer.createServer({ database: argv.db || argv.d });
 
         logger.info(`Creating the user ...`);
@@ -57,13 +58,10 @@ if (argv.user || argv.pass) {
                 logger.error(`An error occured when saving the user ${argv.user}. ${err}`);
                 process.exit(1);
             }
-
             logger.info(`User ${argv.user} was saved in the database`);
 
-            logger.info(`Generating credentials...`);
-            const server = cscServer.createServer({ database: argv.db || argv.d });
-            server.generateCredentials(argv.user, (err) => {
-                if (err) logger.error(err);
+            server.generateCredentials(argv.user, argv.keypass, (err) => {
+                if (err) { logger.error(err); process.exit(); }
 
                 logger.info(`Certificate successfully generated!`);
                 process.exit();
