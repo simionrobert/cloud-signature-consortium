@@ -33,8 +33,8 @@
     "lodash": "^4.17.15",
     "minimist": "^1.2.0",
     "moment": "^2.24.0",
-    "mongoose": "^5.7.8",
-    "passport": "^0.4.0",
+    "mongoose": "^5.8.1",
+    "passport": "^0.4.1",
     "passport-custom": "^1.1.0",
     "passport-http": "^0.3.0",
     "passport-http-bearer": "^1.0.1",
@@ -43,7 +43,7 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "eslint": "^6.6.0",
+    "eslint": "^6.7.2",
     "mocha": "^6.2.2"
   },
   "private": false,
