@@ -58,12 +58,13 @@ if (argv.user || argv.pass || argv.keypass) {
                 logger.error(`An error occured when saving the user ${argv.user}. ${err}`);
                 process.exit(1);
             }
-            logger.info(`User ${argv.user} was saved in the database`);
+            logger.info(`User ${argv.user} was successfully created!`);
 
+            logger.info(`Generating credentials ...`);
             server.generateCredentials(argv.user, argv.keypass, (err) => {
                 if (err) { logger.error(err); process.exit(); }
-
-                logger.info(`Certificate successfully generated!`);
+                
+                logger.info(`Credentials successfully generated!`);
                 process.exit();
             });
         });
@@ -91,7 +92,7 @@ function listen() {
     };
 
     const server = cscServer.createServer(options);
-    server.listen(options.port, options.host, function (error, port, host) {
+    server.listen(options, function (error, port, host) {
         if (error) {
             logger.error(`csc-server has stopped due to: ${error}`);
             process.exit(1);
