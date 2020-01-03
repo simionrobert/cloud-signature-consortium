@@ -29,7 +29,6 @@ if (argv.h || argv.help) {
         '  --listen, -l     Start the server',
         '  --port, -p       Port to use [8080]',
         '  --address, -a    Address to use [0.0.0.0]',
-        '  --db, -d         Database URL [mongodb://localhost:27017/csc]',
         '  --init, -i       Create credential for user (generate cert, key pair, assign to user). Used with --use',
         '  --user           User to add once to the db.',
         '  --pass           Password of the user.',
@@ -50,7 +49,7 @@ if (argv.h || argv.help) {
 if (argv.user || argv.pass || argv.keypass) {
     // Only register user
     if (argv.user && argv.pass && argv.keypass) {
-        const server = cscServer.createServer({ database: argv.db || argv.d });
+        const server = cscServer.createServer();
 
         logger.info(`Creating the user ...`);
         server.registerUser(argv.user, argv.pass, function (err) {
@@ -91,7 +90,7 @@ function listen() {
         passphrase: argv.passphrase
     };
 
-    const server = cscServer.createServer(options);
+    const server = cscServer.createServer();
     server.listen(options, function (error, port, host) {
         if (error) {
             logger.error(`csc-server has stopped due to: ${error}`);

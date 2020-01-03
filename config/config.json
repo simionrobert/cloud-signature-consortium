@@ -23,6 +23,7 @@
         "access_token_expiring_time": 3600,
         "refresh_token_expiring_time": 7200,
         "sad_expiring_time": 1800,
+        "otp_expiring_time":1800,
         "max_results": 10
     }
 }
