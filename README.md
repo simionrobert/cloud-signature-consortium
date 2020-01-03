@@ -26,6 +26,12 @@ To generate a new certificate and private key for your https/SSL/TLS service, ca
 openssl req -x509 -newkey rsa:4096 -keyout keySSL.pem -out certSSL.pem -days 365 
 ```
 
+In the [release version](https://github.com/simionrobert/cloud-signature-consortium/releases) you will find the following binaries:
+- OpenSSL 1.1.1.d x86 (used by the app)
+- SoftHSMv2 (used by the app)
+- PKCS11Admin - 0.5.0 (GUI used to see the token objects)
+The binaries.zip should be unzipped in the /utils folder
+
 ## Install
 Installing globally via `npm`, with Admin rights (required for [node-gyp](https://github.com/nodejs/node-gyp) util):
 ```
