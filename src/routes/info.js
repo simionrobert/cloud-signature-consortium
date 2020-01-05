@@ -1,16 +1,16 @@
 'use strict';
 
 const express = require('express');
-const config = require("../../config")
+const { info } = require("../config")
 
 const router = express.Router();
 
 router.post('/', function (req, res) {
    const lang = req.body.lang || "EN";
    if (lang === 'EN' || lang === 'RO')
-      res.json(config.info.lang[lang]);
+      res.json(info.lang[lang]);
    else
-      res.json(config.info.lang['EN']);
+      res.json(info.lang['EN']);
 });
 
 module.exports = router;

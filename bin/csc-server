@@ -2,10 +2,11 @@
 
 'use strict';
 
-const cscServer = require('../lib'),
+const cscServer = require('../src/lib'),
     os = require('os'),
     logger = require('winston'),
     argv = require('minimist')(process.argv.slice(2));
+
 const { format } = logger;
 const ifaces = os.networkInterfaces();
 
@@ -62,7 +63,7 @@ if (argv.user || argv.pass || argv.keypass) {
             logger.info(`Generating credentials ...`);
             server.generateCredentials(argv.user, argv.keypass, (err) => {
                 if (err) { logger.error(err); process.exit(); }
-                
+
                 logger.info(`Credentials successfully generated!`);
                 process.exit();
             });

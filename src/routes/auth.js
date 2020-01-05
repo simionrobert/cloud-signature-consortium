@@ -3,9 +3,9 @@
 const express = require('express');
 const passport = require('passport');
 const crypto = require('crypto');
-const {errors} = require('../../config');
-const User = require('../db').User;
-const config = require('../../config');
+
+const { errors, settings } = require('../config');
+const User = require('../lib/db').User;
 
 const router = express.Router();
 
@@ -35,7 +35,7 @@ router.post('/login',
             // send response
             res.json({
               refresh_token: refreshToken,
-              expires_in: config.settings.csc.refresh_token_expiring_time
+              expires_in: settings.csc.refresh_token_expiring_time
             });
           });
         });
@@ -60,7 +60,7 @@ router.post('/login',
               // send response
               res.json({
                 access_token: accessToken,
-                expires_in: config.settings.csc.access_token_expiring_time
+                expires_in: settings.csc.access_token_expiring_time
               });
             });
           });
@@ -83,7 +83,7 @@ router.post('/login',
               // send response
               res.json({
                 access_token: accessToken,
-                expires_in: config.settings.csc.access_token_expiring_time
+                expires_in: settings.csc.access_token_expiring_time
               });
             });
           });

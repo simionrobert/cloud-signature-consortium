@@ -5,15 +5,15 @@ const cookieParser = require('cookie-parser');
 const validator = require('validator');
 const morgan = require('morgan');
 const helmet = require('helmet');
+const logger = require('winston');
 const passport = require('passport'),
   BasicStrategy = require('passport-http').BasicStrategy,
   BearerStrategy = require('passport-http-bearer').Strategy,
   CustomStrategy = require('passport-custom').Strategy;
 
-const User = require('./db').User;
-const { errors } = require('../config');
-const config = require('../config');
-const logger = require('winston');
+const User = require('./lib/db').User;
+const { errors } = require('./config');
+const config = require('./config');
 
 const infoRouter = require('./routes/info'),
   authRouter = require('./routes/auth'),
@@ -52,7 +52,10 @@ passport.use(new BasicStrategy(
 ));
 passport.use(new BearerStrategy(
   function (access_token, done) {
-    // validate input format
+    if (access_token === null || access_token === undefined) {
+      return done(errors.malformedAuthMethod);
+    }
+
     if (!validator.isHexadecimal(access_token)) return done(errors.invalidAccessToken);
 
     User.findOne({ 'access_token.value': access_token, 'access_token.valid': true }, function (err, user) {
@@ -70,11 +73,14 @@ passport.use(new CustomStrategy(
   // used only for auth/login authorisation through json refresh_token
 
   function (req, done) {
-    // validate input format
+    if (req.body.refresh_token === null || req.body.refresh_token === undefined) {
+      return done(errors.malformedAuthMethod);
+    }
+
     if (!validator.isHexadecimal(req.body.refresh_token)) return done(errors.invalidRefreshTokenFormatParameter);
 
     User.findOne({ 'refresh_token.value': req.body.refresh_token, 'refresh_token.valid': true }, function (err, user) {
-      if (err) { return done(errors.databaseError); }
+      if (err) { return done(errors.authError); }
       if (!user) { return done(errors.invalidRefreshTokenParameter, false); }
 
       // check token availability

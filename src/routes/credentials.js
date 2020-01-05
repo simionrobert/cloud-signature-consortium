@@ -6,9 +6,10 @@ const _ = require('lodash');
 const moment = require('moment');
 const validator = require('validator');
 const crypto = require('crypto');
-const { errors, settings } = require('../../config');
-const Credential = require('../db').Credential;
-const User = require('../db').User;
+
+const { errors, settings } = require('../config');
+const Credential = require('../lib/db').Credential;
+const User = require('../lib/db').User;
 
 const router = express.Router();
 
@@ -16,11 +17,12 @@ router.post('/list',
    passport.authenticate('bearer', { session: false }), function (req, res, next) {
       const user = req.user;
       const userID = req.body.userID;
+      const maxResults = req.body.maxResults | user.credentials.length;
 
       if (userID) return next(errors.notNullUserID);
 
       res.json({
-         credentialIDs: user.credentials.map(x => x.credentialID)
+         credentialIDs: user.credentials.map(x => x.credentialID).slice(0, maxResults)
       });
    });
 
@@ -32,7 +34,7 @@ router.post('/info',
       const authInfo = req.body.authInfo || false;
       //const lang = req.body.lang || 'en_US';
 
-      // Request validation
+      if (credentialID === undefined || credentialID === null) { return next(errors.invalidCredentialIDFormat); }
       if (certificates !== 'none' && certificates !== 'single' && certificates !== 'chain') {
          return next(errors.invalidCertificate);
       }

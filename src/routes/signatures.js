@@ -2,10 +2,11 @@
 
 const express = require('express');
 const passport = require('passport');
-const { errors } = require('../../config');
 const validator = require('validator');
 const crypto = require('crypto');
-const csc = require('../index');
+
+const { errors } = require('../config');
+const csc = require('../lib');
 
 const router = express.Router();
 

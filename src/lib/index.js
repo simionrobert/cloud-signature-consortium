@@ -3,14 +3,15 @@
 const https = require('https');
 const fs = require('fs');
 const mongoose = require('mongoose');
-const app = require('./app.js');
-const User = require('./db').User;
 const Credential = require('./db').Credential;
 const crypto = require('crypto');
-const config = require('../config').settings;
-const utils = require('./utils');
-const SoftHSMDriver = require('./hsm/SoftHsmDriver');
 const { Certificate } = require('@fidm/x509');
+
+const app = require('../app.js');
+const User = require('./db').User;
+const config = require('../config').settings;
+const SoftHSMDriver = require('./hsm/SoftHsmDriver');
+
 
 /*
 ** This class is the entry point of our app. It has all the methods our app uses
@@ -19,8 +20,8 @@ class CSCServer {
     listen(options, next) {
         app.set('port', options.port || config.https.port);
         this.server = https.createServer({
-            cert: fs.readFileSync(options.cert || (config.resources_path + '\\' + config.https.cert_SSL)),
-            key: fs.readFileSync(options.key || (config.resources_path + '\\' + config.https.key_SSL)),
+            cert: fs.readFileSync(options.cert || config.https.cert_SSL),
+            key: fs.readFileSync(options.key || config.https.key_SSL),
             passphrase: options.passphrase || config.https.SSL_key_passphrase
         }, app);
 
@@ -89,7 +90,7 @@ class CSCServer {
                         next('No doc'); return;
                     }
 
-                    fs.readFile(`${config.resources_path}\\${convertedCertFile}`, (err, certstr) => {
+                    fs.readFile(`${convertedCertFile}`, (err, certstr) => {
                         this.hsm.finalize();
 
                         if (err) { next(err); return; }

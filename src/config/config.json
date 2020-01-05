@@ -12,11 +12,7 @@
     "openSC_path":"C:/Program Files (x86)/OpenSC Project/OpenSC/tools/pkcs11-tool.exe",
     "token": {
         "slot": "189467408",
-        "label": "Token",
-        "pin": "0000",
-        "cert": "cert.der",
-        "key": "key.der",
-        "key_pin": "0000"
+        "pin": "0000"
     },
     "database_url": "mongodb://localhost:27017/csc",
     "csc": {
