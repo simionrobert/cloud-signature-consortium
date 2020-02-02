@@ -1,0 +1,95 @@
+Commercial solutions
+
+Intesi Group Cloud Signature
+http://www.intesigroup.com/en/
+http://www.pksuite.it/eng/pr_firma_rem.php
+https://www.intesigroup.com/en/cloudsignature/
+
+SignServer
+https://www.signserver.org/
+
+Ascertia ADSS Signing Server
+https://www.ascertia.com/products/adss-signing-server
+
+Cryptomathic Remote Digital Signatures
+https://www.cryptomathic.com/products/authentication-signing/signer-centralised-digital-signatures
+
+Digital Signing Solution – ComSignTrust™ Cloud
+https://www.comsigntrust.com/products/comsigntrust-cloud/
+
+Infocert
+https://www.infocert.it
+https://infocert.digital/cloud-id/
+
+Intarsys
+https://www.intarsys.de/
+
+Austrian Mobile ID
+https://www.itu.int/en/ITU-D/Regional-Presence/Europe/Documents/Events/2016/mID%20Expert%20group/AUSTRIA%2020161018-19%20Austrian%20mID%20-%20ITU%20Warsaw.pdf
+
+
+
+Standards
+
+CSC
+
+Cloud Signature Consortium Standard, Architectures, Protocols
+and API Specifications for Remote Signature Applications,
+public pre-release version 0.1.7.9, 2017
+http://www.cloudsignatureconsortium.org/
+
+ETSI
+
+ETSI TS 119 431-1 V1.1.1 (2018-12) 
+https://www.etsi.org/deliver/etsi_ts/119400_119499/11943101/01.01.01_60/ts_11943101v010101p.pdf
+
+ETSI TS 119 431-2 V1.1.1 (2018-12) 
+https://www.etsi.org/deliver/etsi_ts/119400_119499/11943102/01.01.01_60/ts_11943102v010101p.pdf
+
+Discussions prior to releasing the above ETSI Standards
+ETSI Security Week 2018: Remote Signature Creation Services : Protocols and Audit Requirements
+https://www.etsi.org/etsi-security-week-2018/remote-signature-creation
+
+Working on ETSI TS 119 432
+
+CEN
+
+CEN Server signing TS 419 241 part 1 (Presentation)
+https://docbox.etsi.org/workshop/2013/201303_SIGNATURES_IN_CLOUD/3b-CEN-Server-Signing.pdf
+
+
+
+
+
+Scientific papers
+
+Florian Reimair, Cloud-based signature solutions: a survey,
+Technical report, Secure Information Technology Center –
+Austria, October 2014
+https://technology.a-sit.at/en/cloud-based-signature-solutions-a-survey/
+
+Wojciech Kinastowski, Digital Signature as a Cloud-based Service, 
+CLOUD COMPUTING 2013: The Fourth International Conference on Cloud Computing, GRIDs, and Virtualization, 2013
+http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.684.6542&rep=rep1&type=pdf
+
+Wojciech Kinastowski, Signing Cloud: Towards Qualified Electronic Signature Service in Cloud 
+2013 IEEE 5th International Conference on Cloud Computing Technology and Science, 2013
+https://ieeexplore.ieee.org/abstract/document/6735424
+sci-hub.tw/10.1109/CloudCom.2013.135 
+
+Christof Rath, Simon Roth, Manuel Schallar and Thomas Zefferer, A
+Secure and Flexible Server-Based Mobile eID and e-Signature Solution,
+The Eighth International Conference on Digital Society, IARIA, 2014.
+
+Christof Rath, Simon Roth, Harald Bratko and Thomas Zefferer,
+Encryption-Based Second Authentication Factor Solutions for Qualified
+Server-Side Signature Creation, Francesconi E. (eds) Electronic
+Government and the Information Systems Perspective, EGOVIS 2015,
+Lecture Notes in Computer Science, vol. 9265, Springer, Cham, 2015.
+
+Clemens Orthacker, Martin Centner, and Christian Kittl, ”Qualified
+mobile server signature”, in Security and Privacy – Silver Linings in
+the Cloud (SEC 2010), IFIP Advances in Information and Communication
+Technology book series, vol. 330, pp. 103-111, Springer, Berlin,
+Heidelberg, 2010.
+

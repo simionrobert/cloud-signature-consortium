@@ -1,0 +1,1270 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.3.0",
+    "title": "CSC Api",
+    "description": "This document contains the API descriprion",
+    "contact": {
+      "name": "Cloud Signature Consortium",
+      "url": "https://cloudsignatureconsortium.org/",
+      "email": "info@cloudsignatureconsortium.org"
+    },
+    "license": {
+      "name": "Cloud Signature Consortium License",
+      "url": "https://cloudsignatureconsortium.org/"
+    }
+  },
+  "paths": {
+    "/info": {
+      "post": {
+        "tags": [
+          "info"
+        ],
+        "summary": "Returns several information about the Remote Service and the list of the API methods implemented and supported by it.",
+        "description": "",
+        "operationId": "info",
+        "responses": {
+          "200": {
+            "description": "Info response object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/output-info"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/input-info"
+              }
+            }
+          },
+          "description": "Info request object",
+          "required": true
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Obtain an access token for service authorization from the Remote Service using HTTP Basic Authentication or HTTP Digest authentication",
+        "security": [
+          {
+            "BasicAuth": []
+          },
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "",
+        "operationId": "authLogin",
+        "responses": {
+          "200": {
+            "description": "Auth login response object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/output-auth-login"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid_request"
+          },
+          "401": {
+            "description": "Invalid_info"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/input-auth-login"
+              }
+            }
+          },
+          "description": "Auth login request object",
+          "required": true
+        }
+      }
+    },
+    "/auth/revoke": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Revoke a service access token or refresh token that was obtained from the Remote Service or an associated Authorization Service.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "",
+        "operationId": "authRevoke",
+        "responses": {
+          "400": {
+            "description": "Invalid_request"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/input-auth-revoke"
+              }
+            }
+          },
+          "description": "Revoke login request object",
+          "required": true
+        }
+      }
+    },
+    "/credentials/list": {
+      "post": {
+        "tags": [
+          "credentials"
+        ],
+        "summary": "Returns the list of credentials associated with a user identifier",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "",
+        "operationId": "credentialsList",
+        "responses": {
+          "200": {
+            "description": "Credentials list response object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/output-credentials-list"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid_request"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/input-credentials-list"
+              }
+            }
+          },
+          "description": "Credentials list request object",
+          "required": true
+        }
+      }
+    },
+    "/credentials/info": {
+      "post": {
+        "tags": [
+          "credentials"
+        ],
+        "summary": "Retrieve the credential and return the main identity information and the public key certificate or the certificate chain associated to it.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "",
+        "operationId": "credentialsInfo",
+        "responses": {
+          "200": {
+            "description": "Credentials info response object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/output-credentials-info"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid_request"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/input-credentials-info"
+              }
+            }
+          },
+          "description": "Credentials info request object",
+          "required": true
+        }
+      }
+    },
+    "/credentials/authorize": {
+      "post": {
+        "tags": [
+          "credentials"
+        ],
+        "summary": "Authorize the access to the credential for remote signing, according to the authorization mechanisms associated to it.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "",
+        "operationId": "credentialsAuthorize",
+        "responses": {
+          "200": {
+            "description": "Credentials authorize response object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/output-credentials-authorize"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid_request"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/input-credentials-authorize"
+              }
+            }
+          },
+          "description": "Credentials authorize request object",
+          "required": true
+        }
+      }
+    },
+    "/credentials/extendTransaction": {
+      "post": {
+        "tags": [
+          "credentials"
+        ],
+        "summary": "Extends the validity of a multi-signature transaction authorization by obtaining a new SAD.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "",
+        "operationId": "credentialsExtendTransaction",
+        "responses": {
+          "200": {
+            "description": "Credentials authorize response object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/output-credentials-extendTransaction"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid_request"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/input-credentials-extendTransaction"
+              }
+            }
+          },
+          "description": "Credentials authorize request object",
+          "required": true
+        }
+      }
+    },
+    "/credentials/sendOTP": {
+      "post": {
+        "tags": [
+          "credentials"
+        ],
+        "summary": "Start the online OTP generation mechanism associated with a credential and managed by the Remote Service.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "",
+        "operationId": "credentialsSendOTP",
+        "responses": {
+          "400": {
+            "description": "Invalid_request"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/input-credentials-sendOTP"
+              }
+            }
+          },
+          "description": "Credentials sendOTP request object",
+          "required": true
+        }
+      }
+    },
+    "/signatures/signHash": {
+      "post": {
+        "tags": [
+          "signatures"
+        ],
+        "summary": "Calculate the remote digital signature of one or multiple hash values provided as an input.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "",
+        "operationId": "signaturesSignHash",
+        "responses": {
+          "200": {
+            "description": "Sign hash response object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/output-signatures-signhash"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid_request"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/input-signatures-signhash"
+              }
+            }
+          },
+          "description": "Sign hash request object",
+          "required": true
+        }
+      }
+    },
+    "/signatures/timestamp": {
+      "post": {
+        "tags": [
+          "signatures"
+        ],
+        "summary": "Generate a time-stamp token for the input hash value.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "",
+        "operationId": "signaturesTimestamp",
+        "responses": {
+          "200": {
+            "description": "Timestamp response object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/output-signatures-timestamp"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid_request"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/input-signatures-timestamp"
+              }
+            }
+          },
+          "description": "Timestamp request object",
+          "required": true
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://{host}:443/csc/v1/",
+      "variables": {
+        "host": {
+          "default": "service.domain.org"
+        }
+      }
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BasicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      },
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "access_token": {
+        "type": "string",
+        "description": "The short-lived service access token used to authenticate the subsequent API requests within the same session."
+      },
+      "authInfo": {
+        "type": "boolean",
+        "description": "Specifies if the information on the authorization mechanisms supported by this credential (PIN and OTP groups) shall be returned"
+      },
+      "authMode": {
+        "type": "string",
+        "description": "Specifies one of the authorization modes",
+        "pattern": "^(implicit|explicit|oauth2code|oauth2token)$"
+      },
+      "authType": {
+        "type": "array",
+        "description": "Specifies one or more values corresponding to the authentication mechanisms supported by the Remote Service",
+        "items": {
+          "type": "string",
+          "description": "Specifies one or more values corresponding to the authentication mechanisms supported by the Remote Service",
+          "pattern": "^(external|TLS|basic|digest|oauth2code|oauth2implicit|oauth2client)$"
+        }
+      },
+      "cert": {
+        "type": "object",
+        "description": "Contains information about the signature certificate",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "The Status Schema",
+            "pattern": "^(valid|expired|revoked|suspended)$"
+          },
+          "certificates": {
+            "type": "array",
+            "description": "Contains one or more Base64-encoded X.509v3 certificates from the certificate chain",
+            "items": {
+              "type": "string",
+              "description": "A single Base64-encoded X.509v3 certificate"
+            }
+          },
+          "issuerDN": {
+            "type": "string",
+            "description": "The Issuer Subject Distinguished Name from the X.509v3 end entity certificate in printable string format"
+          },
+          "serialNumber": {
+            "type": "string",
+            "description": "The Serial Number from the X.509v3 certificate in hex encoded format"
+          },
+          "subjectDN": {
+            "type": "string",
+            "description": "The Distinguished Name from the X.509v3 certificate in printable string format"
+          },
+          "validFrom": {
+            "type": "string",
+            "description": "The validity start date from the X.509v3 certificate in printable string format"
+          },
+          "validTo": {
+            "type": "string",
+            "description": "The validity end date from the X.509v3 certificate in printable string format"
+          }
+        }
+      },
+      "certificates": {
+        "type": "string",
+        "description": "The Certificates Schema",
+        "pattern": "^(none|single|chain)$"
+      },
+      "certInfo": {
+        "type": "boolean",
+        "description": "Specifies if the information on the end entity certificate shall be returned as printable strings"
+      },
+      "clientData": {
+        "type": "string",
+        "description": "Arbitrary data from the Signature Application"
+      },
+      "credentialID": {
+        "type": "string",
+        "description": "The identifier associated to the credential"
+      },
+      "credentialIDs": {
+        "type": "array",
+        "description": "One or more credentialID associated with the provided or implicit userID",
+        "items": {
+          "type": "string",
+          "description": "The credentialIDs Schema"
+        }
+      },
+      "description": {
+        "type": "string",
+        "description": "Contains a free form description of the authorization transaction in the lang language"
+      },
+      "expires_in": {
+        "type": "number",
+        "description": "The lifetime in seconds of the service access token."
+      },
+      "expiresIn": {
+        "type": "number",
+        "description": "The lifetime in seconds of the service access token"
+      },
+      "hash": {
+        "type": "array",
+        "description": "One or more Base64-encoded hash values to be signed",
+        "items": {
+          "type": "string",
+          "description": "Single Base64-encoded hash value to be signed"
+        }
+      },
+      "hashAlgo": {
+        "type": "string",
+        "description": "Specifies the OID of the algorithm used to calculate the hash value(s)"
+      },
+      "hashTBS": {
+        "type": "string",
+        "description": "The Base64-encoded hash value to be time stamped"
+      },
+      "key": {
+        "type": "object",
+        "description": "Information about the key",
+        "required": [
+          "status",
+          "algo",
+          "len"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "The status of enablement of the signing key of the credential",
+            "pattern": "^(enabled|disabled)$"
+          },
+          "algo": {
+            "type": "array",
+            "description": "The list of OIDs of the supported key algorithms",
+            "items": {
+              "type": "string",
+              "description": "A single OID"
+            }
+          },
+          "len": {
+            "type": "integer",
+            "description": "The length of the cryptographic key in bits"
+          },
+          "curve": {
+            "type": "integer",
+            "description": "The OID of the ECDSA curve"
+          }
+        }
+      },
+      "lang": {
+        "type": "string",
+        "description": "Request a preferred language according to RFC 3066"
+      },
+      "logo": {
+        "type": "string",
+        "description": "The URI of the image file containing the logo of the Remote Service which shall be published online"
+      },
+      "maxResults": {
+        "type": "number",
+        "description": "Maximum number of items to return"
+      },
+      "methods": {
+        "type": "array",
+        "description": "Specifies the list of names of all the API methods",
+        "items": {
+          "type": "string",
+          "description": "The Method Name"
+        }
+      },
+      "multisign": {
+        "type": "boolean",
+        "description": "Specifies if the credential supports multiple signatures to be created with a single authorization request"
+      },
+      "name": {
+        "type": "string",
+        "description": "The commercial name of the Remote Service"
+      },
+      "nextPageToken": {
+        "type": "string",
+        "description": "The page token for the next page of items"
+      },
+      "nonce": {
+        "type": "string",
+        "description": "Specifies a large random number with a high probability that it is generated by the Signature Application only once"
+      },
+      "numSignatures": {
+        "type": "integer",
+        "description": "The number of signatures to authorize"
+      },
+      "oauth2": {
+        "type": "string",
+        "description": "Specifies the complete URI of the OAuth 2.0 service authorization endpoint provided by the Remote Service"
+      },
+      "OTP": {
+        "type": "string",
+        "description": "The OTP collected from the user"
+      },
+      "OTPINFO": {
+        "type": "object",
+        "description": "Contains information about the credential's OTP",
+        "properties": {
+          "presence": {
+            "type": "string",
+            "description": "Specifies if a text-based OTP is required or not, or optional"
+          },
+          "type": {
+            "type": "string",
+            "description": "Specifies if a text-based OTP is required or not, or optional"
+          },
+          "format": {
+            "type": "string",
+            "description": "Specifies the data format of the OTP"
+          },
+          "label": {
+            "type": "string",
+            "description": "Specifies an optional label for the data field used to collect the OTP in the user interface"
+          },
+          "description": {
+            "type": "string",
+            "description": "Optionally specifies a free form description of the OTP mechanism in the language specified in the lang parameter"
+          },
+          "ID": {
+            "type": "string",
+            "description": "Specifies the identifier of the OTP device or application"
+          },
+          "provider": {
+            "type": "string",
+            "description": "Optionally specifies the provider of the OTP device or application."
+          }
+        }
+      },
+      "pageToken": {
+        "type": "string",
+        "description": "The page token for the new page of items"
+      },
+      "PIN": {
+        "type": "string",
+        "description": "The PIN collected from the user"
+      },
+      "PININFO": {
+        "type": "object",
+        "description": "Contains information about the credential's PIN",
+        "properties": {
+          "presence": {
+            "type": "string",
+            "description": "Specifies if a text-based PIN is required or not, or optional"
+          },
+          "format": {
+            "type": "string",
+            "description": "Specifies the format of the PIN",
+            "pattern": "^(A|B)$"
+          },
+          "label": {
+            "type": "string",
+            "description": "The Label Schema"
+          },
+          "description": {
+            "type": "string",
+            "description": "It optionally specifies a free form description of the PIN in the language specified in the lang parameter"
+          }
+        }
+      },
+      "refresh_token": {
+        "type": "string",
+        "description": "The long-lived refresh token returned from the previous HTTP Basic Authentication"
+      },
+      "region": {
+        "type": "string",
+        "description": "The ISO 3166-1 Alpha-2 code of the Country where the Remote Service provider is established"
+      },
+      "rememberMe": {
+        "type": "boolean",
+        "description": "option that the user may activate during the authentication phase to stay signed in"
+      },
+      "SAD": {
+        "type": "string",
+        "description": "The Signature Activation Data to provide as input to the signatures/signHash method."
+      },
+      "SCAL": {
+        "type": "string",
+        "description": "Specifies the Sole Control Assurance Level required by the credential, as defined in CEN EN 419 241-1",
+        "pattern": "^(1|2)$"
+      },
+      "signAlgo": {
+        "type": "string",
+        "description": "Specifies the OID of the algorithm to use for signing"
+      },
+      "signAlgoParams": {
+        "type": "string",
+        "description": "Specifies the Base64-encoded of DER-encoded ASN.1 signature parameters"
+      },
+      "signatures": {
+        "type": "array",
+        "description": "Array of Base64-encoded signed hash",
+        "items": {
+          "type": "string",
+          "description": "One Base64-encoded signed hash"
+        }
+      },
+      "timestamp": {
+        "type": "string",
+        "description": "The Base64-encoded time-stamp token as defined in RFC 3161 as updated by RFC 5816"
+      },
+      "specs": {
+        "type": "string",
+        "description": "The version of this specification implemented by the provider"
+      },
+      "token": {
+        "type": "string",
+        "description": "The token that the Signature Application wants to get revoked."
+      },
+      "token_type_hint": {
+        "type": "string",
+        "description": "Specifies an optional hint about the type of the token submitted for revocation."
+      },
+      "userID": {
+        "type": "string",
+        "description": "The user identifier associated to the user identity"
+      },
+      "input-info": {
+        "type": "object",
+        "description": "Input parameters for info method",
+        "properties": {
+          "lang": {
+            "$ref": "#/components/schemas/lang"
+          }
+        },
+        "example": {
+          "lang": "EN"
+        }
+      },
+      "input-auth-login": {
+        "type": "object",
+        "description": "Input parameters for auth/login method",
+        "required": [
+          "rememberMe"
+        ],
+        "properties": {
+          "refresh_token": {
+            "$ref": "#/components/schemas/refresh_token"
+          },
+          "rememberMe": {
+            "$ref": "#/components/schemas/rememberMe"
+          },
+          "clientData": {
+            "$ref": "#/components/schemas/clientData"
+          }
+        },
+        "example": {
+          "remeberMe": true
+        }
+      },
+      "input-auth-revoke": {
+        "type": "object",
+        "description": "Input parameters for auth/revoke method",
+        "required": [
+          "token"
+        ],
+        "properties": {
+          "token": {
+            "$ref": "#/components/schemas/token"
+          },
+          "token_type_hint": {
+            "$ref": "#/components/schemas/token_type_hint"
+          },
+          "clientData": {
+            "$ref": "#/components/schemas/clientData"
+          }
+        },
+        "example": {
+          "token": "_TiHRG-bA-H3XlFQZ3ndFhkXf9P24/CKN69L8gdSYp5_pw",
+          "token_type_hint": "refresh_token",
+          "clientData": "12345678"
+        }
+      },
+      "input-credentials-list": {
+        "type": "object",
+        "description": "Input parameters for credentials/list method",
+        "properties": {
+          "userID": {
+            "$ref": "#/components/schemas/userID"
+          },
+          "maxResults": {
+            "$ref": "#/components/schemas/maxResults"
+          },
+          "pageToken": {
+            "$ref": "#/components/schemas/pageToken"
+          },
+          "clientData": {
+            "$ref": "#/components/schemas/clientData"
+          }
+        },
+        "example": {
+          "maxResults": "10"
+        }
+      },
+      "input-credentials-info": {
+        "type": "object",
+        "description": "Input parameters for credentials/info method",
+        "required": [
+          "credentialID"
+        ],
+        "properties": {
+          "credentialID": {
+            "$ref": "#/components/schemas/credentialID"
+          },
+          "certificates": {
+            "$ref": "#/components/schemas/certificates"
+          },
+          "certInfo": {
+            "$ref": "#/components/schemas/certInfo"
+          },
+          "authInfo": {
+            "$ref": "#/components/schemas/authInfo"
+          },
+          "lang": {
+            "$ref": "#/components/schemas/lang"
+          },
+          "clientData": {
+            "$ref": "#/components/schemas/clientData"
+          }
+        },
+        "example": {
+          "credentialID": "GX0112348",
+          "certificates": "chain",
+          "certInfo": true,
+          "authInfo": true
+        }
+      },
+      "input-credentials-authorize": {
+        "type": "object",
+        "description": "Input parameters for credentials/authorize method",
+        "required": [
+          "credentialID",
+          "numSignatures"
+        ],
+        "properties": {
+          "credentialID": {
+            "$ref": "#/components/schemas/credentialID"
+          },
+          "numSignatures": {
+            "$ref": "#/components/schemas/numSignatures"
+          },
+          "hash": {
+            "$ref": "#/components/schemas/hash"
+          },
+          "PIN": {
+            "$ref": "#/components/schemas/PIN"
+          },
+          "OTP": {
+            "$ref": "#/components/schemas/OTP"
+          },
+          "description": {
+            "$ref": "#/components/schemas/description"
+          },
+          "clientData": {
+            "$ref": "#/components/schemas/clientData"
+          }
+        },
+        "example": {
+          "credentialID": "GX0112348",
+          "numSignatures": 2,
+          "hash": "[sTOgwOm+474gFj0q0x1iSNspKqbcse4IeiqlDg/HWuI=,c1RPZ3dPbSs0NzRnRmowcTB4MWlTTnNwS3FiY3NlNEllaXFsRGcvSFd1ST0=]",
+          "PIN": "12345678",
+          "OTP": "738496",
+          "clientData": "12345678"
+        }
+      },
+      "input-credentials-extendTransaction": {
+        "type": "object",
+        "description": "Input parameters for credentials/extendTransaction method",
+        "required": [
+          "credentialID",
+          "SAD"
+        ],
+        "properties": {
+          "credentialID": {
+            "$ref": "#/components/schemas/credentialID"
+          },
+          "hash": {
+            "$ref": "#/components/schemas/hash"
+          },
+          "SAD": {
+            "$ref": "#/components/schemas/SAD"
+          },
+          "clientData": {
+            "$ref": "#/components/schemas/clientData"
+          }
+        },
+        "example": {
+          "credentialID": "GX0112348",
+          "hash": "[WlTTnNwS3FiY3NlNEllaXFsRGcvSFd1ST0=]",
+          "SAD": "_TiHRG-bAH3XlFQZ3ndFhkXf9P24/CKN69L8gdSYp5_pw",
+          "clientData": "12345678"
+        }
+      },
+      "input-credentials-sendOTP": {
+        "type": "object",
+        "description": "The Root Schema",
+        "required": [
+          "credentialID"
+        ],
+        "properties": {
+          "credentialID": {
+            "$ref": "#/components/schemas/credentialID"
+          },
+          "clientData": {
+            "$ref": "#/components/schemas/clientData"
+          }
+        },
+        "example": {
+          "credentialID": "GX0112348",
+          "clientData": "12345678"
+        }
+      },
+      "input-signatures-signhash": {
+        "type": "object",
+        "description": "Input parameters for signatures/signHash method",
+        "required": [
+          "credentialID",
+          "SAD",
+          "hash",
+          "signAlgo"
+        ],
+        "properties": {
+          "credentialID": {
+            "$ref": "#/components/schemas/credentialID"
+          },
+          "SAD": {
+            "$ref": "#/components/schemas/SAD"
+          },
+          "hash": {
+            "$ref": "#/components/schemas/hash"
+          },
+          "hashAlgo": {
+            "$ref": "#/components/schemas/hashAlgo"
+          },
+          "signAlgo": {
+            "$ref": "#/components/schemas/signAlgo"
+          },
+          "signAlgoParams": {
+            "$ref": "#/components/schemas/signAlgoParams"
+          },
+          "clientData": {
+            "$ref": "#/components/schemas/clientData"
+          }
+        },
+        "example": {
+          "SAD": "_TiHRG-bAH3XlFQZ3ndFhkXf9P24/CKN69L8gdSYp5_pw",
+          "hash": [
+            "sTOgwOm+474gFj0q0x1iSNspKqbcse4IeiqlDg/HWuI=",
+            "c1RPZ3dPbSs0NzRnRmowcTB4MWlTTnNwS3FiY3NlNEllaXFsRGcvSFd1ST0="
+          ],
+          "hashAlgo": "2.16.840.1.101.3.4.2.1",
+          "signAlgo": "1.2.840.113549.1.1.1",
+          "clientData": "12345678"
+        }
+      },
+      "input-signatures-timestamp": {
+        "type": "object",
+        "description": "Input parameters for signatures/timestamp method",
+        "required": [
+          "hash",
+          "hashAlgo"
+        ],
+        "properties": {
+          "hash": {
+            "$ref": "#/components/schemas/hashTBS"
+          },
+          "hashAlgo": {
+            "$ref": "#/components/schemas/hashAlgo"
+          },
+          "nonce": {
+            "$ref": "#/components/schemas/nonce"
+          },
+          "clientData": {
+            "$ref": "#/components/schemas/clientData"
+          }
+        },
+        "example": {
+          "hash": "sTOgwOm+474gFj0q0x1iSNspKqbcse4IeiqlDg/HWuI=",
+          "hashAlgo": "2.16.840.1.101.3.4.2.1",
+          "clientData": "12345678"
+        }
+      },
+      "output-info": {
+        "type": "object",
+        "description": "Output parameters for info method",
+        "required": [
+          "specs",
+          "name",
+          "logo",
+          "region",
+          "lang",
+          "description",
+          "authType",
+          "methods"
+        ],
+        "properties": {
+          "specs": {
+            "$ref": "#/components/schemas/specs"
+          },
+          "name": {
+            "$ref": "#/components/schemas/name"
+          },
+          "logo": {
+            "$ref": "#/components/schemas/logo"
+          },
+          "region": {
+            "$ref": "#/components/schemas/region"
+          },
+          "lang": {
+            "$ref": "#/components/schemas/lang"
+          },
+          "authType": {
+            "$ref": "#/components/schemas/authType"
+          },
+          "oauth2": {
+            "$ref": "#/components/schemas/oauth2"
+          },
+          "methods": {
+            "$ref": "#/components/schemas/methods"
+          }
+        },
+        "example": {
+          "specs": "1.0.2.3",
+          "name": "ACME Trust Services",
+          "logo": "https://service.domain.org/images/logo.png",
+          "region": "IT",
+          "lang": "en-US",
+          "authType": [
+            "basic",
+            "oauth2code",
+            "oauth2implicit"
+          ],
+          "oauth2": "https://www.domain.org/",
+          "methods": [
+            "auth/login",
+            "auth/revoke",
+            "credentials/list",
+            "credentials/info",
+            "credentials/authorize",
+            "credentials/sendOTP",
+            "signatures/signHash"
+          ]
+        }
+      },
+      "output-auth-login": {
+        "type": "object",
+        "description": "Output parameters for auth/login method",
+        "required": [
+          "access_token"
+        ],
+        "properties": {
+          "access_token": {
+            "$ref": "#/components/schemas/access_token"
+          },
+          "refresh_token": {
+            "$ref": "#/components/schemas/refresh_token"
+          },
+          "expires_in": {
+            "$ref": "#/components/schemas/expires_in"
+          }
+        },
+        "example": {
+          "access_token": "4/CKN69L8gdSYp5_pwH3XlFQZ3ndFhkXf9P2_TiHRG-bA",
+          "refresh_token": "_TiHRG-bA-H3XlFQZ3ndFhkXf9P24/CKN69L8gdSYp5_pw",
+          "expires_in": 3600
+        }
+      },
+      "output-credentials-list": {
+        "type": "object",
+        "description": "Input parameters for credentials/list method",
+        "required": [
+          "credentialIDs"
+        ],
+        "properties": {
+          "credentialIDs": {
+            "$ref": "#/components/schemas/credentialIDs"
+          },
+          "nextPageToken": {
+            "$ref": "#/components/schemas/nextPageToken"
+          }
+        },
+        "example": {
+          "credentialIDs": [
+            "GX0112348",
+            "HX0224685"
+          ]
+        }
+      },
+      "output-credentials-info": {
+        "type": "object",
+        "description": "Output parameters for credentials/info method",
+        "required": [
+          "key",
+          "cert",
+          "authMode",
+          "PIN",
+          "OTP",
+          "multisign",
+          "lang"
+        ],
+        "properties": {
+          "description": {
+            "$ref": "#/components/schemas/description"
+          },
+          "key": {
+            "$ref": "#/components/schemas/key"
+          },
+          "cert": {
+            "$ref": "#/components/schemas/cert"
+          },
+          "authMode": {
+            "$ref": "#/components/schemas/authMode"
+          },
+          "SCAL": {
+            "$ref": "#/components/schemas/SCAL"
+          },
+          "PIN": {
+            "$ref": "#/components/schemas/PININFO"
+          },
+          "OTP": {
+            "$ref": "#/components/schemas/OTPINFO"
+          },
+          "multisign": {
+            "$ref": "#/components/schemas/multisign"
+          },
+          "lang": {
+            "$ref": "#/components/schemas/lang"
+          }
+        },
+        "example": {
+          "key": {
+            "status": "enabled",
+            "algo": [
+              "1.2.840.113549.1.1.1",
+              "0.4.0.127.0.7.1.1.4.1.3"
+            ],
+            "len": 2048
+          },
+          "cert": {
+            "status": "valid",
+            "certificates": [
+              "<Base64-encoded_X.509_end_entity_certificate>",
+              "<Base64-encoded_X.509_intermediate_CA_certificate>",
+              "<Base64-encoded_X.509_root_CA_certificate>"
+            ],
+            "issuerDN": "<X.500_issuer_DN_printable_string>",
+            "serialNumber": "5AAC41CD8FA22B953640",
+            "subjectDN": "<X.500_subject_DN_printable_string>",
+            "validFrom": "20180101100000Z",
+            "validTo": "20190101095959Z",
+            "authMode": "explicit",
+            "PIN": {
+              "presence": "true",
+              "label": "PIN",
+              "description": "Please enter the signature PIN"
+            },
+            "OTP": {
+              "presence": "true",
+              "type": "offline",
+              "ID": "MB01-K741200",
+              "provider": "totp",
+              "format": "N",
+              "label": "Mobile OTP",
+              "description": "Please enter the 6 digit code you received by SMS"
+            },
+            "multisign": 5,
+            "lang": "en-US"
+          }
+        }
+      },
+      "output-credentials-authorize": {
+        "type": "object",
+        "description": "Output parameters for credentials/authorize method",
+        "required": [
+          "SAD"
+        ],
+        "properties": {
+          "SAD": {
+            "$ref": "#/components/schemas/SAD"
+          },
+          "expiresIn": {
+            "$ref": "#/components/schemas/expiresIn"
+          }
+        },
+        "example": {
+          "SAD": "1/UsHDJ98349h9fgh9348hKKHDkHWVkl/8hsAW5usc8_5="
+        }
+      },
+      "output-credentials-extendTransaction": {
+        "type": "object",
+        "description": "Output parameters for credentials/extendTransaction method",
+        "required": [
+          "SAD"
+        ],
+        "properties": {
+          "SAD": {
+            "$ref": "#/components/schemas/SAD"
+          },
+          "expiresIn": {
+            "$ref": "#/components/schemas/expiresIn"
+          }
+        },
+        "example": {
+          "SAD": "1/UsHDJ98349h9fgh9348hKKHDkHWVkl/8hsAW5usc8_5="
+        }
+      },
+      "output-signatures-signhash": {
+        "type": "object",
+        "description": "Output parameters for signatures/signHash method",
+        "required": [
+          "signatures"
+        ],
+        "properties": {
+          "signatures": {
+            "$ref": "#/components/schemas/signatures"
+          }
+        },
+        "example": {
+          "signatures": [
+            "KedJuTob5gtvYx9qM3k3gm7kbLBwVbEQRl26S2tmXjqNND7MRGtoew==",
+            "Idhef7xzgtvYx9qM3k3gm7kbLBwVbE98239S2tm8hUh85KKsfdowel=="
+          ]
+        }
+      },
+      "output-signatures-timestamp": {
+        "type": "object",
+        "description": "Output parameters for signatures/timestamp method",
+        "required": [
+          "timestamp"
+        ],
+        "properties": {
+          "timestamp": {
+            "$ref": "#/components/schemas/timestamp"
+          }
+        },
+        "example": {
+          "timestamp": "MGwCAQEGCSsGAQQB7U8CATAxMA0GCWCGSAFlAwQCAQUABCCrCqnrjH0VxXyQQlfnFJRx1jjrviTs7/GjKghr2AmluQIIVs5D8OUB4p4YDzIwMTQxMTE5MTEzMjM5WjADAgEBAgkAnWn2SSIWlXk="
+        }
+      }
+    }
+  }
+}
