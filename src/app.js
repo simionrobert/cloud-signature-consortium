@@ -2,19 +2,14 @@
 
 const express = require('express');
 const cookieParser = require('cookie-parser');
-const validator = require('validator');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const logger = require('winston');
-const passport = require('passport'),
-  BasicStrategy = require('passport-http').BasicStrategy,
-  BearerStrategy = require('passport-http-bearer').Strategy,
-  CustomStrategy = require('passport-custom').Strategy;
-
-const User = require('./lib/db').User;
+const passport = require('passport');
+const session = require('express-session');
+const ejs = require('ejs');
+const path = require('path');
 const { errors } = require('./config');
-const config = require('./config');
-
 const infoRouter = require('./routes/info'),
   authRouter = require('./routes/auth'),
   credentialsRouter = require('./routes/credentials'),
@@ -22,6 +17,9 @@ const infoRouter = require('./routes/info'),
 
 const app = express();
 
+app.engine('ejs', ejs.__express);
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, './views'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan('dev', {
@@ -33,64 +31,27 @@ app.use(morgan('dev', {
 }));
 app.use(cookieParser());
 app.use(helmet());
+app.use(session({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
+app.use(passport.initialize());
+app.use(passport.session());
 
-app.use('/csc/v1/info', infoRouter);
-app.use('/csc/v1/auth', authRouter);
-app.use('/csc/v1/credentials', credentialsRouter);
-app.use('/csc/v1/signatures', signaturesRouter);
+// Passport configuration
+require('./passport');
 
+const base = '/csc/v1';
+app.use(`${base}/info`, infoRouter);
+app.use(`${base}/auth`, authRouter);
+app.use(`${base}/credentials`, credentialsRouter);
+app.use(`${base}/signatures`, signaturesRouter);
 
-passport.use(new BasicStrategy(
-  function (username, password, done) {
-    User.findOne({ user: username }, function (err, user) {
-      if (err) { return done(errors.databaseError); }
-      if (!user) { return done(errors.unauthorisedClient, false); }
-      if (!user.verifyPassword(password)) { return done(errors.accessDenied, false); }
-      return done(null, user);
-    });
-  }
-));
-passport.use(new BearerStrategy(
-  function (access_token, done) {
-    if (access_token === null || access_token === undefined) {
-      return done(errors.malformedAuthMethod);
-    }
+app.get(`/`, require('./routes/site').index);
+app.get(`/login`, require('./routes/site').loginForm);
+app.post(`/login`, require('./routes/site').login);
+app.get(`/logout`, require('./routes/site').logout);
 
-    if (!validator.isHexadecimal(access_token)) return done(errors.invalidAccessToken);
-
-    User.findOne({ 'access_token.value': access_token, 'access_token.valid': true }, function (err, user) {
-      if (err) { return done(errors.databaseError); }
-      if (!user) { return done(errors.invalidToken, false); }
-
-      // check token availability
-      if (user.access_token.timestamp.getTime() + 1000 * config.settings.access_token_expiring_time < Date.now()) { return done(errors.invalidToken, false); }
-
-      return done(null, user, { scope: 'all' });
-    });
-  }
-));
-passport.use(new CustomStrategy(
-  // used only for auth/login authorisation through json refresh_token
-
-  function (req, done) {
-    if (req.body.refresh_token === null || req.body.refresh_token === undefined) {
-      return done(errors.malformedAuthMethod);
-    }
-
-    if (!validator.isHexadecimal(req.body.refresh_token)) return done(errors.invalidRefreshTokenFormatParameter);
-
-    User.findOne({ 'refresh_token.value': req.body.refresh_token, 'refresh_token.valid': true }, function (err, user) {
-      if (err) { return done(errors.authError); }
-      if (!user) { return done(errors.invalidRefreshTokenParameter, false); }
-
-      // check token availability
-      if (user.refresh_token.timestamp.getTime() + 1000 * config.settings.refresh_token_expiring_time < Date.now()) { return done(errors.invalidRefreshTokenParameter, false); }
-
-      return done(null, user, { scope: 'all' });
-    });
-  }
-));
-
+app.get(`/oauth2/authorize`, require('./routes/oauth2').authorization);
+app.post(`/oauth2/authorize/decision`, require('./routes/oauth2').decision);
+app.post(`/oauth2/token`, require('./routes/oauth2').token);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

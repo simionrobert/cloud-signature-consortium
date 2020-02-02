@@ -7,16 +7,6 @@ const userSchema = new mongoose.Schema({
     // _id: is the userID
     user: { type: String, unique: true }, // the username
     password: String, // the password of the user
-    access_token: {
-        value: { type: String, default: "" }, // the value of the on-demand generated token
-        timestamp: { type: Date, default: Date.now() }, // the date of creation of the token
-        valid: { type: Boolean, default: false } // if the token is valid or not
-    },
-    refresh_token: {
-        value: { type: String, default: "" },// the value of the on-demand generated token
-        timestamp: { type: Date, default: Date.now() },// the date of creation of the token
-        valid: { type: Boolean, default: false }// if the token is valid or not
-    },
     credentials: [{ // the list of credentials that belong to the user
         credentialID: String, // the id of the credential stored on the token (cert+key) and in the db
         pin: String, // the pin of the private key (kept secret)

@@ -5,7 +5,7 @@ const passport = require('passport');
 const crypto = require('crypto');
 
 const { errors, settings } = require('../config');
-const User = require('../lib/db').User;
+const Token = require('../lib/db').Token;
 
 const router = express.Router();
 
@@ -24,18 +24,25 @@ router.post('/login',
           const refreshToken = buffer.toString('hex');
 
           // update user with the refresh token and timestamp
-          User.findOneAndUpdate({ user: user.user }, {
-            'refresh_token.value': refreshToken,
-            'refresh_token.timestamp': Date.now(),
-            'refresh_token.valid': true
-          }, function (err, doc) {
+          Token.deleteOne({ user_id: user._id, type: 'refresh_token' }, (err) => {
             if (err) return next(errors.databaseError);
-            if (!doc) { return next(errors.internalServerError); }
 
-            // send response
-            res.json({
-              refresh_token: refreshToken,
-              expires_in: settings.csc.refresh_token_expiring_time
+            const token = new Token({
+              value: refreshToken,
+              type: 'refresh_token',
+              creation_date: Date.now(),
+              user_id: user._id,
+              client_id: ''
+            });
+
+            token.save((err, savedToken) => {
+              if (err) return next(errors.databaseError);
+
+              // send response
+              res.json({
+                refresh_token: refreshToken,
+                expires_in: settings.csc.refresh_token_expiring_time
+              });
             });
           });
         });
@@ -49,41 +56,55 @@ router.post('/login',
             const accessToken = buffer.toString('hex');
 
             // update user with the access token and timestamp
-            User.findOneAndUpdate({ user: user.user }, {
-              'access_token.value': accessToken,
-              'access_token.timestamp': Date.now(),
-              'access_token.valid': true
-            }, function (err, doc) {
+            Token.deleteOne({ user_id: user._id, type: 'access_token' }, (err) => {
               if (err) return next(errors.databaseError);
-              if (!doc) { return next(errors.internalServerError); }
 
-              // send response
-              res.json({
-                access_token: accessToken,
-                expires_in: settings.csc.access_token_expiring_time
+              const token = new Token({
+                value: accessToken,
+                type: 'access_token',
+                creation_date: Date.now(),
+                user_id: user._id,
+                client_id: ''
+              });
+
+              token.save((err, savedToken) => {
+                if (err) return next(errors.databaseError);
+
+                // send response
+                res.json({
+                  access_token: accessToken,
+                  expires_in: settings.csc.access_token_expiring_time
+                });
               });
             });
           });
         } else {
-          // generate accessToken using username
 
+          // generate accessToken using username
           crypto.randomBytes(48, function (err, buffer) {
             if (err) return next(errors.internalServerError);
             const accessToken = buffer.toString('hex');
 
             // update user with the access token and timestamp
-            User.findOneAndUpdate({ user: user.user }, {
-              'access_token.value': accessToken,
-              'access_token.timestamp': Date.now(),
-              'access_token.valid': true
-            }, function (err, doc) {
+            Token.deleteOne({ user_id: user._id, type: 'access_token' }, (err) => {
               if (err) return next(errors.databaseError);
-              if (!doc) { return next(errors.internalServerError); }
 
-              // send response
-              res.json({
-                access_token: accessToken,
-                expires_in: settings.csc.access_token_expiring_time
+              const token = new Token({
+                value: accessToken,
+                type: 'access_token',
+                creation_date: Date.now(),
+                user_id: user._id,
+                client_id: ''
+              });
+
+              token.save((err, savedToken) => {
+                if (err) return next(errors.databaseError);
+
+                // send response
+                res.json({
+                  access_token: accessToken,
+                  expires_in: settings.csc.access_token_expiring_time
+                });
               });
             });
           });
@@ -104,53 +125,44 @@ router.post('/revoke',
     if (hint !== undefined && hint !== 'access_token' && hint !== 'refresh_token') return next(errors.invalidTokenHint);
 
     if (hint === undefined) {
-      // try to find the access token type
-      User.findOneAndUpdate({ user: user.user, 'access_token.value': token, 'access_token.valid': true }, {
-        'access_token.valid': false
-      }, function (err, doc) {
+
+      // update user with the access token and timestamp
+      Token.findOneAndDelete({ user_id: user._id, value: token, type: 'access_token' }, (err, doc) => {
         if (err) return next(errors.databaseError);
         if (!doc) {
-          // try with refresh token
 
-          User.findOneAndUpdate({ user: user.user, 'refresh_token.value': token, 'refresh_token.valid': true }, {
-            'refresh_token.valid': false,
-            'access_token.valid': false
-          }, function (err, doc) {
+          // try with refresh token
+          Token.findOneAndUpdate({ user_id: user._id, value: token, type: 'refresh_token' }, (err, doc) => {
             if (err) return next(errors.databaseError);
             if (!doc) { return next(errors.invalidTokenParameter); }
 
-            // send response
             res.end();
           });
+        } else {
+          res.end();
         }
-
-        // send response
-        res.end();
       });
 
     } else {
       if (hint === 'access_token') {
-        User.findOneAndUpdate({ user: user.user, 'access_token.value': token, 'access_token.valid': true }, {
-          'access_token.valid': false
-        }, function (err, doc) {
+        Token.findOneAndDelete({ user_id: user._id, value: token, type: 'access_token' }, (err, doc) => {
           if (err) return next(errors.databaseError);
           if (!doc) { return next(errors.invalidTokenParameter); }
 
-          // send response
           res.end();
         });
-      } else {
-        // token is a  refresh_token
 
-        User.findOneAndUpdate({ user: user.user, 'refresh_token.value': token, 'refresh_token.valid': true }, {
-          'refresh_token.valid': false,
-          'access_token.valid': false
-        }, function (err, doc) {
+      } else {
+        Token.findOneAndDelete({ user_id: user._id, value: token, type: 'refresh_token' }, (err, doc) => {
           if (err) return next(errors.databaseError);
           if (!doc) { return next(errors.invalidTokenParameter); }
 
-          // send response
-          res.end();
+          Token.findOneAndDelete({ user_id: user._id, type: 'access_token' }, (err, doc) => {
+            if (err) return next(errors.databaseError);
+            if (!doc) { return next(errors.invalidTokenParameter); }
+
+            res.end();
+          });
         });
       }
     }
