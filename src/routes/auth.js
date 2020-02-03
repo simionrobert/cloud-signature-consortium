@@ -24,28 +24,23 @@ router.post('/login',
           const refreshToken = buffer.toString('hex');
 
           // update user with the refresh token and timestamp
-          Token.deleteOne({ user_id: user._id, type: 'refresh_token' }, (err) => {
+          Token.updateOne({ user_id: user._id, type: 'refresh_token' }, {
+            value: refreshToken,
+            type: 'refresh_token',
+            creation_date: Date.now(),
+            user_id: user._id,
+            client_id: ''
+          }, { upsert: true }, (err) => {
             if (err) return next(errors.databaseError);
 
-            const token = new Token({
-              value: refreshToken,
-              type: 'refresh_token',
-              creation_date: Date.now(),
-              user_id: user._id,
-              client_id: ''
-            });
-
-            token.save((err, savedToken) => {
-              if (err) return next(errors.databaseError);
-
-              // send response
-              res.json({
-                refresh_token: refreshToken,
-                expires_in: settings.csc.refresh_token_expiring_time
-              });
+            // send response
+            res.json({
+              refresh_token: refreshToken,
+              expires_in: settings.csc.refresh_token_expiring_time
             });
           });
         });
+
       } else {
         const refresh_token = req.body.refresh_token || null;
         if (refresh_token != null) {
@@ -55,49 +50,38 @@ router.post('/login',
             if (err) return next(errors.internalServerError);
             const accessToken = buffer.toString('hex');
 
-            // update user with the access token and timestamp
-            Token.deleteOne({ user_id: user._id, type: 'access_token' }, (err) => {
+            // update user with the access token or insert a new one (upsert option)
+            Token.updateOne({ user_id: user._id, type: 'access_token' }, {
+              value: accessToken,
+              type: 'access_token',
+              user_id: user._id,
+              client_id: ''
+            }, { upsert: true }, (err) => {
               if (err) return next(errors.databaseError);
 
-              const token = new Token({
-                value: accessToken,
-                type: 'access_token',
-                creation_date: Date.now(),
-                user_id: user._id,
-                client_id: ''
-              });
-
-              token.save((err, savedToken) => {
-                if (err) return next(errors.databaseError);
-
-                // send response
-                res.json({
-                  access_token: accessToken,
-                  expires_in: settings.csc.access_token_expiring_time
-                });
+              // send response
+              res.json({
+                access_token: accessToken,
+                expires_in: settings.csc.access_token_expiring_time
               });
             });
           });
-        } else {
 
+        } else {
           // generate accessToken using username
           crypto.randomBytes(48, function (err, buffer) {
             if (err) return next(errors.internalServerError);
             const accessToken = buffer.toString('hex');
 
-            // update user with the access token and timestamp
-            Token.deleteOne({ user_id: user._id, type: 'access_token' }, (err) => {
-              if (err) return next(errors.databaseError);
-
-              const token = new Token({
-                value: accessToken,
-                type: 'access_token',
-                creation_date: Date.now(),
-                user_id: user._id,
-                client_id: ''
-              });
-
-              token.save((err, savedToken) => {
+            // update user with the access token or insert a new one (upsert option)
+            Token.updateOne({ user_id: user._id, type: 'access_token' }, {
+              value: accessToken,
+              type: 'access_token',
+              user_id: user._id,
+              client_id: ''
+            },
+              { upsert: true },
+              (err) => {
                 if (err) return next(errors.databaseError);
 
                 // send response
@@ -106,7 +90,6 @@ router.post('/login',
                   expires_in: settings.csc.access_token_expiring_time
                 });
               });
-            });
           });
         }
       }

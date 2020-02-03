@@ -10,6 +10,7 @@ const crypto = require('crypto');
 const { errors, settings } = require('../config');
 const Credential = require('../lib/db').Credential;
 const User = require('../lib/db').User;
+const Sad = require('../lib/db').Sad;
 
 const router = express.Router();
 
@@ -162,33 +163,26 @@ router.post('/authorise',
          }
 
          //generate SAD
-         let timestamp = new Date();
-         let key = timestamp.valueOf().toString();
+         crypto.randomBytes(128, function (err, buffer) {
+            if (err) return next(errors.internalServerError);
 
-         let sad = crypto.createHmac('sha512', key);
-         hashes.forEach(hash => {
-            sad.update(hash);
-         });
-         sad = sad.digest('hex');
+            const sadValue = buffer.toString('hex');
 
-         User.updateOne({ 'credentials.credentialID': credentialID },
-            {
-               '$set': {
-                  'credentials.$.sad.value': sad,
-                  'credentials.$.sad.timestamp': timestamp,
-                  'credentials.$.sad.key': key
-               }
-            },
-            function (err) {
-               if (err) { return next(errors.databaseError); }
+            const sad = new Sad({
+               value: sadValue,
+               hashes: hashes,
+               credential_id: credentialID
+            });
+            sad.save((err) => {
+               if (err) return next(errors.databaseError);
 
                // send response
                res.json({
-                  SAD: sad,
+                  SAD: sadValue,
                   expiresIn: settings.csc.sad_expiring_time
                });
-            }
-         );
+            });
+         });
       });
    });
 
@@ -203,7 +197,6 @@ router.post('/sendOTP',
 
          if (doc.status == 'disabled') { return next(errors.disabledCredentialID); }
 
-         //generate SAD
          const otp = Math.floor(100000 + Math.random() * 900000);
 
          User.updateOne({ 'credentials.credentialID': credentialID },

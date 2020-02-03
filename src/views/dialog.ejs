@@ -4,6 +4,9 @@
 
 <form action="/oauth2/authorize/decision" method="post">
   <input name="transaction_id" type="hidden" value="<%= transactionId %>" />
+  <input name="credentialID" type="hidden" value="<%= credentialID %>" />
+  <input name="hash" type="hidden" value="<%= hash %>" />
+  <input name="num_signatures" type="hidden" value="<%= num_signatures %>" />
   <div>
     <input type="submit" value="Allow" id="allow" />
     <input type="submit" value="Deny" name="cancel" id="deny" />

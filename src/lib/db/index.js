@@ -5,5 +5,6 @@ module.exports = {
     Credential: require('./Credential'),
     Client: require('./Client'),
     Token: require('./Token'),
-    Code: require('./Code')
+    Code: require('./Code'),
+    Sad: require('./Sad')
 }

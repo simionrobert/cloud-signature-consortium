@@ -1,13 +1,18 @@
+/* eslint-disable no-case-declarations */
 'use strict';
 
 const oauth2orize = require('oauth2orize');
 const login = require('connect-ensure-login');
 const Client = require('../lib/db').Client;
 const Code = require('../lib/db').Code;
+const Sad = require('../lib/db').Sad;
 const Token = require('../lib/db').Token;
 const { errors } = require('../config');
 const crypto = require('crypto');
 const passport = require('passport');
+const config = require('../config');
+const base64url = require('base64-url');
+
 
 // Create OAuth 2.0 server
 const server = oauth2orize.createServer();
@@ -54,21 +59,60 @@ server.deserializeClient((id, done) => {
 
 server.grant(oauth2orize.grant.code((client, redirectUri, user, ares, done) => {
 
+  // Do verifications. If there is an error, then it should call the request with error instead of returning json
+  // The errors that are part of oauth2 are checked. The others aren't.
+
+  if (ares.scope[0] === 'credential') {
+    if (ares.credentialID === undefined || ares.credentialID === null || ares.credentialID === '') {
+      done(errors.invalid_request);
+    }
+    if (ares.hash === undefined || ares.hash === null || ares.hash === '') {
+      done(errors.invalid_request);
+    }
+    if (ares.numSignatures === undefined || ares.numSignatures === null || ares.numSignatures === '') {
+      done(errors.invalid_request);
+    }
+  }
+
   crypto.randomBytes(48, function (err, buffer) {
-    if (err) return done(errors.internalServerError);
+    if (err) return done('server_error');
 
-    const code = new Code({
-      value: buffer.toString('hex'),
-      user_id: user._id,
-      scope: ares.scope[0],
-      client_id: client._id,
-      redirect_uri: redirectUri
-    });
+    switch (ares.scope[0]) {
+      case 'service':
+        // Update or insert => upsert
+        Code.findOneAndUpdate({ client_id: client._id, user_id: user._id, redirect_uri: redirectUri }, {
+          value: buffer.toString('hex'),
+          user_id: user._id,
+          scope: ares.scope[0],
+          client_id: client._id,
+          redirect_uri: redirectUri
+        }, { upsert: true }, (err, code) => {
+          if (err) return done('server_error');
 
-    code.save((err) => {
-      if (err) return done(err);
-      return done(null, code.value);
-    });
+          return done(null, buffer.toString('hex'));
+        });
+
+        break;
+      case 'credential':
+        // Update or insert => upsert
+        Code.findOneAndUpdate({ client_id: client._id, user_id: user._id, redirect_uri: redirectUri }, {
+          value: buffer.toString('hex'),
+          user_id: user._id,
+          scope: ares.scope[0],
+          client_id: client._id,
+          redirect_uri: redirectUri,
+          credential_id: ares.credentialID,
+          hashes: ares.hash.split(',').map(x => base64url.unescape(x)),
+          num_signatures: ares.numSignatures
+        }, { upsert: true }, (err, code) => {
+          if (err) return done('server_error');
+
+          return done(null, buffer.toString('hex'));
+        });
+        break;
+      default:
+        done('invalid_scope');
+    }
   });
 }));
 
@@ -81,35 +125,60 @@ server.grant(oauth2orize.grant.code((client, redirectUri, user, ares, done) => {
 // custom parameters by adding these to the `done()` call
 
 server.exchange(oauth2orize.exchange.code((client, code, redirectUri, done) => {
-  Code.findOneAndDelete({ value: code, client_id: client._id }, function (err, authCode) {
+
+  // This code can either be for service/credential authorization. It should be found by value
+  Code.findOne({ value: code, client_id: client._id }, function (err, authCode) {
     if (err) { return done(err); }
-    if (authCode === undefined || authCode === null) { return done(null, false); }
-    if (client._id.toString() !== authCode.client_id) { return done(null, false); }
-    if (redirectUri !== authCode.redirect_uri) { return done(null, false); }
+    if (authCode === undefined || authCode === null) { return done(errors.internalServerError); }
+    if (client._id.toString() !== authCode.client_id) { return done(errors.invalidClientId); }
+    if (redirectUri !== authCode.redirect_uri) { return done(errors.notMatchRedirectUri); }
 
-    const token_type = authCode.scope === 'credential' ? 'SAD' : 'access_token';
+    // check token availability
+    if (authCode.creation_date.getTime() + 1000 * config.settings.code_expiring_time < Date.now()) { return done(errors.invalidCode, false); }
 
-    Token.deleteOne({ client_id: authCode.client_id, type: token_type }, (err) => {
-      if (err) return done(errors.databaseError);
+    switch (authCode.scope) {
+      case 'service':
+        crypto.randomBytes(256, function (err, buffer) {
+          if (err) return done(errors.internalServerError);
 
-      crypto.randomBytes(256, function (err, buffer) {
-        if (err) return done(errors.internalServerError);
+          const tokenValue = buffer.toString('hex');
 
-        const tokenValue = buffer.toString('hex');
-        const token = new Token({
-          value: tokenValue,
-          type: token_type,
-          user_id: authCode.user_id,
-          client_id: authCode.client_id
+          Token.updateOne({ client_id: authCode.client_id, type: 'access_token' }, {
+            value: tokenValue,
+            type: 'access_token',
+            user_id: authCode.user_id,
+            client_id: authCode.client_id
+          }, { upsert: true }, (err) => {
+            if (err) return done(errors.databaseError);
+
+            done(null, tokenValue, { token_type: "Bearer", expiresIn: config.settings.csc.access_token_expiring_time });
+          });
         });
+        break;
 
-        token.save((err, savedToken) => {
-          if (err) return done(errors.databaseError);
+      case 'credential':
+        //generate SAD. It gets deleted when the signature is done
+        crypto.randomBytes(128, function (err, buffer) {
+          if (err) return done(errors.internalServerError);
 
-          done(null, tokenValue, { token_type: token_type === "access_token" ? "Bearer" : "SAD" });
+          const sadValue = buffer.toString('hex');
+          const sad = new Sad({
+            value: sadValue,
+            hashes: authCode.hashes,
+            credential_id: authCode.credential_id
+          });
+
+          sad.save((err) => {
+            if (err) return done(errors.databaseError);
+
+            // send response
+            done(null, sadValue, { token_type: "SAD", expiresIn: config.settings.csc.sad_expiring_time });
+          });
         });
-      });
-    });
+        break;
+      default:
+        done(errors.internalServerError);
+    }
   });
 }));
 
@@ -145,7 +214,16 @@ module.exports.authorization = [
     });
   }),
   (request, response) => {
-    response.render('dialog', { transactionId: request.oauth2.transactionID, user: request.user, client: request.oauth2.client, scopes: request.oauth2.req.scope });
+    response.render('dialog',
+      {
+        transactionId: request.oauth2.transactionID,
+        user: request.user,
+        client: request.oauth2.client,
+        scopes: request.oauth2.req.scope,
+        credentialID: request.query.credentialID,
+        hash: request.query.hash,
+        num_signatures: +request.query.numSignatures
+      });
   },
 ];
 
@@ -161,7 +239,12 @@ module.exports.authorization = [
 module.exports.decision = [
   login.ensureLoggedIn(),
   server.decision(function (req, done) {
-    return done(null, { scope: req.oauth2.req.scope }) // or req.scope
+    return done(null, {
+      scope: req.oauth2.req.scope,
+      credentialID: req.body.credentialID,
+      hash: req.body.hash,
+      numSignatures: +req.body.num_signatures
+    }) // this is ares
   }) // invokes server.grant()
 ];
 

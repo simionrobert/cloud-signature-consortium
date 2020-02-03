@@ -3,10 +3,10 @@
 const express = require('express');
 const passport = require('passport');
 const validator = require('validator');
-const crypto = require('crypto');
-
-const { errors } = require('../config');
+const { errors, settings } = require('../config');
 const csc = require('../lib');
+const Sad = require('../lib/db').Sad;
+const _ = require('lodash');
 
 const router = express.Router();
 
@@ -83,20 +83,21 @@ router.post('/signHash',
 
       // Verify sad
       if (sad === undefined || !validator.isAscii(sad)) { return next(errors.missingSAD); }
-      if (!validator.isHash(sad, 'sha512')) { return next(errors.invalidSAD); }
-      let currentSad = crypto.createHmac('sha512', credential.sad.key);
-      hashes.forEach(hash => {
-         currentSad.update(hash);
-      });
-      currentSad = currentSad.digest('hex');
-      if (currentSad !== credential.sad.value) { return next(errors.unauthorisedHash); }
 
+      Sad.findOneAndDelete({ value: sad, credential_id: credentialID }, function (err, foundSad) {
+         if (err) { return next(errors.invalidSAD); }
+         if (!foundSad) { return next(errors.invalidSAD); }
+         if (!_.isEqual(hashes.sort(), foundSad.hashes.sort())) return next(errors.unauthorisedHash);
 
-      // All is right
-      cscServer.sign(credentialID, hashes.map(i => Buffer.from(i, 'base64')), signAlgo, (signature, error) => {
-         if (error) { return next(errors.internalServerError); }
-         res.json({
-            signatures: [signature]
+         // check sad availability
+         if (foundSad.creation_date.getTime() + 1000 * settings.sad_expiring_time < Date.now()) { return next(errors.invalidSAD, false); }
+
+         // All is right
+         cscServer.sign(credentialID, hashes.map(i => Buffer.from(i, 'base64')), signAlgo, (signature, error) => {
+            if (error) { return next(errors.internalServerError); }
+            res.json({
+               signatures: [signature]
+            });
          });
       });
    });

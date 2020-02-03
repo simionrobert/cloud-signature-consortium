@@ -228,5 +228,85 @@
         "status": 400,
         "error": "invalid_request",
         "error_description": "Signing certificate 'O=[organization],CN=[common_name]' is expired."
+    },
+    "missingClientId": {
+        "status": 400,
+        "error": "invalid_request",
+        "error_description": "Missing parameter client_id."
+    },
+    "invalidClientId": {
+        "status": 400,
+        "error": "invalid_request",
+        "error_description": "Invalid parameter client_id."
+    },
+    "missingGrantType": {
+        "status": 400,
+        "error": "invalid_request",
+        "error_description": "Missing parameter grant_type."
+    },
+    "invalidGrantType": {
+        "status": 400,
+        "error": "invalid_request",
+        "error_description": "Invalid parameter grant_type."
+    },
+    "missingParameterCode": {
+        "status": 400,
+        "error": "invalid_request",
+        "error_description": "Missing parameter code."
+    },
+    "missingRefreshToken": {
+        "status": 400,
+        "error": "invalid_request",
+        "error_description": "Missing parameter refresh_token."
+    },
+    "notMatchRedirectUri": {
+        "status": 400,
+        "error": "invalid_request",
+        "error_description": "redirect_uri parameter does not match redirect_uri parameter of authorization request."
+    },
+    "invalidRefreshToken": {
+        "status": 400,
+        "error": "invalid_request",
+        "error_description": "Invalid parameter refresh_token."
+    },
+    "expiredRefreshToken": {
+        "status": 400,
+        "error": "invalid_request",
+        "error_description": "Refresh token expired."
+    },
+    "invalidCode": {
+        "status": 400,
+        "error": "invalid_request",
+        "error_description": "Authorization code is invalid or expired."
+    },
+    "noAuthHeader": {
+        "status": 400,
+        "error": "invalid_request",
+        "error_description": "Client authorization required."
+    },
+    "invalidClientSecret": {
+        "status": 400,
+        "error": "invalid_request",
+        "error_description": "Invalid parameter client_secret."
+    },
+    "missingToken": {
+        "status": 400,
+        "error": "invalid_request",
+        "error_description": "Missing parameter token."
+    },
+    "unsupportedToken": {
+        "status": 400,
+        "error": "invalid_request",
+        "error_description": "The authorization server does not support the revocation of the presented token type. That is, the client tried to revoke an access token on a server not supporting this feature."
+    },
+    "missingClientSecret": {
+        "status": 400,
+        "error": "invalid_request",
+        "error_description": "Missing parameter token."
+    },
+    "invalidAuthHeader": {
+        "status": 400,
+        "error": "invalid_request",
+        "error_description": "Invalid authorization header."
     }
 }

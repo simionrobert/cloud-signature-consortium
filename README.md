@@ -153,6 +153,8 @@ In Postman, set `certificate SSL validation` to false, under Settings.
 
 You will need to define the following Postman environment variabiles. The last two will be automatically updated after you post `auth/login`
 
+Useful website for base64 and base64 url safe encoding: http://www.base64url.com/
+
 ```
 url = https://localhost:3000/csc/v1
 access_token = ""

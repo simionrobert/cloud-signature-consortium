@@ -4,10 +4,18 @@ const mongoose = require('mongoose');
 
 const codeSchema = new mongoose.Schema({
     value: { type: String, unique: true },
-    user_id: String,
+
+    // oauth2/authorize
     scope: String,
+    user_id: String,
     client_id: String,
     redirect_uri: String,
+
+    // for credentials/authorize 
+    credential_id: String,
+    hashes: [String],
+    num_signatures: Number,
+
     creation_date: { type: Date, default: Date.now() }
 });
 
