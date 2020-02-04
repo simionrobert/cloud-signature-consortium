@@ -9,6 +9,7 @@
     "url": "git://github.com/simionrobert/CSC-Framework.git"
   },
   "publishConfig": {
+    "access": "public",
     "registry": "https://npm.pkg.github.com/"
   },
   "keywords": [
@@ -60,5 +61,10 @@
   "preferGlobal": true,
   "bin": {
     "csc-server": "bin/csc-server"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/simionrobert/CSC-Framework/issues"
+  },
+  "homepage": "https://github.com/simionrobert/CSC-Framework#readme",
+  "main": "bin/csc-server"
 }
