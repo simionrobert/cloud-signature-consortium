@@ -80,13 +80,13 @@ server.grant(oauth2orize.grant.code((client, redirectUri, user, ares, done) => {
     switch (ares.scope[0]) {
       case 'service':
         // Update or insert => upsert
-        Code.findOneAndUpdate({ client_id: client._id, user_id: user._id, redirect_uri: redirectUri }, {
+        Code.updateOne({ client_id: client._id, user_id: user._id, redirect_uri: redirectUri }, {
           value: utils.hash(buffer.toString('hex')),
           user_id: user._id,
           scope: ares.scope[0],
           client_id: client._id,
           redirect_uri: redirectUri
-        }, { upsert: true }, (err, code) => {
+        }, { upsert: true }, (err) => {
           if (err) return done('server_error');
 
           return done(null, buffer.toString('hex'));
@@ -95,7 +95,7 @@ server.grant(oauth2orize.grant.code((client, redirectUri, user, ares, done) => {
         break;
       case 'credential':
         // Update or insert => upsert
-        Code.findOneAndUpdate({ client_id: client._id, user_id: user._id, redirect_uri: redirectUri }, {
+        Code.updateOne({ client_id: client._id, user_id: user._id, redirect_uri: redirectUri }, {
           value: utils.hash(buffer.toString('hex')),
           user_id: user._id,
           scope: ares.scope[0],
@@ -104,7 +104,7 @@ server.grant(oauth2orize.grant.code((client, redirectUri, user, ares, done) => {
           credential_id: ares.credentialID,
           hashes: ares.hash.split(',').map(x => base64url.unescape(x)),
           num_signatures: ares.numSignatures
-        }, { upsert: true }, (err, code) => {
+        }, { upsert: true }, (err) => {
           if (err) return done('server_error');
 
           return done(null, buffer.toString('hex'));

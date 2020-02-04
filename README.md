@@ -3,7 +3,13 @@
 [![Build Status](https://travis-ci.org/simionrobert/cloud-signature-consortium.svg?branch=master)](https://travis-ci.org/simionrobert/cloud-signature-consortium.svg?branch=master) [![Dependency Status](https://david-dm.org/simionrobert/CSC-Framework/status.svg)](https://david-dm.org/simionrobert/CSC-Framework)
 
 A CSC RSSP -Cloud Signature Consortium Remote Signature Service Provider-, written in Node.js using SoftHSMv2 as HSM.
-This application follows the [CSC API V1.0.4.0 Specification](https://cloudsignatureconsortium.org/resources/download-api-specifications/). It also includes an OAuth 2.0 server for your particular needs.
+This application follows the [CSC API V1.0.4.0](https://cloudsignatureconsortium.org/resources/download-api-specifications/) specification. It also includes an OAuth 2.0 server for your particular needs.
+
+Installing globally via `npm`:
+
+```
+npm install -g csc-server
+```
 
 ## Prerequistes
 
@@ -39,12 +45,6 @@ In the [release version](https://github.com/simionrobert/cloud-signature-consort
 After you successfully installed and configured all the prerequistes, you can proceed to [Usage](#usage).
 
 ## Usage
-
-Installing globally via `npm`:
-
-```
-npm install -g csc-server
-```
 
 Create your own user:
 

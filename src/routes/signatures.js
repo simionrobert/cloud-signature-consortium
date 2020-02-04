@@ -31,7 +31,7 @@ router.post('/signHash',
       const hashes = req.body.hash;
       const hashAlgo = req.body.hashAlgo;
       const signAlgo = req.body.signAlgo;
-      const signAlgoParams = req.body.signAlgoParams;
+      //const signAlgoParams = req.body.signAlgoParams;
       const credential = user.credentials.find(x => x.credentialID === credentialID);
 
       // Verify credentialID
