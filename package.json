@@ -1,6 +1,6 @@
 {
   "name": "csc-server",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "CSC Framework RSSP in Node.js",
   "license": "MIT",
   "author": "Simion Robert",
@@ -9,8 +9,7 @@
     "url": "git://github.com/simionrobert/CSC-Framework.git"
   },
   "publishConfig": {
-    "access": "public",
-    "registry": "https://npm.pkg.github.com/"
+    "access": "public"
   },
   "keywords": [
     "digital signature",
