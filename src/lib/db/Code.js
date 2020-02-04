@@ -19,7 +19,6 @@ const codeSchema = new mongoose.Schema({
     creation_date: { type: Date, default: Date.now() }
 });
 
-
 const Code = mongoose.model('codes', codeSchema);
 
 module.exports = Code;

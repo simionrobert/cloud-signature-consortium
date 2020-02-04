@@ -3,6 +3,8 @@
 
 # Custom
 utils/
+docs/
+.vscode/
 
 
 ### C++ ###

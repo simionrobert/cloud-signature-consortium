@@ -6,7 +6,7 @@ const _ = require('lodash');
 const moment = require('moment');
 const validator = require('validator');
 const crypto = require('crypto');
-
+const utils = require('../utils');
 const { errors, settings } = require('../config');
 const Credential = require('../lib/db').Credential;
 const User = require('../lib/db').User;
@@ -151,13 +151,13 @@ router.post('/authorise',
 
          // verify pin
          let userCredentialObject = user.credentials.find(x => x.credentialID === credentialID);
-         if (userCredentialObject.pin !== pin) {
+         if (userCredentialObject.pin !== utils.hash(pin)) {
             return next(errors.invalidPIN);
          }
 
          // verify otp
          if (doc.OTP.presence === 'true') {
-            if (userCredentialObject.otp.value !== otp) {
+            if (userCredentialObject.otp.value !== utils.hash(otp)) {
                return next(errors.invalidOTP);
             }
          }
@@ -169,7 +169,7 @@ router.post('/authorise',
             const sadValue = buffer.toString('hex');
 
             const sad = new Sad({
-               value: sadValue,
+               value: utils.hash(sadValue),
                hashes: hashes,
                credential_id: credentialID
             });
@@ -202,7 +202,7 @@ router.post('/sendOTP',
          User.updateOne({ 'credentials.credentialID': credentialID },
             {
                '$set': {
-                  'credentials.$.otp.value': otp,
+                  'credentials.$.otp.value': utils.hash(otp),
                   'credentials.$.otp.timestamp': Date.now()
                }
             },

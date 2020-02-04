@@ -4,8 +4,10 @@ const https = require('https');
 const fs = require('fs');
 const mongoose = require('mongoose');
 const Credential = require('./db').Credential;
+const Client = require('./db').Client;
 const crypto = require('crypto');
 const { Certificate } = require('@fidm/x509');
+const utils = require('../utils');
 
 const app = require('../app.js');
 const User = require('./db').User;
@@ -57,6 +59,26 @@ class CSCServer {
             .catch(err => next(err));
     }
 
+    registerClient(name, id, secret, redirectUri, next) {
+        mongoose.connection.on('connected', () => {
+            mongoose.connection.removeAllListeners();
+
+            let client = new Client({
+                name: name,
+                client_id: id,
+                client_secret: utils.hash(secret),
+                redirect_uri: redirectUri
+            });
+
+            client.save(function (err) {
+                next(err);
+            });
+        });
+
+        mongoose.connect(config.database_url, { useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true, useCreateIndex: true })
+            .catch(err => next(err));
+    }
+
     generateCredentials(username, keypass, next) {
         this.hsm = new SoftHSMDriver();
 
@@ -74,10 +96,7 @@ class CSCServer {
                     $push: {
                         'credentials': {
                             credentialID: credentialID,
-                            pin: keypass,
-                            sad: "",
-                            key: "",
-                            timestamp: Date.now()
+                            pin: utils.hash(keypass)
                         }
                     }
                 }, (err, doc) => {
@@ -124,7 +143,7 @@ class CSCServer {
                                     description: 'Please enter the signature PIN'
                                 },
                                 OTP: {
-                                    presence: 'false',
+                                    presence: 'true',
                                     type: 'online',
                                     format: 'N',
                                     label: 'Please provide the OTP sent to your number',

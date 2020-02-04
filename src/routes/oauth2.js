@@ -12,7 +12,7 @@ const crypto = require('crypto');
 const passport = require('passport');
 const config = require('../config');
 const base64url = require('base64-url');
-
+const utils = require('../utils');
 
 // Create OAuth 2.0 server
 const server = oauth2orize.createServer();
@@ -81,7 +81,7 @@ server.grant(oauth2orize.grant.code((client, redirectUri, user, ares, done) => {
       case 'service':
         // Update or insert => upsert
         Code.findOneAndUpdate({ client_id: client._id, user_id: user._id, redirect_uri: redirectUri }, {
-          value: buffer.toString('hex'),
+          value: utils.hash(buffer.toString('hex')),
           user_id: user._id,
           scope: ares.scope[0],
           client_id: client._id,
@@ -96,7 +96,7 @@ server.grant(oauth2orize.grant.code((client, redirectUri, user, ares, done) => {
       case 'credential':
         // Update or insert => upsert
         Code.findOneAndUpdate({ client_id: client._id, user_id: user._id, redirect_uri: redirectUri }, {
-          value: buffer.toString('hex'),
+          value: utils.hash(buffer.toString('hex')),
           user_id: user._id,
           scope: ares.scope[0],
           client_id: client._id,
@@ -127,7 +127,7 @@ server.grant(oauth2orize.grant.code((client, redirectUri, user, ares, done) => {
 server.exchange(oauth2orize.exchange.code((client, code, redirectUri, done) => {
 
   // This code can either be for service/credential authorization. It should be found by value
-  Code.findOne({ value: code, client_id: client._id }, function (err, authCode) {
+  Code.findOne({ value: utils.hash(code), client_id: client._id }, function (err, authCode) {
     if (err) { return done(err); }
     if (authCode === undefined || authCode === null) { return done(errors.internalServerError); }
     if (client._id.toString() !== authCode.client_id) { return done(errors.invalidClientId); }
@@ -144,7 +144,7 @@ server.exchange(oauth2orize.exchange.code((client, code, redirectUri, done) => {
           const tokenValue = buffer.toString('hex');
 
           Token.updateOne({ client_id: authCode.client_id, type: 'access_token' }, {
-            value: tokenValue,
+            value: utils.hash(tokenValue),
             type: 'access_token',
             user_id: authCode.user_id,
             client_id: authCode.client_id
@@ -163,7 +163,7 @@ server.exchange(oauth2orize.exchange.code((client, code, redirectUri, done) => {
 
           const sadValue = buffer.toString('hex');
           const sad = new Sad({
-            value: sadValue,
+            value: utils.hash(sadValue),
             hashes: authCode.hashes,
             credential_id: authCode.credential_id
           });

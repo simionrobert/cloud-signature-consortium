@@ -6,7 +6,7 @@ const crypto = require('crypto');
 
 const { errors, settings } = require('../config');
 const Token = require('../lib/db').Token;
-
+const utils = require('../utils');
 const router = express.Router();
 
 router.post('/login',
@@ -25,7 +25,7 @@ router.post('/login',
 
           // update user with the refresh token and timestamp
           Token.updateOne({ user_id: user._id, type: 'refresh_token' }, {
-            value: refreshToken,
+            value: utils.hash(refreshToken),
             type: 'refresh_token',
             creation_date: Date.now(),
             user_id: user._id,
@@ -52,7 +52,7 @@ router.post('/login',
 
             // update user with the access token or insert a new one (upsert option)
             Token.updateOne({ user_id: user._id, type: 'access_token' }, {
-              value: accessToken,
+              value: utils.hash(accessToken),
               type: 'access_token',
               user_id: user._id,
               client_id: ''
@@ -75,7 +75,7 @@ router.post('/login',
 
             // update user with the access token or insert a new one (upsert option)
             Token.updateOne({ user_id: user._id, type: 'access_token' }, {
-              value: accessToken,
+              value: utils.hash(accessToken),
               type: 'access_token',
               user_id: user._id,
               client_id: ''
@@ -110,12 +110,12 @@ router.post('/revoke',
     if (hint === undefined) {
 
       // update user with the access token and timestamp
-      Token.findOneAndDelete({ user_id: user._id, value: token, type: 'access_token' }, (err, doc) => {
+      Token.findOneAndDelete({ user_id: user._id, value: utils.hash(token), type: 'access_token' }, (err, doc) => {
         if (err) return next(errors.databaseError);
         if (!doc) {
 
           // try with refresh token
-          Token.findOneAndUpdate({ user_id: user._id, value: token, type: 'refresh_token' }, (err, doc) => {
+          Token.findOneAndUpdate({ user_id: user._id, value: utils.hash(token), type: 'refresh_token' }, (err, doc) => {
             if (err) return next(errors.databaseError);
             if (!doc) { return next(errors.invalidTokenParameter); }
 
@@ -128,7 +128,7 @@ router.post('/revoke',
 
     } else {
       if (hint === 'access_token') {
-        Token.findOneAndDelete({ user_id: user._id, value: token, type: 'access_token' }, (err, doc) => {
+        Token.findOneAndDelete({ user_id: user._id, value: utils.hash(token), type: 'access_token' }, (err, doc) => {
           if (err) return next(errors.databaseError);
           if (!doc) { return next(errors.invalidTokenParameter); }
 
@@ -136,7 +136,7 @@ router.post('/revoke',
         });
 
       } else {
-        Token.findOneAndDelete({ user_id: user._id, value: token, type: 'refresh_token' }, (err, doc) => {
+        Token.findOneAndDelete({ user_id: user._id, value: utils.hash(token), type: 'refresh_token' }, (err, doc) => {
           if (err) return next(errors.databaseError);
           if (!doc) { return next(errors.invalidTokenParameter); }
 

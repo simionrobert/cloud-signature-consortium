@@ -6,8 +6,10 @@
   "author": "Simion Robert",
   "url": "https://github.com/simionrobert/",
   "repository": {
-    "type": "git",
-    "url": "https://github.com/simionrobert/CSC-Framework.git"
+    "url": "git://github.com/simionrobert/CSC-Framework.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   },
   "keywords": [
     "digital signature",

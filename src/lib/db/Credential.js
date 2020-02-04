@@ -23,13 +23,13 @@ const credentialSchema = new mongoose.Schema({
     authMode: String,
     SCAL: String,
     PIN: {
-        presence: String,
+        presence: Boolean,
         format: String,
         label: String,
         description: String
     },
     OTP: {
-        presence: String,
+        presence: Boolean,
         types: String,
         format: String,
         label: String,

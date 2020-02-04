@@ -7,6 +7,7 @@ const { errors, settings } = require('../config');
 const csc = require('../lib');
 const Sad = require('../lib/db').Sad;
 const _ = require('lodash');
+const utils=require('../utils');
 
 const router = express.Router();
 
@@ -84,7 +85,7 @@ router.post('/signHash',
       // Verify sad
       if (sad === undefined || !validator.isAscii(sad)) { return next(errors.missingSAD); }
 
-      Sad.findOneAndDelete({ value: sad, credential_id: credentialID }, function (err, foundSad) {
+      Sad.findOneAndDelete({ value: utils.hash(sad), credential_id: credentialID }, function (err, foundSad) {
          if (err) { return next(errors.invalidSAD); }
          if (!foundSad) { return next(errors.invalidSAD); }
          if (!_.isEqual(hashes.sort(), foundSad.hashes.sort())) return next(errors.unauthorisedHash);

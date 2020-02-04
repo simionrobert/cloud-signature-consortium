@@ -12,7 +12,7 @@ const User = require('./lib/db').User;
 const Client = require('./lib/db').Client;
 const { errors } = require('./config');
 const config = require('./config');
-
+const utils = require('./utils');
 
 function verifyUser(username, password, done) {
     User.findOne({ user: username }, function (err, user) {
@@ -27,7 +27,7 @@ function verifyClient(clientId, clientSecret, done) {
     Client.findOne({ client_id: clientId }, (error, client) => {
         if (error) return done(error);
         if (!client) return done(null, false);
-        if (client.client_secret !== clientSecret) return done(null, false);
+        if (!client.verify(clientSecret)) { return done(errors.accessDenied, false); }
 
         return done(null, client);
     });
@@ -93,7 +93,7 @@ passport.use(new CustomStrategy(
 
         if (!validator.isHexadecimal(req.body.refresh_token)) return done(errors.invalidRefreshTokenFormatParameter);
 
-        Token.findOne({ 'value': req.body.refresh_token, type: 'refresh_token' }, function (err, doc) {
+        Token.findOne({ 'value': utils.hash(req.body.refresh_token), type: 'refresh_token' }, function (err, doc) {
             if (err) { return done(errors.authError); }
             if (!doc) { return done(errors.invalidRefreshTokenParameter, false); }
 
@@ -125,7 +125,7 @@ passport.use(new BearerStrategy(
 
         if (!validator.isHexadecimal(access_token)) return done(errors.invalidAccessToken);
 
-        Token.findOne({ 'value': access_token, type: 'access_token' }, function (err, doc) {
+        Token.findOne({ 'value': utils.hash(access_token), type: 'access_token' }, function (err, doc) {
             if (err) { return done(errors.databaseError); }
             if (!doc) { return done(errors.invalidToken, false); }
 

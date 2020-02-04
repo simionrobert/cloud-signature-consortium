@@ -4,7 +4,6 @@
 
 A CSC RSSP, cloud signature consortium remote signature service provider, made in Node.js, using SoftHSMv2 as HSM.
 
-This is a work in progress. Do not use it yet!
 
 ## Prerequistes
 
@@ -42,7 +41,7 @@ In the [release version](https://github.com/simionrobert/cloud-signature-consort
 Don't forget to configure the location of these in the config/config.json ("softhsm2_driver_path, "openSSL_path", "openSC_path")
 If you don't want to do this, by default, the config file is set to search in /utils (/ = root) folder.
 
-## Install
+## Usage
 
 Installing globally via `npm`:
 
@@ -53,7 +52,7 @@ npm install -g csc-server
 Create your own user:
 
 ```
-csc-server --user "user" --pass "pass"
+csc-server --user "username" --pass "password"
 ```
 
 Start CSC Server:

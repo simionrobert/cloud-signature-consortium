@@ -10,7 +10,6 @@ const tokenSchema = new mongoose.Schema({
     creation_date: { type: Date, default: Date.now() } // the date of creation of the token
 });
 
-
 const Token = mongoose.model('tokens', tokenSchema);
 
 module.exports = Token;
