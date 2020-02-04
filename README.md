@@ -10,23 +10,26 @@ This application follows the [CSC API V1.0.4.0 Specification](https://cloudsigna
 1. Install Mongodb from [mongodb.com](https://www.mongodb.com/download-center/community)
 2. Install [OpenSC](https://github.com/OpenSC/OpenSC/releases) that is needed for interacting with the SoftHSMv2 dll module. We will use `pkcs11-tool` exe.
 
-3. Install yourself or just copy [SoftHSMv2](https://github.com/opendnssec/SoftHSMv2) from the project's [release binaries](https://github.com/simionrobert/cloud-signature-consortium/releases).
+3. Install [SoftHSMv2](https://github.com/opendnssec/SoftHSMv2) or just copy it from the project's [release binaries](https://github.com/simionrobert/cloud-signature-consortium/releases) to the resources folder.
 
 - Set environment variabile `SOFTHSM2_CONF=%path_to_softhsm2\lib\softhsm2.conf%`
 - In the file path\to\softhsm2.conf, set `directories.tokendir=%path_to_softhsm2\tokens_folder%`
 - Initialize a new softhsm2 token with `%path_to_softhsm2\bin\softhsm2-util.exe%`
+
 ```
 softhsm2-util --init-token --slot 0 --label "mytoken"
 ```
 
-4. Copy OpenSSL from [release binaries](https://github.com/simionrobert/cloud-signature-consortium/releases) or install it from [OpenSSL](https://github.com/openssl/openssl).
+4. Install [OpenSSL](https://github.com/openssl/openssl) or just copy it from the project's [release binaries](https://github.com/simionrobert/cloud-signature-consortium/releases) to the resources folder.
 
 - Generate a new certificate and private key for your https/SSL/TLS service and put them in the resources folder of the application (the one provided in config.json. See point 5):
+
 ```
 openssl req -x509 -newkey rsa:4096 -keyout keySSL.pem -out certSSL.pem -days 365
 ```
 
 In the [release version](https://github.com/simionrobert/cloud-signature-consortium/releases) you will find the following binaries:
+
 - OpenSSL 1.1.1.d x86 (used by the app)
 - SoftHSMv2 (used by the app)
 - PKCS11Admin - 0.5.0 (Optional GUI to help you see the token objects)
@@ -34,7 +37,6 @@ In the [release version](https://github.com/simionrobert/cloud-signature-consort
 5. Configure the service settings. See [Configuration](#configuration).
 
 After you successfully installed and configured all the prerequistes, you can proceed to [Usage](#usage).
-
 
 ## Usage
 
@@ -64,7 +66,6 @@ csc-server -l
 ```
 
 Now you have a fully functional CSC server.
-
 
 ## Example Usage
 
