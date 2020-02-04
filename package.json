@@ -2,22 +2,25 @@
   "name": "csc-server",
   "version": "1.0.2",
   "description": "CSC Framework RSSP in Node.js",
-  "license": "MIT",
-  "author": "Simion Robert",
-  "url": "https://github.com/simionrobert/",
-  "repository": {
-    "url": "git://github.com/simionrobert/CSC-Framework.git"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
   "keywords": [
     "digital signature",
     "cloud signature consortium",
     "remote service signature provider",
-    "nodejs",
-    "signature"
+    "signature",
+    "csc"
   ],
+  "homepage": "https://github.com/simionrobert/CSC-Framework#readme",
+  "bugs": {
+    "url": "https://github.com/simionrobert/CSC-Framework/issues"
+  },
+  "license": "MIT",
+  "author": "Simion Robert",
+  "bin": {
+    "csc-server": "./bin/csc-server"
+  },
+  "repository": {
+    "url": "git://github.com/simionrobert/CSC-Framework.git"
+  },
   "scripts": {
     "debug": "nodemon --inspect ./bin/csc-server -l",
     "debug-test": "nodemon --inspect ./bin/csc-server --user=robert.simion --pass=alabala --keypass=secret",
@@ -57,13 +60,7 @@
     "mocha": "^7.0.1"
   },
   "private": false,
-  "preferGlobal": true,
-  "bin": {
-    "csc-server": "bin/csc-server"
-  },
-  "bugs": {
-    "url": "https://github.com/simionrobert/CSC-Framework/issues"
-  },
-  "homepage": "https://github.com/simionrobert/CSC-Framework#readme",
-  "main": "bin/csc-server"
+  "publishConfig": {
+    "access": "public"
+  }
 }

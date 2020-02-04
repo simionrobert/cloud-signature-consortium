@@ -4,7 +4,7 @@ const exec = require('child_process').exec;
 const fs = require('fs');
 const crypto = require('crypto');
 
-const config = require('../../config').settings;
+const config = require('../../../config').settings;
 const utils = require('../../utils');
 
 

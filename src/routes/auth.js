@@ -4,7 +4,7 @@ const express = require('express');
 const passport = require('passport');
 const crypto = require('crypto');
 
-const { errors, settings } = require('../config');
+const { errors, settings } = require('../../config');
 const Token = require('../lib/db').Token;
 const utils = require('../utils');
 const router = express.Router();
@@ -54,6 +54,7 @@ router.post('/login',
             Token.updateOne({ user_id: user._id, type: 'access_token' }, {
               value: utils.hash(accessToken),
               type: 'access_token',
+              creation_date: Date.now(),
               user_id: user._id,
               client_id: ''
             }, { upsert: true }, (err) => {
@@ -77,6 +78,7 @@ router.post('/login',
             Token.updateOne({ user_id: user._id, type: 'access_token' }, {
               value: utils.hash(accessToken),
               type: 'access_token',
+              creation_date: Date.now(),
               user_id: user._id,
               client_id: ''
             },
@@ -115,7 +117,7 @@ router.post('/revoke',
         if (!doc) {
 
           // try with refresh token
-          Token.findOneAndUpdate({ user_id: user._id, value: utils.hash(token), type: 'refresh_token' }, (err, doc) => {
+          Token.findOneAndDelete({ user_id: user._id, value: utils.hash(token), type: 'refresh_token' }, (err, doc) => {
             if (err) return next(errors.databaseError);
             if (!doc) { return next(errors.invalidTokenParameter); }
 

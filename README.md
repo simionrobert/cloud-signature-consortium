@@ -2,44 +2,39 @@
 
 [![Build Status](https://travis-ci.org/simionrobert/cloud-signature-consortium.svg?branch=master)](https://travis-ci.org/simionrobert/cloud-signature-consortium.svg?branch=master) [![Dependency Status](https://david-dm.org/simionrobert/CSC-Framework/status.svg)](https://david-dm.org/simionrobert/CSC-Framework)
 
-A CSC RSSP, cloud signature consortium remote signature service provider, made in Node.js, using SoftHSMv2 as HSM.
-
+A CSC RSSP -Cloud Signature Consortium Remote Signature Service Provider-, written in Node.js using SoftHSMv2 as HSM.
+This application follows the [CSC API V1.0.4.0 Specification](https://cloudsignatureconsortium.org/resources/download-api-specifications/). It also includes an OAuth 2.0 server for your particular needs.
 
 ## Prerequistes
 
-What things are needed to install the software and how to install them.
-
 1. Install Mongodb from [mongodb.com](https://www.mongodb.com/download-center/community)
-2. Install OpenSC for interacting with the SoftHSMv2 module.
+2. Install [OpenSC](https://github.com/OpenSC/OpenSC/releases) that is needed for interacting with the SoftHSMv2 dll module. We will use `pkcs11-tool` exe.
 
-- Download and install [OpenSC](https://github.com/OpenSC/OpenSC/releases), which is used for `pkcs11-tool` exe.
+3. Install yourself or just copy [SoftHSMv2](https://github.com/opendnssec/SoftHSMv2) from the project's [release binaries](https://github.com/simionrobert/cloud-signature-consortium/releases).
 
-3. Install SoftHSMv2 pkcs11 token module.
-
-- Use this projects's binaries or install it from [SoftHSMv2](https://github.com/opendnssec/SoftHSMv2)
-- Set environment variabile `SOFTHSM2_CONF=path\to\softhsm2.conf`
-- In the file path\to\softhsm2.conf, set key `directories.tokendir=path\to\tokens`
-- Use `softhsm2-util.exe` to initialize a new softhsm2 token. You you don't want this, just use the provided one in the binaries.
-
+- Set environment variabile `SOFTHSM2_CONF=%path_to_softhsm2\lib\softhsm2.conf%`
+- In the file path\to\softhsm2.conf, set `directories.tokendir=%path_to_softhsm2\tokens_folder%`
+- Initialize a new softhsm2 token with `%path_to_softhsm2\bin\softhsm2-util.exe%`
 ```
 softhsm2-util --init-token --slot 0 --label "mytoken"
 ```
 
-4. Download OpenSSL binaries or install it from [OpenSSL](https://github.com/openssl/openssl).
-   To generate a new certificate and private key for your https/SSL/TLS service, call this command, and put them in the resources folder:
+4. Copy OpenSSL from [release binaries](https://github.com/simionrobert/cloud-signature-consortium/releases) or install it from [OpenSSL](https://github.com/openssl/openssl).
 
+- Generate a new certificate and private key for your https/SSL/TLS service and put them in the resources folder of the application (the one provided in config.json. See point 5):
 ```
 openssl req -x509 -newkey rsa:4096 -keyout keySSL.pem -out certSSL.pem -days 365
 ```
 
 In the [release version](https://github.com/simionrobert/cloud-signature-consortium/releases) you will find the following binaries:
-
 - OpenSSL 1.1.1.d x86 (used by the app)
 - SoftHSMv2 (used by the app)
-- PKCS11Admin - 0.5.0 (GUI used to see the token objects)
+- PKCS11Admin - 0.5.0 (Optional GUI to help you see the token objects)
 
-Don't forget to configure the location of these in the config/config.json ("softhsm2_driver_path, "openSSL_path", "openSC_path")
-If you don't want to do this, by default, the config file is set to search in /utils (/ = root) folder.
+5. Configure the service settings. See [Configuration](#configuration).
+
+After you successfully installed and configured all the prerequistes, you can proceed to [Usage](#usage).
+
 
 ## Usage
 
@@ -52,72 +47,90 @@ npm install -g csc-server
 Create your own user:
 
 ```
-csc-server --user "username" --pass "password"
+csc-server --createUser --user="username" --pass="password" --pin="pin"
+
+```
+
+If you plan to use OAuth 2.0, create your own client:
+
+```
+csc-server --createClient --name=name --id=id --secret=secret --redirectUri=redirectUri
 ```
 
 Start CSC Server:
 
 ```
-csc-server
+csc-server -l
 ```
 
-Now you have a fully functional CSC server and you should be able to run the tests provided in [Running the tests](#running-the-tests)
+Now you have a fully functional CSC server.
+
 
 ## Example Usage
 
 ```
-csc-server [options]
+Usage:
+   csc-server [options]
 
 Options:
-  --port, -p       Set port                                         [8080]
-  --host, -H       Set host                                         [0.0.0.0]
-  --db, -d         Database URL                                     [mongodb://localhost:27017/csc]
-  --user           User to add once to the db. Used it with --pass  [string]
-  --pass           Password of the user. Used it with --user        [string]
-  --cert, -c       Path to ssl cert file                            [default: cert.pem]
-  --key, -k        Path to ssl key file                             [default: key.pem]
-  --passphrase     Path to ssl key file                             [default: 0000]
-  --silent, -s     Suppress log messages from output                [boolean]
-  --help, -h       Print this list and exit.                        [boolean]
+  --createUser    Create a user using the arguments below.
+       --user           Username of the user.
+       --pass           Password of the user.
+       --pin            PIN associated with the generated private key.
 
+  --createClient  Create an OAuth 2.0 client using the arguments below.
+       --name          Name of the client application.
+       --id            Client id.',
+       --secret        Client_secret.
+       --redirectUri   Redirect_uri.
+
+  --listen, -l     Start the server
+       --silent, -s     Suppress log messages from output.
+
+  --version, -v    Print the version and exit.
+  --help, -h       Print this list and exit.
 Examples
-    csc-server --user "username" --pass "password"
-    csc-server
+   csc-server -l
+   csc-server --createUser --user=username --pass=password --pin=pin
+   csc-server --createClient --name=name --id=id --secret=secret --redirectUri=redirectUri
 ```
 
 ## Configuration
 
-You can also set default options in the `%userprofile%/AppData/Roaming/npm/node_modules/csc-server/config/config.json` configuration file.
+The configuration file is located at `%userprofile%/AppData/Roaming/npm/node_modules/csc-server/config/config.json`.
+Feel free to customize and provide the correct paths of the software you installed in the [Prerequistes](#prerequistes).
 
 ```
 {
-"https": {
-        "host": "0.0.0.0",
-        "port": "8080",
-        "cert_SSL": "certSSL.pem",
-        "key_SSL": "keySSL.pem",
-        "SSL_key_passphrase": "0000"
-    },
-    "resources_path": "./resources",
-    "softhsm2_driver_path": "utils/SoftHSMv2/lib/softhsm2.dll",
-    "openSSL_path": "utils/openssl-1.1.1-x86/openssl.exe",
-    "openSC_path":"C:/Program Files (x86)/OpenSC Project/OpenSC/tools/pkcs11-tool.exe",
-    "token": {
-        "slot": "189467408",
-        "pin": "0000"
-    },
-    "database_url": "mongodb://localhost:27017/csc",
+    "version": "1.0.2",
     "csc": {
         "access_token_expiring_time": 3600,
         "refresh_token_expiring_time": 7200,
         "sad_expiring_time": 1800,
-        "otp_expiring_time":1800,
+        "code_expiring_time": 600,
+        "otp_expiring_time": 1800,
         "max_results": 10
+    },
+    "https": {
+        "host": "0.0.0.0",
+        "port": "8080",
+        "certificate": "D:/Scoala/Dizertatie/CSC Framework/resources/certSSL.pem",
+        "private_key": "D:/Scoala/Dizertatie/CSC Framework/resources/keySSL.pem",
+        "private_key_password": "0000"
+    },
+    "database_url": "mongodb://localhost:27017/csc",
+    "resources_path": "D:/Scoala/Dizertatie/CSC Framework/resources",
+    "softhsm2_driver_path": "D:/Scoala/Dizertatie/CSC Framework/utils/SoftHSMv2/lib/softhsm2.dll",
+    "openSSL_path": "D:/Scoala/Dizertatie/CSC Framework/utils/openssl-1.1.1-x86/openssl.exe",
+    "openSC_path": "C:/Program Files (x86)/OpenSC Project/OpenSC/tools/pkcs11-tool.exe",
+    "token": {
+        "slot": "189467408",
+        "pin": "0000"
     }
 }
 ```
 
-You can also set the `/csc/v1/info` results in the `%userprofile%/AppData/Roaming/npm/node_modules/csc-server/config/info.json` configuration file.
+You can also configure the endpoint `/csc/v1/info` results in the `%userprofile%/AppData/Roaming/npm/node_modules/csc-server/config/info.json` configuration file.
 
 ```
 {
@@ -142,22 +155,6 @@ You can also set the `/csc/v1/info` results in the `%userprofile%/AppData/Roamin
             "signatures/signHash"
     ]
 }
-```
-
-## Running the tests
-
-You can run the commands for testing using Postman.
-
-In Postman, set `certificate SSL validation` to false, under Settings.
-
-You will need to define the following Postman environment variabiles. The last two will be automatically updated after you post `auth/login`
-
-Useful website for base64 and base64 url safe encoding: http://www.base64url.com/
-
-```
-url = https://localhost:3000/csc/v1
-access_token = ""
-refresh_token = ""
 ```
 
 ## Authors

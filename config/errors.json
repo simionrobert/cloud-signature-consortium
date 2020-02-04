@@ -109,7 +109,7 @@
         "error": "invalid_request",
         "error_description": "Invalid parameter certificates"
     },
-    "disabledCredentialID": {
+    "disabledSigningKey": {
         "status": 400,
         "error": "invalid_request",
         "error_description": "The credential identified by credentialID is disabled"

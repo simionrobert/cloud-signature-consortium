@@ -11,7 +11,7 @@ const utils = require('../utils');
 
 const app = require('../app.js');
 const User = require('./db').User;
-const config = require('../config').settings;
+const config = require('../../config').settings;
 const SoftHSMDriver = require('./hsm/SoftHsmDriver');
 
 
@@ -21,10 +21,11 @@ const SoftHSMDriver = require('./hsm/SoftHsmDriver');
 class CSCServer {
     listen(options, next) {
         app.set('port', options.port || config.https.port);
+
         this.server = https.createServer({
-            cert: fs.readFileSync(options.cert || config.https.cert_SSL),
-            key: fs.readFileSync(options.key || config.https.key_SSL),
-            passphrase: options.passphrase || config.https.SSL_key_passphrase
+            cert: fs.readFileSync(options.cert || config.https.certificate),
+            key: fs.readFileSync(options.key || config.https.private_key),
+            passphrase: options.passphrase || config.https.private_key_password
         }, app);
 
         mongoose.connection.on('connected', () => {

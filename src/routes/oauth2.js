@@ -7,10 +7,10 @@ const Client = require('../lib/db').Client;
 const Code = require('../lib/db').Code;
 const Sad = require('../lib/db').Sad;
 const Token = require('../lib/db').Token;
-const { errors } = require('../config');
+const { errors } = require('../../config');
 const crypto = require('crypto');
 const passport = require('passport');
-const config = require('../config');
+const config = require('../../config');
 const base64url = require('base64-url');
 const utils = require('../utils');
 
@@ -146,6 +146,7 @@ server.exchange(oauth2orize.exchange.code((client, code, redirectUri, done) => {
           Token.updateOne({ client_id: authCode.client_id, type: 'access_token' }, {
             value: utils.hash(tokenValue),
             type: 'access_token',
+            creation_date: Date.now(),
             user_id: authCode.user_id,
             client_id: authCode.client_id
           }, { upsert: true }, (err) => {

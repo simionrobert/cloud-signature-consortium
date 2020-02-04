@@ -3,7 +3,7 @@
 const express = require('express');
 const passport = require('passport');
 const validator = require('validator');
-const { errors, settings } = require('../config');
+const { errors, settings } = require('../../config');
 const csc = require('../lib');
 const Sad = require('../lib/db').Sad;
 const _ = require('lodash');

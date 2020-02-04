@@ -5,8 +5,8 @@
 const cscServer = require('../src/lib'),
     os = require('os'),
     logger = require('winston'),
-    argv = require('minimist')(process.argv.slice(2)),
-    config = require('../src/config');
+    argv = require('minimist')(process.argv.slice(2), { string: ['pin', 'pass', 'id', 'secret', 'passphrase'] }),
+    config = require('../config');
 
 const { format } = logger;
 const ifaces = os.networkInterfaces();
@@ -29,7 +29,7 @@ logger.configure({
 if (argv.h || argv.help) {
     logger.log([
         'Usage:',
-        'csc-server [options]',
+        '   csc-server [options]',
         '',
         'Options:',
         '  --createUser    Create a user using the arguments below.',
@@ -44,20 +44,14 @@ if (argv.h || argv.help) {
         '       --redirectUri   Redirect_uri.',
         '',
         '  --listen, -l     Start the server',
-        '  --port, -p       Port to use [8080]',
-        '  --address, -a    Address to use [0.0.0.0]',
+        '       --silent, -s     Suppress log messages from output',
         '',
-        '  --cert, -c       Path to SSL cert file (default: cert.pem).',
-        '  --key, -k        Path to SSL key file (default: key.pem).',
-        '  --passphrase     Password to SSL private key (default: 0000).',
-        '',
-        '  --silent, -s     Suppress log messages from output',
         '  --version, -v    Print the version and exit.',
         '  --help, -h       Print this list and exit.',
         '',
         'Examples',
         '   csc-server -l',
-        '   csc-server --createUser --user=username --pass=password --pin=password',
+        '   csc-server --createUser --user=username --pass=password --pin=pin',
         '   csc-server --createClient --name=name --id=id --secret=secret --redirectUri=redirectUri'
     ].join('\n'));
     process.exit();
@@ -109,6 +103,7 @@ if (argv.createUser) {
             }
 
             logger.info(`Client "${argv.name}" was successfully created!`);
+            process.exit();
         });
     } else {
         logger.error(`Options --name, --id, --secret and redirectUri need to be used together!`);
@@ -117,14 +112,7 @@ if (argv.createUser) {
 
 } else if (argv.l || argv.listen) {
     // Start server
-    const options = {
-        host: argv.a || argv.address,
-        port: argv.p || argv.port || parseInt(process.env.PORT, 10),
-        database: argv.db || argv.d,
-        cert: argv.C || argv.cert,
-        key: argv.K || argv.key,
-        passphrase: argv.passphrase
-    };
+    const options = {};
 
     const server = cscServer.createServer();
     server.listen(options, function (error, port, host) {

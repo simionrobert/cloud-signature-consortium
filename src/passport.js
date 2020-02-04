@@ -10,8 +10,8 @@ const validator = require('validator');
 const Token = require('./lib/db').Token;
 const User = require('./lib/db').User;
 const Client = require('./lib/db').Client;
-const { errors } = require('./config');
-const config = require('./config');
+const { errors } = require('../config');
+const config = require('../config');
 const utils = require('./utils');
 
 function verifyUser(username, password, done) {

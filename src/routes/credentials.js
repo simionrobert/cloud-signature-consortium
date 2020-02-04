@@ -7,7 +7,7 @@ const moment = require('moment');
 const validator = require('validator');
 const crypto = require('crypto');
 const utils = require('../utils');
-const { errors, settings } = require('../config');
+const { errors, settings } = require('../../config');
 const Credential = require('../lib/db').Credential;
 const User = require('../lib/db').User;
 const Sad = require('../lib/db').Sad;
@@ -157,7 +157,7 @@ router.post('/authorise',
 
          // verify otp
          if (doc.OTP.presence === 'true') {
-            if (userCredentialObject.otp.value !== utils.hash(otp)) {
+            if (userCredentialObject.otp.value !== utils.hash(otp.toString())) {
                return next(errors.invalidOTP);
             }
          }
@@ -195,17 +195,17 @@ router.post('/sendOTP',
          if (err) return next(errors.databaseError);
          if (!doc) { return next(errors.invalidCredentialID); }
 
-         if (doc.status == 'disabled') { return next(errors.disabledCredentialID); }
+         if (doc.key.status == 'disabled') { return next(errors.disabledSigningKey); }
 
          const otp = Math.floor(100000 + Math.random() * 900000);
 
          User.updateOne({ 'credentials.credentialID': credentialID },
             {
                '$set': {
-                  'credentials.$.otp.value': utils.hash(otp),
+                  'credentials.$.otp.value': utils.hash(otp.toString()),
                   'credentials.$.otp.timestamp': Date.now()
                }
-            },
+            }, { upsert: true },
             function (err) {
                if (err) { return next(errors.databaseError); }
 
