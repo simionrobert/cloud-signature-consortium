@@ -6,7 +6,7 @@ const cscServer = require('../src/lib'),
     os = require('os'),
     logger = require('winston'),
     argv = require('minimist')(process.argv.slice(2), { string: ['pin', 'pass', 'id', 'secret', 'passphrase'] }),
-    config = require('../config');
+    packageInfo = require('../package.json');
 
 const { format } = logger;
 const ifaces = os.networkInterfaces();
@@ -27,7 +27,7 @@ logger.configure({
 
 // Show help
 if (argv.h || argv.help) {
-    logger.log([
+    logger.info([
         'Usage:',
         '   csc-server [options]',
         '',
@@ -59,7 +59,7 @@ if (argv.h || argv.help) {
 
 // Show version
 if (argv.v || argv.version) {
-    logger.log(`csc-server version ${config.settings.version}`);
+    logger.info(`${packageInfo.name} version ${packageInfo.version}`);
     process.exit();
 }
 

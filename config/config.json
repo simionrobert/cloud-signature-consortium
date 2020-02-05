@@ -1,5 +1,4 @@
 {
-    "version": "1.0.2",
     "csc": {
         "access_token_expiring_time": 3600,
         "refresh_token_expiring_time": 7200,
