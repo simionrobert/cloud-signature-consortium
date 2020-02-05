@@ -1,6 +1,6 @@
 {
   "name": "csc-server",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "CSC Framework RSSP in Node.js",
   "keywords": [
     "digital signature",
