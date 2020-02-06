@@ -2,8 +2,10 @@
 # Edit at https://www.gitignore.io/?templates=c++,node,visualstudiocode
 
 # Custom
-utils/
-
+libs/
+docs/Diagrams/
+docs/Simion Robert-George - Serviciu web de semnatura digitala in cloud in conformitate cu standardul CSC.docx
+docs/~$mion Robert-George - Serviciu web de semnatura digitala in cloud in conformitate cu standardul CSC.docx
 
 ### C++ ###
 # Prerequisites

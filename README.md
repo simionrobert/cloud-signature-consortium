@@ -103,7 +103,6 @@ Feel free to customize and provide the correct paths of the software you install
 
 ```
 {
-    "version": "1.0.2",
     "csc": {
         "access_token_expiring_time": 3600,
         "refresh_token_expiring_time": 7200,
@@ -153,10 +152,22 @@ You can also configure the endpoint `/csc/v1/info` results in the `%userprofile%
             "credentials/info",
             "credentials/authorize",
             "credentials/sendOTP",
-            "signatures/signHash"
+            "signatures/signHash",
+            "oauth2/authorize",
+            "oauth2/token"
     ]
 }
 ```
+
+## Testing
+
+A Postman request collection is provided in [docs](https://github.com/simionrobert/cloud-signature-consortium/tree/master/docs) folder. There is also a json collection containing the environment variabiles used in the requests based on the server responses through Tests. They can be imported in Postman using File > Import.
+
+Keep in mind that you must open a browser an enter the links provided in the collection for the **oauth2/authorize service** and **oauth2/authorize credentials** to actually test them (We simulate an application client throught our browser). After login and user acceptance, the application client's redirect_uri will be called with an **authorization code** provided in the link as a query parameter. You should copy that code and paste it in the Postman request body of **/oauth2/token**.
+
+Also you should set **SSL certificate verification** to **off** from File > Settings > General, because the service's certificate is not trusted by our computer.
+
+Feel free to test the application.
 
 ## Authors
 

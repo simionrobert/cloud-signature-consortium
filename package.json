@@ -23,7 +23,7 @@
   },
   "scripts": {
     "debug": "nodemon --inspect ./bin/csc-server -l",
-    "debug-test": "nodemon --inspect ./bin/csc-server -v",
+    "debug-test": "nodemon --inspect ./bin/csc-server",
     "build-cli": "npm link",
     "lint": "eslint .",
     "test": "echo \"Valid: no test specified\" && exit 0"

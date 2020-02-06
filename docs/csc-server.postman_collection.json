@@ -1,0 +1,797 @@
+{
+	"info": {
+		"_postman_id": "102de449-be5f-4959-8891-53a4838caa06",
+		"name": "csc-server",
+		"description": "Postman collection used for testing the csc-server\n\nFor details, visitȘ\nhttps://github.com/simionrobert/cloud-signature-consortium",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "explicit auth",
+			"item": [
+				{
+					"name": "auth/login access token by user pass",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1db9e241-936c-45c0-a1c3-8e204431d85a",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.environment.set(\"access_token\", pm.response.json().access_token);",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "1",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "robert.simion",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/auth/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/login refresh token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e43a795d-b570-4f7e-bdc2-c39234636022",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.environment.set(\"refresh_token\", pm.response.json().refresh_token);",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "1",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "robert.simion",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"rememberMe\":true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/auth/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/login access token by refresh token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bdb8a470-ab53-45f7-9949-0c3e26bd0b86",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.environment.set(\"access_token\", pm.response.json().access_token);",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"refresh_token\":\"{{refresh_token}}\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/auth/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "credentials/sendOTP",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3fea7486-64f2-4c54-b651-60d6f5f8ee7d",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.environment.set(\"otp\", pm.response.json().OTP);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"credentialID\": \"{{credentialID}}\"\r\n}"
+						},
+						"url": {
+							"raw": "{{url}}/credentials/sendOTP",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"credentials",
+								"sendOTP"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "credentials/authorise",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "eb309cfa-47b1-443a-9c06-d92e4b716721",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.environment.set(\"sad\", pm.response.json().SAD);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"credentialID\": \"{{credentialID}}\",\r\n\t\"numSignatures\":\"1\",\r\n\t\"hash\":[\"eBvkV/oY8+//two5HPt6VN5o0PRPKp/6SX9vDyHEvULEgiFMQypE18sK/15HvM2KUEIcnR2Jzm80vBfNIGcN3g==\"],\r\n\t\"PIN\":\"0000\",\r\n\t\"OTP\":\"{{otp}}\"\r\n}"
+						},
+						"url": {
+							"raw": "{{url}}/credentials/authorise",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"credentials",
+								"authorise"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "oauth 2.0 auth",
+			"item": [
+				{
+					"name": "oauth2/authorise service",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/oauth2/authorize?response_type=code&client_id=1&redirect_uri=https://localhost:8080&scope=service&lang=en-US&state=1234567",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"oauth2",
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "response_type",
+									"value": "code"
+								},
+								{
+									"key": "client_id",
+									"value": "1"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "https://localhost:8080"
+								},
+								{
+									"key": "scope",
+									"value": "service"
+								},
+								{
+									"key": "lang",
+									"value": "en-US"
+								},
+								{
+									"key": "state",
+									"value": "1234567"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "oauth2/authorise credentials",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/oauth2/authorize?response_type=code&client_id=1&redirect_uri=https://localhost:8080&scope=credential&lang=en-US&state=1234567&credentialID=4b34d2e89d326a94&numSignatures=1&hash=eBvkV_oY8-__two5HPt6VN5o0PRPKp_6SX9vDyHEvULEgiFMQypE18sK_15HvM2KUEIcnR2Jzm80vBfNIGcN3g",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"oauth2",
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "response_type",
+									"value": "code"
+								},
+								{
+									"key": "client_id",
+									"value": "1"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "https://localhost:8080"
+								},
+								{
+									"key": "scope",
+									"value": "credential"
+								},
+								{
+									"key": "lang",
+									"value": "en-US"
+								},
+								{
+									"key": "state",
+									"value": "1234567"
+								},
+								{
+									"key": "credentialID",
+									"value": "4b34d2e89d326a94"
+								},
+								{
+									"key": "numSignatures",
+									"value": "1"
+								},
+								{
+									"key": "hash",
+									"value": "eBvkV_oY8-__two5HPt6VN5o0PRPKp_6SX9vDyHEvULEgiFMQypE18sK_15HvM2KUEIcnR2Jzm80vBfNIGcN3g"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "oauth2/token auth code flow",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d5d2e706-0269-4524-8c3b-c3584a82b64f",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    ",
+									"    if(pm.response.json().token_type === \"SAD\"){",
+									"        pm.environment.set(\"sad\", pm.response.json().access_token);",
+									"    } else{",
+									"        pm.environment.set(\"access_token\", pm.response.json().access_token);",
+									"    }",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "1",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "1",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "authorization_code",
+									"type": "text"
+								},
+								{
+									"key": "code",
+									"value": "53a5f0fd613902a1a4500677360540db3100f6e295b628a431a7aee9df90d22391e26d59f496784c8378fbea02b7f9e6",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "clientSecret",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "redirect_uri",
+									"value": "https://localhost:8080",
+									"type": "text"
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/oauth2/token",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"oauth2",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "info",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"lang\":\"EN\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/info",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"info"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "credentials/info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "dff975f0-7dd9-457b-8f85-211d52eaea0d",
+						"exec": [
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"credentialID\": \"{{credentialID}}\",\r\n\t\"certificates\":\"none\",\r\n\t\"certInfo\":true,\r\n\t\"authInfo\":true,\r\n\t\"lang\":\"en-US\"\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/credentials/info",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"credentials",
+						"info"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "credential/list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c4e23e22-f5cb-4445-8828-84743ba62dac",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"credentialID\", pm.response.json().credentialIDs[0]);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/credentials/list",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"credentials",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "signatures/signHash",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"credentialID\": \"{{credentialID}}\",\n\t\"SAD\":\"{{sad}}\",\n\t\"hash\":[\"eBvkV/oY8+//two5HPt6VN5o0PRPKp/6SX9vDyHEvULEgiFMQypE18sK/15HvM2KUEIcnR2Jzm80vBfNIGcN3g==\"],\n\t\"signAlgo\":\"1.2.840.113549.1.1.13\",\n\t\"signAlgoParams\":\"\",\n\t\"clientData\":\"\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/signatures/signHash",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"signatures",
+						"signHash"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "auth/revoke access token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b960d29d-729c-449e-80a1-41a65cf26bf0",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"access_token\", \"revoked\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"token\":\"{{access_token}}\",\n\t\"token_type_hint\":\"access_token\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/auth/revoke",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"revoke"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "auth/revoke refresh_token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b960d29d-729c-449e-80a1-41a65cf26bf0",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"access_token\", \"revoked\");",
+							"    pm.environment.set(\"refresh_token\", \"revoked\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"token\":\"{{refresh_token}}\",\n\t\"token_type_hint\":\"refresh_token\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/auth/revoke",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"revoke"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
