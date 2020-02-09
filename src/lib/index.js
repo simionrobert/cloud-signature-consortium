@@ -8,16 +8,17 @@ const Client = require('./db').Client;
 const crypto = require('crypto');
 const { Certificate } = require('@fidm/x509');
 const utils = require('../utils');
-
+const exec = require('child_process').exec;
+const logger = require('winston');
+const config = require('../../config').settings;
 const app = require('../app.js');
 const User = require('./db').User;
-const config = require('../../config').settings;
 const SoftHSMDriver = require('./hsm/SoftHsmDriver');
 
 
 /*
-** This class is the entry point of our app. It has all the methods our app uses
-*/
+ ** This class is the entry point of our app. It has all the methods our app uses
+ */
 class CSCServer {
     listen(options, next) {
         app.set('port', options.port || config.https.port);
@@ -32,7 +33,7 @@ class CSCServer {
             let listener = this.server.listen({
                 port: options.port || config.https.port,
                 host: options.host || config.https.host
-            }, function (err) {
+            }, function(err) {
                 if (err) return next(err);
                 next(undefined, listener.address().port, listener.address().address);
             });
@@ -51,7 +52,7 @@ class CSCServer {
                 password: crypto.createHash('sha256').update(password).digest('hex')
             });
 
-            user.save(function (err) {
+            user.save(function(err) {
                 next(err);
             });
         });
@@ -71,7 +72,7 @@ class CSCServer {
                 redirect_uri: redirectUri
             });
 
-            client.save(function (err) {
+            client.save(function(err) {
                 next(err);
             });
         });
@@ -86,7 +87,7 @@ class CSCServer {
         mongoose.connection.on('connected', () => {
             mongoose.connection.removeAllListeners();
 
-            this.hsm.generateCertificateAndKeys((credentialID, convertedCertFile, err) => {
+            this.hsm.generateCertificateAndKeys((credentialID, certFile, err) => {
                 if (err) {
                     this.hsm.finalize();
                     return next(err);
@@ -103,21 +104,42 @@ class CSCServer {
                 }, (err, doc) => {
                     if (err) {
                         this.hsm.finalize();
-                        next(err); return;
+                        next(err);
+                        return;
                     }
                     if (!doc) {
                         this.hsm.finalize();
-                        next('No doc'); return;
+                        next('No doc');
+                        return;
                     }
 
-                    fs.readFile(`${convertedCertFile}`, (err, certstr) => {
-                        this.hsm.finalize();
+                    // Convert cert der to pem
+                    logger.info("Converting certificate...");
 
-                        if (err) { next(err); return; }
-                        const cert = Certificate.fromPEM(certstr);
+                    const convertedCertFile = `${certFile.substr(0, certFile.lastIndexOf("."))}.pem`;
+                    let cmdToExec = (`"${config.openSSL_path}" x509 -inform der -in "${certFile}" -out "${convertedCertFile}"`);
+                    exec(cmdToExec, { cwd: `${config.resources_path}` }, (error) => {
+                        if (error) {
+                            this.finalize();
+                            utils.deleteFile(`${convertedCertFile}`);
+                            next(err);
+                            return;
+                        }
 
-                        let credential = new Credential(
-                            {
+                        logger.info("Certificate successfully converted.");
+
+                        fs.readFile(`${convertedCertFile}`, (err, certstr) => {
+                            utils.deleteFile(`${convertedCertFile}`);
+                            this.hsm.finalize();
+
+                            if (err) {
+                                utils.deleteFile(`${convertedCertFile}`);
+                                next(err);
+                                return;
+                            }
+                            const cert = Certificate.fromPEM(certstr);
+
+                            let credential = new Credential({
                                 credentialID: credentialID,
                                 description: "Certificate",
                                 key: {
@@ -155,10 +177,11 @@ class CSCServer {
                                 multisign: 1,
                                 lang: 'en-US'
                             });
-                        credential.save(function (err) {
-                            if (err) { next(err); return; }
+                            credential.save(function(err) {
+                                if (err) { next(err); return; }
 
-                            next();
+                                next(null, credentialID);
+                            });
                         });
                     });
                 });
@@ -182,6 +205,6 @@ class CSCServer {
     }
 }
 
-module.exports.createServer = function () {
+module.exports.createServer = function() {
     return new CSCServer();
 };

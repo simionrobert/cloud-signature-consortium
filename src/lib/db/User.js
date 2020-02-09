@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
 });
 
 
-userSchema.methods.verifyPassword = function (password) {
+userSchema.methods.verifyPassword = function(password) {
     return this.password === crypto.createHash('sha256').update(password).digest('hex');
 };
 

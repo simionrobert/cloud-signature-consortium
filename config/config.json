@@ -16,8 +16,8 @@
     },
     "database_url": "mongodb://localhost:27017/csc",
     "resources_path": "D:/Scoala/Dizertatie/CSC Framework/resources",
-    "softhsm2_driver_path": "D:/Scoala/Dizertatie/CSC Framework/utils/SoftHSMv2/lib/softhsm2.dll",
-    "openSSL_path": "D:/Scoala/Dizertatie/CSC Framework/utils/openssl-1.1.1-x86/openssl.exe",
+    "softhsm2_driver_path": "D:/Scoala/Dizertatie/CSC Framework/libs/SoftHSMv2/lib/softhsm2.dll",
+    "openSSL_path": "D:/Scoala/Dizertatie/CSC Framework/libs/openssl-1.1.1-x86/openssl.exe",
     "openSC_path": "C:/Program Files (x86)/OpenSC Project/OpenSC/tools/pkcs11-tool.exe",
     "token": {
         "slot": "189467408",

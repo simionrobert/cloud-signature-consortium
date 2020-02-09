@@ -1,66 +1,66 @@
 {
-  "name": "csc-server",
-  "version": "1.0.6",
-  "description": "CSC Framework RSSP in Node.js",
-  "keywords": [
-    "digital signature",
-    "cloud signature consortium",
-    "remote service signature provider",
-    "signature",
-    "csc"
-  ],
-  "homepage": "https://github.com/simionrobert/CSC-Framework#readme",
-  "bugs": {
-    "url": "https://github.com/simionrobert/CSC-Framework/issues"
-  },
-  "license": "MIT",
-  "author": "Simion Robert",
-  "bin": {
-    "csc-server": "./bin/csc-server"
-  },
-  "repository": {
-    "url": "git://github.com/simionrobert/CSC-Framework.git"
-  },
-  "scripts": {
-    "debug": "nodemon --inspect ./bin/csc-server -l",
-    "debug-test": "nodemon --inspect ./bin/csc-server",
-    "build-cli": "npm link",
-    "lint": "eslint .",
-    "test": "echo \"Valid: no test specified\" && exit 0"
-  },
-  "dependencies": {
-    "@fidm/x509": "^1.2.1",
-    "base64-url": "^2.3.3",
-    "connect-ensure-login": "^0.1.1",
-    "cookie-parser": "^1.4.4",
-    "debug": "^4.1.1",
-    "ejs": "^3.0.1",
-    "express": "^4.17.1",
-    "express-session": "^1.17.0",
-    "helmet": "^3.21.2",
-    "http-errors": "^1.7.3",
-    "lodash": "^4.17.15",
-    "minimist": "^1.2.0",
-    "moment": "^2.24.0",
-    "mongoose": "^5.8.11",
-    "morgan": "^1.9.1",
-    "oauth2orize": "^1.11.0",
-    "passport": "^0.4.1",
-    "passport-custom": "^1.1.0",
-    "passport-http": "^0.3.0",
-    "passport-http-bearer": "^1.0.1",
-    "passport-local": "^1.0.0",
-    "passport-oauth2-client-password": "^0.1.2",
-    "portfinder": "^1.0.25",
-    "validator": "^12.2.0",
-    "winston": "^3.2.1"
-  },
-  "devDependencies": {
-    "eslint": "^6.8.0",
-    "mocha": "^7.0.1"
-  },
-  "private": false,
-  "publishConfig": {
-    "access": "public"
-  }
+    "name": "csc-server",
+    "version": "1.0.6",
+    "description": "CSC Framework RSSP in Node.js",
+    "keywords": [
+        "digital signature",
+        "cloud signature consortium",
+        "remote service signature provider",
+        "signature",
+        "csc"
+    ],
+    "homepage": "https://github.com/simionrobert/CSC-Framework#readme",
+    "bugs": {
+        "url": "https://github.com/simionrobert/CSC-Framework/issues"
+    },
+    "license": "MIT",
+    "author": "Simion Robert",
+    "bin": {
+        "csc-server": "./bin/csc-server"
+    },
+    "repository": {
+        "url": "git://github.com/simionrobert/CSC-Framework.git"
+    },
+    "scripts": {
+        "debug": "nodemon --inspect ./bin/csc-server -l",
+        "debug-test": "nodemon --inspect ./bin/csc-server --createUser --user=t --pass=t --pin=1111",
+        "build-cli": "npm link",
+        "lint": "eslint .",
+        "test": "echo \"Valid: no test specified\" && exit 0"
+    },
+    "dependencies": {
+        "@fidm/x509": "^1.2.1",
+        "base64-url": "^2.3.3",
+        "connect-ensure-login": "^0.1.1",
+        "cookie-parser": "^1.4.4",
+        "debug": "^4.1.1",
+        "ejs": "^3.0.1",
+        "express": "^4.17.1",
+        "express-session": "^1.17.0",
+        "helmet": "^3.21.2",
+        "http-errors": "^1.7.3",
+        "lodash": "^4.17.15",
+        "minimist": "^1.2.0",
+        "moment": "^2.24.0",
+        "mongoose": "^5.8.11",
+        "morgan": "^1.9.1",
+        "oauth2orize": "^1.11.0",
+        "passport": "^0.4.1",
+        "passport-custom": "^1.1.0",
+        "passport-http": "^0.3.0",
+        "passport-http-bearer": "^1.0.1",
+        "passport-local": "^1.0.0",
+        "passport-oauth2-client-password": "^0.1.2",
+        "portfinder": "^1.0.25",
+        "validator": "^12.2.0",
+        "winston": "^3.2.1"
+    },
+    "devDependencies": {
+        "eslint": "^6.8.0",
+        "mocha": "^7.0.1"
+    },
+    "private": false,
+    "publishConfig": {
+        "access": "public"
+    }
 }

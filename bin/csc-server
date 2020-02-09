@@ -70,7 +70,7 @@ if (argv.createUser) {
         const server = cscServer.createServer();
 
         logger.info(`Creating the user ...`);
-        server.registerUser(argv.user, argv.pass, function (err) {
+        server.registerUser(argv.user, argv.pass, function(err) {
             if (err) {
                 logger.error(`An error occured when saving the user ${argv.user}. ${err}`);
                 process.exit(1);
@@ -79,10 +79,11 @@ if (argv.createUser) {
             logger.info(`User ${argv.user} was successfully created!`);
             logger.info(`Generating credentials ...`);
 
-            server.generateCredentials(argv.user, argv.pin, (err) => {
-                if (err) { logger.error(err); process.exit(); }
+            server.generateCredentials(argv.user, argv.pin, (err, credentialID) => {
+                if (err) { logger.error(err);
+                    process.exit(); }
 
-                logger.info(`Credentials successfully generated!`);
+                logger.info(`Credentials successfully generated! His credentialID is ${credentialID}`);
                 process.exit();
             });
         });
@@ -96,7 +97,7 @@ if (argv.createUser) {
         const server = cscServer.createServer();
 
         logger.info(`Creating the client ...`);
-        server.registerClient(argv.name, argv.id, argv.secret, argv.redirectUri, function (err) {
+        server.registerClient(argv.name, argv.id, argv.secret, argv.redirectUri, function(err) {
             if (err) {
                 logger.error(`An error occured when saving the client ${argv.name}. ${err}`);
                 process.exit(1);
@@ -115,7 +116,7 @@ if (argv.createUser) {
     const options = {};
 
     const server = cscServer.createServer();
-    server.listen(options, function (error, port, host) {
+    server.listen(options, function(error, port, host) {
         if (error) {
             logger.error(`csc-server has stopped due to: ${error}`);
             process.exit(1);
@@ -127,10 +128,9 @@ if (argv.createUser) {
         let addresses = [];
         if (argv.a && host !== '0.0.0.0') {
             addresses.push(('  ' + protocol + canonicalHost + ':' + (port.toString())));
-        }
-        else {
-            Object.keys(ifaces).forEach(function (dev) {
-                ifaces[dev].forEach(function (details) {
+        } else {
+            Object.keys(ifaces).forEach(function(dev) {
+                ifaces[dev].forEach(function(details) {
                     if (details.family === 'IPv4') {
                         addresses.push(('  ' + protocol + details.address + ':' + (port)));
                         addresses.push(('  ' + protocol + details.address + ':' + (port.toString())));
@@ -156,17 +156,17 @@ if (process.platform === 'win32') {
     require('readline').createInterface({
         input: process.stdin,
         output: process.stdout
-    }).on('SIGINT', function () {
+    }).on('SIGINT', function() {
         process.emit('SIGINT');
     });
 }
 
-process.on('SIGINT', function () {
+process.on('SIGINT', function() {
     logger.info('csc-server stopped.');
     process.exit();
 });
 
-process.on('SIGTERM', function () {
+process.on('SIGTERM', function() {
     logger.info('csc-server stopped.');
     process.exit();
 });
