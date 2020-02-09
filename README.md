@@ -158,6 +158,11 @@ You can also configure the endpoint `/csc/v1/info` results in the `%userprofile%
     ]
 }
 ```
+## Supported PKCS#1 Signing Types
+
+Currently, only CKM_RSA_PKCS is supported with SHA1, SHA256, SHA512.
+Only no-padded base64 hashes needs to be provided at the service endpoints.
+
 
 ## Testing
 
