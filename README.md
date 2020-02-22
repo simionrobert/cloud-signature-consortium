@@ -5,6 +5,8 @@
 A CSC RSSP -Cloud Signature Consortium Remote Signature Service Provider-, written in Node.js using SoftHSMv2 as HSM.
 This application follows the [CSC API V1.0.4.0](https://cloudsignatureconsortium.org/resources/download-api-specifications/) specification. It also includes an OAuth 2.0 server for your particular needs.
 
+This solution is recommended for **simple** and **advanced electronic signature (AdES)**.
+
 Installing globally via `npm`:
 
 ```
