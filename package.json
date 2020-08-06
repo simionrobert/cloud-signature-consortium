@@ -37,7 +37,7 @@
         "ejs": "^3.0.1",
         "express": "^4.17.1",
         "express-session": "^1.17.0",
-        "helmet": "^3.21.2",
+        "helmet": "^4.0.0",
         "http-errors": "^1.7.3",
         "lodash": "^4.17.15",
         "minimist": "^1.2.0",
