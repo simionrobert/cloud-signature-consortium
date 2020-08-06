@@ -3,9 +3,7 @@
 
 # Custom
 libs/
-docs/Diagrams/
-docs/Simion Robert-George - Serviciu web de semnatura digitala in cloud in conformitate cu standardul CSC.docx
-docs/~$mion Robert-George - Serviciu web de semnatura digitala in cloud in conformitate cu standardul CSC.docx
+docs/
 
 ### C++ ###
 # Prerequisites

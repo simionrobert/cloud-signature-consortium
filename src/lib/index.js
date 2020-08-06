@@ -31,8 +31,7 @@ class CSCServer {
 
         mongoose.connection.on('connected', () => {
             let listener = this.server.listen({
-                port: options.port || config.https.port,
-                host: options.host || config.https.host
+                port: options.port || config.https.port
             }, function(err) {
                 if (err) return next(err);
                 next(undefined, listener.address().port, listener.address().address);
