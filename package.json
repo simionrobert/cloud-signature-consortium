@@ -57,7 +57,7 @@
     },
     "devDependencies": {
         "eslint": "^7.14.0",
-        "mocha": "^7.0.1"
+        "mocha": "^8.2.1"
     },
     "private": false,
     "publishConfig": {
