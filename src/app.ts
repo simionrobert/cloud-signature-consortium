@@ -1,19 +1,17 @@
-'use strict';
-
-const express = require('express');
-const cookieParser = require('cookie-parser');
-const morgan = require('morgan');
-const helmet = require('helmet');
-const logger = require('winston');
-const passport = require('passport');
-const session = require('express-session');
-const ejs = require('ejs');
-const path = require('path');
-const { errors } = require('../config');
-const infoRouter = require('./routes/info'),
-  authRouter = require('./routes/auth'),
-  credentialsRouter = require('./routes/credentials'),
-  signaturesRouter = require('./routes/signatures');
+import express from "express";
+import cookieParser from 'cookie-parser';
+import morgan from 'morgan';
+import helmet from 'helmet';
+import logger from 'winston';
+import passport from 'passport';
+import session from 'express-session';
+import ejs from 'ejs';
+import path from 'path';
+import { errors } from '../config';
+import * as infoRouter from './routes/info';
+import * as  authRouter from './routes/auth';
+import * as  credentialsRouter from './routes/credentials';
+import * as  signaturesRouter from './routes/signatures';
 
 const app = express();
 
@@ -48,7 +46,6 @@ app.get(`/`, require('./routes/site').index);
 app.get(`/login`, require('./routes/site').loginForm);
 app.post(`/login`, require('./routes/site').login);
 app.get(`/logout`, require('./routes/site').logout);
-
 app.get(`/oauth2/authorize`, require('./routes/oauth2').authorization);
 app.post(`/oauth2/authorize/decision`, require('./routes/oauth2').decision);
 app.post(`/oauth2/token`, require('./routes/oauth2').token);
@@ -83,4 +80,4 @@ app.use(function (err, req, res, next) {
   });
 });
 
-module.exports = app;
+export default app;

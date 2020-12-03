@@ -1,14 +1,18 @@
-'use strict';
-const logger = require('winston');
-const exec = require('child_process').exec;
-const fs = require('fs');
-const crypto = require('crypto');
-
-const config = require('../../../config').settings;
-const utils = require('../../utils');
+import logger from 'winston');
+import {exec} from 'child_process';
+import fs from 'fs';
+import crypto from 'crypto';
+import {settings} from '../../../config');
+import utils from '../../utils';
 
 
-class SoftHSMDriver {
+export class SoftHSMDriver {
+   state = 0;
+    certFile = '';
+    privateKeyFile = '';
+    publicKeyFile = '';
+   signatureFile = '';
+
     constructor() {
         this.state = 0;
 
@@ -34,8 +38,8 @@ class SoftHSMDriver {
         logger.info("Signing data... ")
 
         this.state = 1;
-        let inputFile = `${config.resources_path}/in-${Date.now()}`;
-        this.signatureFile = `${config.resources_path}/out-${Date.now()}`;
+        let inputFile = `${settings.resources_path}/in-${Date.now()}`;
+        this.signatureFile = `${settings.resources_path}/out-${Date.now()}`;
 
 
         //MD2:		(0x)30 20 30 0c 06 08 2a 86 48 86 f7 0d 02 02 05 00 04 10 || H.
@@ -69,8 +73,8 @@ class SoftHSMDriver {
                 return logger.error(err);
             }
 
-            let cmdToExec = (`"${config.openSC_path}" -s -m RSA-PKCS --module "${config.softhsm2_driver_path}" --slot ${config.token.slot} --pin ${config.token.pin} --id ${credentialID} --input-file "${inputFile}" --output-file "${this.signatureFile}"`);
-            exec(cmdToExec, { cwd: `${config.resources_path}` }, (error, stdout, stderr) => {
+            let cmdToExec = (`"${settings.openSC_path}" -s -m RSA-PKCS --module "${settings.softhsm2_driver_path}" --slot ${settings.token.slot} --pin ${settings.token.pin} --id ${credentialID} --input-file "${inputFile}" --output-file "${this.signatureFile}"`);
+            exec(cmdToExec, { cwd: `${settings.resources_path}` }, (error, stdout, stderr) => {
                 if (error) {
                     logger.error(stderr);
                     utils.deleteFile(`${inputFile}`);
@@ -80,8 +84,8 @@ class SoftHSMDriver {
 
                 logger.info("The signature was generated");
 
-                cmdToExec = (`"${config.openSC_path}" --id ${credentialID} --verify -m RSA-PKCS --module "${config.softhsm2_driver_path}" --pin ${config.token.pin} --slot ${config.token.slot}  --input-file "${inputFile}" --signature-file "${this.signatureFile}"`);
-                exec(cmdToExec, { cwd: `${config.resources_path}` }, (error) => {
+                cmdToExec = (`"${settings.openSC_path}" --id ${credentialID} --verify -m RSA-PKCS --module "${settings.softhsm2_driver_path}" --pin ${settings.token.pin} --slot ${settings.token.slot}  --input-file "${inputFile}" --signature-file "${this.signatureFile}"`);
+                exec(cmdToExec, { cwd: `${settings.resources_path}` }, (error) => {
                     if (error) {
                         utils.deleteFile(`${inputFile}`);
                         return next(null, new Error("Signature is invalid"));
@@ -102,21 +106,21 @@ class SoftHSMDriver {
         this.state = 2;
         const timestamp = Date.now();
 
-        this.certFile = `${config.resources_path}/cert-${timestamp}.der`;
-        this.privateKeyFile = `${config.resources_path}/private-key-${timestamp}.pem`;
-        this.publicKeyFile = `${config.resources_path}/public-key-${timestamp}.pem`;
+        this.certFile = `${settings.resources_path}/cert-${timestamp}.der`;
+        this.privateKeyFile = `${settings.resources_path}/private-key-${timestamp}.pem`;
+        this.publicKeyFile = `${settings.resources_path}/public-key-${timestamp}.pem`;
 
         // Generate certificate with OpenSSL in der format with unencrypted der private key
-        let cmdToExec = (`"${config.openSSL_path}" req -x509 -outform der -newkey rsa:2048 -keyout "${this.privateKeyFile}" -nodes -out "${this.certFile}" -days 365 -subj "/C=GB/ST=Bucharest/L=Bucharest/O=MTA/OU=IT Department/CN=example.com"`);
-        exec(cmdToExec, { cwd: `${config.resources_path}` }, (error) => {
+        let cmdToExec = (`"${settings.openSSL_path}" req -x509 -outform der -newkey rsa:2048 -keyout "${this.privateKeyFile}" -nodes -out "${this.certFile}" -days 365 -subj "/C=GB/ST=Bucharest/L=Bucharest/O=MTA/OU=IT Department/CN=example.com"`);
+        exec(cmdToExec, { cwd: `${settings.resources_path}` }, (error) => {
             if (error) {
                 next(null, this.certFile, error);
                 return;
             }
 
             // Extract the public key 
-            cmdToExec = `"${config.openSSL_path}" rsa -in "${this.privateKeyFile}" -inform pem -outform pem -pubout -out "${this.publicKeyFile}"`;
-            exec(cmdToExec, { cwd: `${config.resources_path}` }, (error) => {
+            cmdToExec = `"${settings.openSSL_path}" rsa -in "${this.privateKeyFile}" -inform pem -outform pem -pubout -out "${this.publicKeyFile}"`;
+            exec(cmdToExec, { cwd: `${settings.resources_path}` }, (error) => {
                 if (error) {
                     this.finalize();
                     next(null, this.certFile, error);
@@ -136,8 +140,8 @@ class SoftHSMDriver {
 
                     // Import private key on token
                     logger.info("Importing keys to token... ")
-                    let cmdToExec = (`"${config.openSC_path}"  --write-object "${this.privateKeyFile}" --type privkey --module "${config.softhsm2_driver_path}" --slot ${config.token.slot} --pin ${config.token.pin} --id ${credentialID}`);
-                    exec(cmdToExec, { cwd: `${config.resources_path}` }, (error, stdout, stderr) => {
+                    let cmdToExec = (`"${settings.openSC_path}"  --write-object "${this.privateKeyFile}" --type privkey --module "${settings.softhsm2_driver_path}" --slot ${settings.token.slot} --pin ${settings.token.pin} --id ${credentialID}`);
+                    exec(cmdToExec, { cwd: `${settings.resources_path}` }, (error, stdout, stderr) => {
                         if (error) {
                             this.finalize();
                             logger.error(stderr);
@@ -146,8 +150,8 @@ class SoftHSMDriver {
                         }
 
                         // Import public key on token
-                        cmdToExec = (`"${config.openSC_path}" --write-object "${this.publicKeyFile}" --type pubkey --module "${config.softhsm2_driver_path}" --slot ${config.token.slot} --pin ${config.token.pin} --id ${credentialID}`);
-                        exec(cmdToExec, { cwd: `${config.resources_path}` }, (error, stdout, stderr) => {
+                        cmdToExec = (`"${settings.openSC_path}" --write-object "${this.publicKeyFile}" --type pubkey --module "${settings.softhsm2_driver_path}" --slot ${settings.token.slot} --pin ${settings.token.pin} --id ${credentialID}`);
+                        exec(cmdToExec, { cwd: `${settings.resources_path}` }, (error, stdout, stderr) => {
                             if (error) {
                                 this.finalize();
                                 logger.error(stderr);
@@ -159,8 +163,8 @@ class SoftHSMDriver {
 
                             // Import certificate on token
                             logger.info("Importing certificate to token... ")
-                            let cmdToExec = (`"${config.openSC_path}"  --write-object "${this.certFile}" --type cert --module "${config.softhsm2_driver_path}" --slot ${config.token.slot} --pin ${config.token.pin} --id ${credentialID}`);
-                            exec(cmdToExec, { cwd: `${config.resources_path}` }, (error) => {
+                            let cmdToExec = (`"${settings.openSC_path}"  --write-object "${this.certFile}" --type cert --module "${settings.softhsm2_driver_path}" --slot ${settings.token.slot} --pin ${settings.token.pin} --id ${credentialID}`);
+                            exec(cmdToExec, { cwd: `${settings.resources_path}` }, (error) => {
                                 if (error) {
                                     this.finalize();
                                     next(credentialID, this.certFile, error);
@@ -179,5 +183,3 @@ class SoftHSMDriver {
         });
     }
 }
-
-module.exports = SoftHSMDriver;

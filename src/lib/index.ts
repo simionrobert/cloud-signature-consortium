@@ -1,38 +1,38 @@
 'use strict';
 
-const https = require('https');
-const fs = require('fs');
-const mongoose = require('mongoose');
-const Credential = require('./db').Credential;
-const Client = require('./db').Client;
-const crypto = require('crypto');
-const { Certificate } = require('@fidm/x509');
-const utils = require('../utils');
-const exec = require('child_process').exec;
-const logger = require('winston');
-const config = require('../../config').settings;
-const app = require('../app.js');
-const User = require('./db').User;
-const SoftHSMDriver = require('./hsm/SoftHsmDriver');
+import https from 'https';
+import fs from 'fs';
+import mongoose from 'mongoose';
+import {Credential} from './db';
+import {Client} from './db';
+import {User} from './db';
+import crypto from 'crypto';
+import { Certificate } from '@fidm/x509';
+import utils from '../utils';
+import exec from 'child_process'.exec;
+import logger from 'winston';
+import {settings} from '../../config';
+import app from '../app.js';
+import SoftHSMDriver from './hsm/SoftHsmDriver';
 
 /*
  ** This class is the entry point of our app. It has all the methods our app uses
  */
-class CSCServer {
+export class CSCServer {
   listen(options, next) {
-    app.set('port', options.port || config.https.port);
+    app.set('port', options.port || settings.https.port);
 
     this.server = https.createServer(
       {
-        cert: fs.readFileSync(options.cert || config.https.certificate),
-        key: fs.readFileSync(options.key || config.https.private_key),
-        passphrase: options.passphrase || config.https.private_key_password
+        cert: fs.readFileSync(options.cert || settings.https.certificate),
+        key: fs.readFileSync(options.key || settings.https.private_key),
+        passphrase: options.passphrase || settings.https.private_key_password
       },
       app
     );
 
     mongoose
-      .connect(config.database_url, {
+      .connect(settings.database_url, {
         useNewUrlParser: true,
         useFindAndModify: false,
         useUnifiedTopology: true,
@@ -42,7 +42,7 @@ class CSCServer {
       .then(() => {
         let listener = this.server.listen(
           {
-            port: options.port || config.https.port
+            port: options.port || settings.https.port
           },
           function(err) {
             if (err) return next(err);
@@ -58,7 +58,7 @@ class CSCServer {
 
   registerUser(username, password, next) {
     mongoose
-      .connect(config.database_url, {
+      .connect(settings.database_url, {
         useNewUrlParser: true,
         useFindAndModify: false,
         useUnifiedTopology: true,
@@ -82,7 +82,7 @@ class CSCServer {
 
   registerClient(name, id, secret, redirectUri, next) {
     mongoose
-      .connect(config.database_url, {
+      .connect(settings.database_url, {
         useNewUrlParser: true,
         useFindAndModify: false,
         useUnifiedTopology: true,
@@ -105,7 +105,7 @@ class CSCServer {
 
   generateCredentials(username, keypass, next) {
     mongoose
-      .connect(config.database_url, {
+      .connect(settings.database_url, {
         useNewUrlParser: true,
         useFindAndModify: false,
         useUnifiedTopology: true,
@@ -151,8 +151,8 @@ class CSCServer {
                 0,
                 certFile.lastIndexOf('.')
               )}.pem`;
-              let cmdToExec = `"${config.openSSL_path}" x509 -inform der -in "${certFile}" -out "${convertedCertFile}"`;
-              exec(cmdToExec, { cwd: `${config.resources_path}` }, error => {
+              let cmdToExec = `"${settings.openSSL_path}" x509 -inform der -in "${certFile}" -out "${convertedCertFile}"`;
+              exec(cmdToExec, { cwd: `${settings.resources_path}` }, error => {
                 if (error) {
                   this.finalize();
                   utils.deleteFile(`${convertedCertFile}`);
@@ -245,7 +245,3 @@ class CSCServer {
     });
   }
 }
-
-module.exports.createServer = function() {
-  return new CSCServer();
-};

@@ -2,11 +2,13 @@
 
 'use strict';
 
-const cscServer = require('../src/lib'),
-    os = require('os'),
-    logger = require('winston'),
-    argv = require('minimist')(process.argv.slice(2), { string: ['pin', 'pass', 'id', 'secret', 'passphrase'] }),
-    packageInfo = require('../package.json');
+import CSCServer from './lib';
+
+import    os from 'os';
+import    logger from 'winston';
+import    argv from 'minimist';
+(process.argv.slice(2), { string: ['pin', 'pass', 'id', 'secret', 'passphrase'] });
+import   packageInfo from '../package.json';
 
 const { format } = logger;
 const ifaces = os.networkInterfaces();
@@ -67,7 +69,7 @@ if (argv.v || argv.version) {
 // Do work
 if (argv.createUser) {
     if (argv.user && argv.pass && argv.pin) {
-        const server = cscServer.createServer();
+        const server = new CSCServer();
 
         logger.info(`Creating the user ...`);
         server.registerUser(argv.user, argv.pass, function(err) {

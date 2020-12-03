@@ -1,19 +1,27 @@
 'use strict';
 
-const passport = require('passport'),
-    BasicStrategy = require('passport-http').BasicStrategy,
-    BearerStrategy = require('passport-http-bearer').Strategy,
-    CustomStrategy = require('passport-custom').Strategy,
-    ClientPasswordStrategy = require('passport-oauth2-client-password').Strategy,
-    LocalStrategy = require('passport-local').Strategy;
-const validator = require('validator');
-const Token = require('./lib/db').Token;
-const User = require('./lib/db').User;
-const Client = require('./lib/db').Client;
-const { errors } = require('../config');
-const config = require('../config');
-const utils = require('./utils');
+import passport from 'passport'; 
+import   {BasicStrategy} from 'passport-http';
+import *  as BearerStrategy  from'passport-http-bearer';
+import  *  as CustomStrategy  from'passport-custom';
+import  *  as ClientPasswordStrategy from'passport-oauth2-client-password';
+import  *  as LocalStrategy from 'passport-local';
+import * as validator from 'validator';
 
+import  {Token} from './lib/db.ts';
+import {User} from './lib/db.ts';
+import  {Client} from './lib/db.ts';
+import { errors } from '../config';
+import * as config  from '../config.ts';
+import * as utils from'./utils';
+
+/**
+ * BasicStrategy
+ *
+ * Used by auth/login. 
+ * This strategy is used to authenticate clients in place of users based on a username and password.
+ * No need for session id cookie.
+ */
 function verifyUser(username, password, done) {
     User.findOne({ user: username }, function (err, user) {
         if (err) { return done(errors.databaseError); }
@@ -23,24 +31,6 @@ function verifyUser(username, password, done) {
     });
 }
 
-function verifyClient(clientId, clientSecret, done) {
-    Client.findOne({ client_id: clientId }, (error, client) => {
-        if (error) return done(error);
-        if (!client) return done(null, false);
-        if (!client.verify(clientSecret)) { return done(errors.accessDenied, false); }
-
-        return done(null, client);
-    });
-}
-
-
-/**
- * BasicStrategy
- *
- * Used by auth/login. 
- * This strategy is used to authenticate clients in place of users based on a username and password.
- * No need for session id cookie.
- */
 passport.use(new BasicStrategy(verifyUser));
 
 /**
@@ -50,7 +40,7 @@ passport.use(new BasicStrategy(verifyUser));
  * Anytime a request is made to authorize an application, we must ensure that
  * a user is logged in before asking them to approve the request.
  */
-passport.use(new LocalStrategy(verifyUser));
+passport.use(new LocalStrategy.Strategy(verifyUser));
 
 passport.serializeUser((user, done) => done(null, user.user));
 
@@ -75,9 +65,20 @@ passport.deserializeUser((username, done) => {
  * the specification, in practice it is quite common.
  */
 
+function verifyClient(clientId, clientSecret, done) {
+    Client.findOne({ client_id: clientId }, (error, client) => {
+        if (error) return done(error);
+        if (!client) return done(null, false);
+        if (!client.verify(clientSecret)) { return done(errors.accessDenied, false); }
+
+        return done(null, client);
+    });
+}
+
 passport.use('client-basic', new BasicStrategy(verifyClient));
 
-passport.use(new ClientPasswordStrategy(verifyClient));
+passport.use(new ClientPasswordStrategy.Strategy(verifyClient));
+
 
 /**
  * CustomStrategy
@@ -85,7 +86,7 @@ passport.use(new ClientPasswordStrategy(verifyClient));
  * Used by auth/login with the refresh_token set.
  * This strategy is used to authenticate clients in place of users based on the refresh token.
  */
-passport.use(new CustomStrategy(
+passport.use(new CustomStrategy.Strategy(
     function (req, done) {
         if (req.body.refresh_token === null || req.body.refresh_token === undefined) {
             return done(errors.malformedAuthMethod);
@@ -117,7 +118,7 @@ passport.use(new CustomStrategy(
  * This strategy is used to authenticate only users based on an access token (normal or oauth2)
  * (aka a bearer token).
  */
-passport.use(new BearerStrategy(
+passport.use(new BearerStrategy.Strategy(
     function (access_token, done) {
         if (access_token === null || access_token === undefined) {
             return done(errors.malformedAuthMethod);
