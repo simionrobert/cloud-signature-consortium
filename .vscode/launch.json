@@ -2,12 +2,18 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch Program",
+            "type": "node",
+            "program": "${workspaceFolder}/dist/server.js",
+            "request": "launch",
+            "preLaunchTask": "npm: build"
+        },
+        {
             "type": "node",
             "request": "attach",
-            "name": "Node: Nodemon",
+            "name": "Attach by Process ID",
             "processId": "${command:PickProcess}",
-            "restart": true,
-            "protocol": "inspector",
+            "protocol": "inspector"
         },
     ]
 }
