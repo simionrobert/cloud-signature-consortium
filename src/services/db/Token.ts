@@ -17,4 +17,6 @@ const TokenSchema:Schema = new Schema({
     creation_date: { type: Date, default: Date.now() } // the date of creation of the token
 });
 
-export default mongoose.model<IToken>('tokens', TokenSchema);
+const Code =mongoose.model<IToken>('tokens', TokenSchema);
+
+export default Code;

@@ -1,20 +1,24 @@
-'use strict';
+import passport from 'passport';
+import { Response, Request } from 'express';
+import connectEnsureLogin from 'connect-ensure-login';
 
-const passport = require('passport');
-const login = require('connect-ensure-login');
-
-const loginUrl = `/login`;
-
-module.exports.index = [
-  login.ensureLoggedIn(loginUrl),
-  (request, response) => response.send(`Application Client API endpoint was called with the authentication code <strong>${request.query.code}</strong>`)
+export const index = [
+  connectEnsureLogin.ensureLoggedIn(`/login`),
+  (request: Request, response: Response) =>
+    response.send(
+      `Application Client API endpoint was called with the authentication code <strong>${request.query.code}</strong>`
+    )
 ];
 
-module.exports.loginForm = (request, response) => response.render('login');
+export const loginForm = (request: Request, response: Response) =>
+  response.render('login');
 
-module.exports.login = passport.authenticate('local', { successReturnToOrRedirect: '/', failureRedirect: loginUrl });
+export const login = passport.authenticate('local', {
+  successReturnToOrRedirect: '/',
+  failureRedirect: `/login`
+});
 
-module.exports.logout = (request, response) => {
+export const logout = (request: Request, response: Response) => {
   request.logout();
-  response.redirect(loginUrl);
+  response.redirect(`/login`);
 };

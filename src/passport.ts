@@ -11,9 +11,9 @@ import * as validator from 'validator';
 import  {Token} from './lib/db.ts';
 import {User} from './lib/db.ts';
 import  {Client} from './lib/db.ts';
-import { errors } from '../config';
+import { errors } from './config';
 import * as config  from '../config.ts';
-import * as utils from'./utils';
+import * as utils from'./services/utils';
 
 /**
  * BasicStrategy

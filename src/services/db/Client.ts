@@ -20,6 +20,6 @@ ClientSchema.methods.verify = function (value) {
     return this.client_secret === crypto.createHash('sha256').update(value).digest('hex');
 };
 
+const Client =mongoose.model<IClient>('clients', ClientSchema);
 
-
-export default mongoose.model<IClient>('clients', ClientSchema);
+export default Client;

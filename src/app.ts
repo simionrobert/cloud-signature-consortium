@@ -7,7 +7,7 @@ import passport from 'passport';
 import session from 'express-session';
 import ejs from 'ejs';
 import path from 'path';
-import { errors } from '../config';
+import { errors } from './config';
 import * as infoRouter from './routes/info';
 import * as  authRouter from './routes/auth';
 import * as  credentialsRouter from './routes/credentials';

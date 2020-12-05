@@ -1,19 +1,19 @@
-'use strict';
-
-const express = require('express');
-const passport = require('passport');
-const validator = require('validator');
-const { errors, settings } = require('../../config');
-const csc = require('../lib');
-const Sad = require('../lib/db').Sad;
-const _ = require('lodash');
-const utils=require('../utils');
+import express from 'express';
+import passport from 'passport';
+import validator from 'validator';
+import { errors, settings } from '../config';
+import csc from '../lib';
+import { Sad } from '../lib/db';
+import _ from 'lodash';
+import * as utils from '../services/utils';
 
 const router = express.Router();
 
-router.post('/signHash',
-   passport.authenticate('bearer', { session: false }), function (req, res, next) {
-      /* the hashAlgo parameter is only needed when it cannot be derived from the signAlgo parameter. 
+router.post(
+  '/signHash',
+  passport.authenticate('bearer', { session: false }),
+  function(req, res, next) {
+    /* the hashAlgo parameter is only needed when it cannot be derived from the signAlgo parameter. 
          In the case of RSA this is the case when you use the "1.2.840.113549.1.1.1" (RSA) or the "1.2.840.113549.1.1.10" 
       (RSASSAPSS) oids. In all other cases the hash algorithm is derived from the signature algorithm. 
          So as you are using OID "1.3.14.3.2.29" in your request (which corresponds to SHA1withRSA) you do not need to set 
@@ -24,88 +24,127 @@ router.post('/signHash',
          Specifies the OID of the algorithm used to calculate the hash value(s), in case it’s not implicitly specified by 
       the signAlgo algorithm. Only hashing algorithms as strong or stronger than SHA256 shall be used.*/
 
-      const cscServer = csc.createServer();
-      const user = req.user;
-      const credentialID = req.body.credentialID;
-      const sad = req.body.SAD;
-      const hashes = req.body.hash;
-      const hashAlgo = req.body.hashAlgo;
-      const signAlgo = req.body.signAlgo;
-      //const signAlgoParams = req.body.signAlgoParams;
-      const credential = user.credentials.find(x => x.credentialID === credentialID);
+    const cscServer = csc.createServer();
+    const user = req.user;
+    const credentialID = req.body.credentialID;
+    const sad = req.body.SAD;
+    const hashes = req.body.hash;
+    const hashAlgo = req.body.hashAlgo;
+    const signAlgo = req.body.signAlgo;
+    //const signAlgoParams = req.body.signAlgoParams;
+    const credential = user.credentials.find(
+      x => x.credentialID === credentialID
+    );
 
-      // Verify credentialID
-      if (credentialID === undefined || !validator.isAscii(credentialID)) { return next(errors.invalidCredentialID); }
-      if (!credential) { return next(errors.invalidCredentialID); }
+    // Verify credentialID
+    if (credentialID === undefined || !validator.isAscii(credentialID)) {
+      return next(errors.invalidCredentialID);
+    }
+    if (!credential) {
+      return next(errors.invalidCredentialID);
+    }
 
-      // Verify hashes
-      if (!(Array.isArray(hashes))) { return next(errors.missingHash); }
-      if (hashes.length == 0) { return next(errors.emptyHash); }
-      let err = false;
-      hashes.forEach(hash => {
-         if (!validator.isBase64(hash)) { err = true; return; }
-         switch (Buffer.from(hash, 'base64').length) {
-            case 20:
-            case 32:
-            case 64:
-               return;
-            default:
-               return next(errors.invalidHashLenght);
-         }
-      });
-      if (err) return next(errors.invalidBase64);
-
-      // Verify hashAlgo
-      switch (hashAlgo) {
-         case "1.3.14.3.2.26": // SHA1
-         case "2.16.840.1.101.3.4.2.1": // SHA256
-         case "2.16.840.1.101.3.4.2.3": // SHA512
-         case "1.3.6.1.4.1.2706.2.4.1.1": //MD5+SHA1
-            break;
-         case "":
-         case undefined:
-            if (signAlgo === '1.2.840.113549.1.1.1')
-               return next(errors.missinghashAlgo);
-            break;
-         default:
-            return next(errors.invalidhashAlgo);
+    // Verify hashes
+    if (!Array.isArray(hashes)) {
+      return next(errors.missingHash);
+    }
+    if (hashes.length == 0) {
+      return next(errors.emptyHash);
+    }
+    let err = false;
+    hashes.forEach(hash => {
+      if (!validator.isBase64(hash)) {
+        err = true;
+        return;
       }
-
-      // verify signAlgo
-      switch (signAlgo) {
-         case "1.3.14.3.2.29": //sha1withRSA
-         case "1.2.840.113549.1.1.11": //sha256withRSA
-         case "1.2.840.113549.1.1.13": //sha512withRSA
-         case "1.2.840.113549.1.1.1": //SSL MD5+SHA1
-            break;
-         default:
-            return next(errors.invalidsignAlgo);
+      switch (Buffer.from(hash, 'base64').length) {
+        case 20:
+        case 32:
+        case 64:
+          return;
+        default:
+          return next(errors.invalidHashLenght);
       }
+    });
+    if (err) return next(errors.invalidBase64);
 
-      // Verify sad
-      if (sad === undefined || !validator.isAscii(sad)) { return next(errors.missingSAD); }
+    // Verify hashAlgo
+    switch (hashAlgo) {
+      case '1.3.14.3.2.26': // SHA1
+      case '2.16.840.1.101.3.4.2.1': // SHA256
+      case '2.16.840.1.101.3.4.2.3': // SHA512
+      case '1.3.6.1.4.1.2706.2.4.1.1': //MD5+SHA1
+        break;
+      case '':
+      case undefined:
+        if (signAlgo === '1.2.840.113549.1.1.1')
+          return next(errors.missinghashAlgo);
+        break;
+      default:
+        return next(errors.invalidhashAlgo);
+    }
 
-      Sad.findOneAndDelete({ value: utils.hash(sad), credential_id: credentialID }, function (err, foundSad) {
-         if (err) { return next(errors.invalidSAD); }
-         if (!foundSad) { return next(errors.invalidSAD); }
-         if (!_.isEqual(hashes.sort(), foundSad.hashes.sort())) return next(errors.unauthorisedHash);
+    // verify signAlgo
+    switch (signAlgo) {
+      case '1.3.14.3.2.29': //sha1withRSA
+      case '1.2.840.113549.1.1.11': //sha256withRSA
+      case '1.2.840.113549.1.1.13': //sha512withRSA
+      case '1.2.840.113549.1.1.1': //SSL MD5+SHA1
+        break;
+      default:
+        return next(errors.invalidsignAlgo);
+    }
 
-         // check sad availability
-         if (foundSad.creation_date.getTime() + 1000 * settings.sad_expiring_time < Date.now()) { return next(errors.invalidSAD, false); }
+    // Verify sad
+    if (sad === undefined || !validator.isAscii(sad)) {
+      return next(errors.missingSAD);
+    }
 
-         // All is right
-         cscServer.sign(credentialID, hashes.map(i => Buffer.from(i, 'base64')), signAlgo, (signature, error) => {
-            if (error) { return next(errors.internalServerError); }
+    Sad.findOneAndDelete(
+      { value: utils.hash(sad), credential_id: credentialID },
+      function(err, foundSad) {
+        if (err) {
+          return next(errors.invalidSAD);
+        }
+        if (!foundSad) {
+          return next(errors.invalidSAD);
+        }
+        if (!_.isEqual(hashes.sort(), foundSad.hashes.sort()))
+          return next(errors.unauthorisedHash);
+
+        // check sad availability
+        if (
+          foundSad.creation_date.getTime() + 1000 * settings.sad_expiring_time <
+          Date.now()
+        ) {
+          return next(errors.invalidSAD, false);
+        }
+
+        // All is right
+        cscServer.sign(
+          credentialID,
+          hashes.map(i => Buffer.from(i, 'base64')),
+          signAlgo,
+          (signature, error) => {
+            if (error) {
+              return next(errors.internalServerError);
+            }
             res.json({
-               signatures: [signature]
+              signatures: [signature]
             });
-         });
-      });
-   });
+          }
+        );
+      }
+    );
+  }
+);
 
-router.post('/timestamp',
-   passport.authenticate('bearer', { session: false }), function (req, res, next) {
-      return next(errors.notImplementedMethod);
-   });
+router.post(
+  '/timestamp',
+  passport.authenticate('bearer', { session: false }),
+  function(req, res, next) {
+    return next(errors.notImplementedMethod);
+  }
+);
 
-module.exports = router;
+export default router;

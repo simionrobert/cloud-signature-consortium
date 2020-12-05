@@ -78,6 +78,6 @@ const credentialSchema:Schema = new Schema({
     lang: String
 });
 
-const Credential = mongoose.model('credentials', credentialSchema);
+const Credential = mongoose.model<ICredential>('credentials', credentialSchema);
 
-export default mongoose.model<ICredential>('credentials', credentialSchema);
+export default Credential;

@@ -17,10 +17,14 @@
   },
   "dependencies": {
     "@fidm/x509": "^1.2.1",
+    "@types/connect-ensure-login": "^0.1.5",
     "@types/cookie-parser": "^1.4.2",
     "@types/ejs": "^3.0.5",
     "@types/express-session": "^1.17.3",
+    "@types/lodash": "^4.14.165",
+    "@types/minimist": "^1.2.1",
     "@types/morgan": "^1.9.2",
+    "@types/node": "^14.14.10",
     "@types/passport": "^1.0.4",
     "@types/passport-http": "^0.3.8",
     "@types/passport-http-bearer": "^1.0.36",
@@ -53,7 +57,6 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "@types/node": "^14.14.10",
     "eslint": "^7.14.0",
     "mocha": "^8.2.1"
   },
@@ -68,8 +71,9 @@
   "bugs": {
     "url": "https://github.com/simionrobert/CSC-Framework/issues"
   },
+  "main": "./dist/bin.js",
   "bin": {
-    "csc-server": "./bin/csc-server"
+    "csc-server": "./dist/bin.js"
   },
   "private": false,
   "publishConfig": {

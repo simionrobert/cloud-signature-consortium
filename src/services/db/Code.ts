@@ -34,4 +34,6 @@ const CodeSchema :Schema= new Schema({
     creation_date: { type: Date, default: Date.now() }
 });
 
-export default mongoose.model<ICode>('codes', CodeSchema);
+const Code =mongoose.model<ICode>('codes', CodeSchema);
+
+export default Code; 
