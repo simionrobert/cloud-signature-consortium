@@ -33,7 +33,7 @@ export default class SoftHSMDriver {
     }
   }
 
-  sign(credentialID: string, hash, signAlgo: string, next) {
+  sign(credentialID: string, hash, signAlgo: string, next:any) {
     logger.info('Signing data... ');
 
     this.state = 1;
@@ -111,7 +111,7 @@ export default class SoftHSMDriver {
     });
   }
 
-  generateCertificateAndKeys(next) {
+  generateCertificateAndKeys(next:any) {
     logger.info('Generating certificate and keys...');
 
     this.state = 2;

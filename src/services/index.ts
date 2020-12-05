@@ -22,7 +22,7 @@ export default class CSCServer {
   server: https.Server;
   hsm: SoftHSMDriver;
 
-  listen(options:any, next:any) {
+  listen(options: any, next: any) {
     app.set('port', options.port || settings.https.port);
 
     this.server = https.createServer(
@@ -38,34 +38,34 @@ export default class CSCServer {
       .connect(settings.database_url, {
         useNewUrlParser: true,
         useFindAndModify: false,
-        useUnifiedTopology: true,
-        useCreateIndex: true
+        useUnifiedTopology: true
       })
-      .catch((err:any) => next(err))
+      .catch((err: any) => next(err))
       .then(() => {
         let listener = this.server.listen(
           {
             port: options.port || settings.https.port
           },
-          (err) =>{
-            if (err) return next(err);
+          () => {
             next(
               undefined,
               listener.address().port,
               listener.address().address
             );
           }
-        );
+        )
+        .on('error',(err:any)=>{
+          return next(err);
+        });
       });
   }
 
-  registerUser(username: string, password: string, next) {
+  registerUser(username: string, password: string, next: any) {
     mongoose
       .connect(settings.database_url, {
         useNewUrlParser: true,
         useFindAndModify: false,
-        useUnifiedTopology: true,
-        useCreateIndex: true
+        useUnifiedTopology: true
       })
       .catch(err => next(err))
       .then(() => {
@@ -88,14 +88,13 @@ export default class CSCServer {
     id: string,
     secret: string,
     redirectUri: string,
-    next
+    next: any
   ) {
     mongoose
       .connect(settings.database_url, {
         useNewUrlParser: true,
         useFindAndModify: false,
-        useUnifiedTopology: true,
-        useCreateIndex: true
+        useUnifiedTopology: true
       })
       .catch(err => next(err))
       .then(() => {
@@ -112,20 +111,19 @@ export default class CSCServer {
       });
   }
 
-  generateCredentials(username: string, keypass: string, next) {
+  generateCredentials(username: string, keypass: string, next: any) {
     mongoose
       .connect(settings.database_url, {
         useNewUrlParser: true,
         useFindAndModify: false,
-        useUnifiedTopology: true,
-        useCreateIndex: true
+        useUnifiedTopology: true
       })
       .catch((err: any) => next(err))
       .then(() => {
         this.hsm = new SoftHSMDriver();
 
         this.hsm.generateCertificateAndKeys(
-          (credentialID: string, certFile, err) => {
+          (credentialID: string, certFile: string, err: any) => {
             if (err) {
               this.hsm.finalize();
               return next(err);
@@ -167,7 +165,7 @@ export default class CSCServer {
                   { cwd: `${settings.resources_path}` },
                   error => {
                     if (error) {
-                      this.finalize();
+                      this.hsm.finalize();
                       utils.deleteFile(`${convertedCertFile}`);
                       next(err);
                       return;
@@ -244,21 +242,31 @@ export default class CSCServer {
       });
   }
 
-  sign(credentialID: string, hashes: string[], signAlgo: string, next) {
+  sign(credentialID: string, hashes: string[], signAlgo: string, next: any) {
     this.hsm = new SoftHSMDriver();
-    this.hsm.sign(credentialID, hashes[0], signAlgo, (outputFile, error) => {
-      if (error) {
-        next(null, error);
-        return;
-      }
-      fs.readFile(`${outputFile}`, (err, rawSignature) => {
-        this.hsm.finalize();
+    this.hsm.sign(
+      credentialID,
+      hashes[0],
+      signAlgo,
+      (outputFile: string, error: any) => {
         if (error) {
-          next(null, err);
+          next(null, error);
           return;
         }
-        next(Buffer.from(rawSignature, 'binary').toString('base64'));
-      });
-    });
+        fs.readFile(
+          `${outputFile}`,
+          { encoding: 'base64' },
+          (err, rawSignature) => {
+            this.hsm.finalize();
+
+            if (error) {
+              next(null, err);
+              return;
+            }
+            next(rawSignature);
+          }
+        );
+      }
+    );
   }
 }
