@@ -2,10 +2,10 @@
 
 ![Build Status](https://github.com/simionrobert/cloud-signature-consortium/workflows/Node.js%20CI/badge.svg) [![Dependency Status](https://david-dm.org/simionrobert/CSC-Framework/status.svg)](https://david-dm.org/simionrobert/CSC-Framework)
 
-A CSC RSSP -Cloud Signature Consortium Remote Signature Service Provider-, written in Node.js using SoftHSMv2 as HSM.
+A CSC RSSP - Cloud Signature Consortium Remote Signature Service Provider -, written in Node.js using SoftHSMv2 as HSM.
 This application follows the [CSC API V1.0.4.0](https://cloudsignatureconsortium.org/resources/download-api-specifications/) specification. It also includes an OAuth 2.0 server for your particular needs.
 
-This solution is recommended for **simple** and **advanced electronic signature (AdES)**.
+An ASP.NET Core variant is available at [cloud-signature-consortium-asp-net-core](https://github.com/simionrobert/cloud-signature-consortium-asp-net-core)
 
 Installing globally via `npm`:
 
